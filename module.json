@@ -1,0 +1,16 @@
+
+{
+	"comment": "Module definition file. The name key 'name' should match the name of the module appended to 'appserver-', ex. appserver-directory",
+	"name": "directory", 
+	"description": "A module for testing the appserver functionality.",
+	"files": ["Test.php"],
+	"routes": {
+				
+         "test/committees":{
+            "callback":"testDisplayCommitteeMembers",
+            "content-type":"text/html",
+            "access":"is_authenticated"
+         }
+    }
+}
+
