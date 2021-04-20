@@ -10,6 +10,10 @@
             "callback":"testDisplayCommitteeMembers",
             "content-type":"text/html",
             "access":"is_authenticated"
+         },
+         "committees": {
+            "callback":"home",
+            "content-type":"text\/html"
          }
     }
 }
