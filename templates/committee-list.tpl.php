@@ -17,6 +17,7 @@ li.table-cell {
 }
 
 h2 {
+    color: #bf9500;
     margin-top: 36px;
     margin-bottom: 16px;
 }
@@ -29,13 +30,24 @@ h2 {
 </style>
 
 
+<?php
+// Helper function that determines wether a member entry should be bold based on a Role
+function checkRole($member)
+{
+    $roles = ["Chair", "Board Liaison", "President"];
+    if (in_array($member["Role"], $roles) || $member["Name"] == "Bob Thuemmel") {
+        echo 'bold';
+    }
+}
+?>
+
 <div>
     <h2>OCDLA Committees</h2>
 </div>
 
 <div id="intro">
-    <p>Welcome to OCDLA's Committies Page. Below is the list of all the committees and their respective members.</p>
-    <p>You may navigate to a member's contact information by clicking on a specific memeber's link associated </p>
+    <p>Welcome to OCDLA's Committees Page. Below is the list of all the committees and their respective members.</p>
+    <p>You may navigate to a member's contact information by clicking on a specific member's link associated </p>
     <p>with the committee of interest.</p>
 </div>
 
@@ -48,7 +60,7 @@ h2 {
 
 <?php foreach ($committees as $committee) : ?>
 
-<h2><?php print $committee["Name"]; ?></h2>
+<h2 style="color: #bf9500;"><?php print $committee["Name"]; ?></h2>
 <div class="table">
     <tbody>
         <ul class="table-row">
@@ -59,9 +71,11 @@ h2 {
         </ul>
         <?php $members = $committee["members"]; ?>
         <?php foreach ($members as $member) : ?>
-        <ul class="table-row">
+        <ul class="table-row" style="font-weight:<?php checkRole($member) ?>;">
             <li class="table-cell cart-middle">
-                <?php print $member["Title"] . " " . $member["Name"]; ?>
+                <a href="https://members.ocdla.org/directory/member/<?php print $member["Id"]; ?>">
+                    <?php print $member["Title"] . " " . $member["Name"]; ?>
+                </a>
             </li>
             <li class="table-cell cart-middle">
                 <?php print $member["Role"]; ?>

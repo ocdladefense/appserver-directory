@@ -26,7 +26,7 @@ class DirectoryModule extends Module
         $api = $this->loadForceApi();
         //$results = $api->query("SELECT id, name from committee__c");
         // List commiittees and related contact info for each member
-        $results = $api->query("SELECT id, Name, (SELECT Contact__r.Title, Contact__r.Name, Role__c, Contact__r.Email, Contact__r.Phone FROM Relationships__r) FROM Committee__c");
+        $results = $api->query("SELECT id, Name, (SELECT Contact__r.Id, Contact__r.Title, Contact__r.Name, Role__c, Contact__r.Email, Contact__r.Phone FROM Relationships__r) FROM Committee__c");
         print "<pre>";
         print print_r($results, true);
         print "</pre>";
@@ -45,7 +45,7 @@ class DirectoryModule extends Module
         $api = $this->loadForceApi();
 
         // Query for committee records and members belonging to each committe
-        $resp = $api->query("SELECT Id, Name, (SELECT Contact__r.Title, Contact__r.Name, Role__c, Contact__r.Phone, Contact__r.Email FROM Relationships__r) FROM Committee__c");
+        $resp = $api->query("SELECT Id, Name, (SELECT Contact__r.Id, Contact__r.Title, Contact__r.Name, Role__c, Contact__r.Phone, Contact__r.Email FROM Relationships__r) FROM Committee__c");
         if (!$resp->isSuccess()) {
 
             var_dump($resp);
@@ -82,6 +82,7 @@ class DirectoryModule extends Module
             $committee["Name"] = $record["Name"]; // getting a committee name
             foreach ($members as $rec) {
                 $member = array( // Settting each member's attributes for the committee
+                    "Id" => $rec["Contact__r"]["Id"],
                     "Title" => $rec["Contact__r"]["Title"],
                     "Role" => $rec["Role__c"],
                     "Name" => $rec["Contact__r"]["Name"],
@@ -89,6 +90,8 @@ class DirectoryModule extends Module
                     "Email" => $rec["Contact__r"]["Email"]
                 );
                 $committee["members"][] = $member; // adding a member entry to the 'members' array
+                //var_dump($member);
+                //exit;
             }
             $committees[] = $committee; // filling 'committees' array with committee/members data after every itireation
         }
