@@ -14,7 +14,11 @@
          "committees": {
             "callback":"home",
             "content-type":"text\/html"
-         }
+         },
+         "get/committees":{
+            "callback":"home2",
+            "content-type":"application/json"
+        }
     }
 }
 

@@ -68,6 +68,38 @@ class DirectoryModule extends Module
         ));
     }
 
+    // TESTING API FROM WP
+    public function home2()
+    {
+        //$tpl = new Template("committee-list");
+        //$tpl->addPath(__DIR__ . "/templates");
+
+        $api = $this->loadForceApi();
+
+        // Query for committee records and members belonging to each committe
+        $resp = $api->query("SELECT Id, Name, (SELECT Contact__r.Id, Contact__r.Title, Contact__r.Name, Role__c, Contact__r.Phone, Contact__r.Email FROM Relationships__r) FROM Committee__c");
+        if (!$resp->isSuccess()) {
+
+            var_dump($resp);
+            exit;
+        }
+        // Creates an array for holding "Committee__c" objects.
+        $committeeRecords = $resp->getRecords();
+        //var_dump($committeeRecords);
+        //exit;
+
+        $formattedCommitteeRecords = $this->includeMemberInfo($committeeRecords);
+        //$testContactPath = $committeeRecords[0]['members'][0]['Relationships__r']['records']; //[0]['Contact__r'];
+        //var_dump($committeeRecords); // TESTING
+        //exit;
+
+        $committees = $formattedCommitteeRecords;
+
+        return $committees; // array("committees" => $formattedCommitteeRecords); // Returning a formatted array that I can use to test my WP plugin
+    }
+
+
+
     // This function parses an array with 'raw' data containing committee and member information
     // It then takes necessary attributes and puts them into a new formatted 'human-friendly' array
     public function includeMemberInfo($committeeRecords)
