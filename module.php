@@ -131,4 +131,39 @@ class DirectoryModule extends Module
         //exit;
         return $committees;
     }
+
+    public function getMembersAlphaPDF(){
+        $modulePath = BASE_PATH. module_path();
+        $body = file_get_contents($modulePath .DIRECTORY_SEPARATOR. "membersAlpha.json");
+        $api_key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNGY3MTBiYjQ2MDRkZjUwZDM5ZGRiMzZhZTU5YTI5NWRhYjA3ZDAyMTU4MDRkNmYwMmRiYzdhZTYwMGRlMDQ2N2NlNjMzMTRmNTdiNDBmNjMiLCJpYXQiOjE2MjE5ODQyMjguMTQxMDgsIm5iZiI6MTYyMTk4NDIyOC4xNDEwODMsImV4cCI6NDc3NzY1NzgyOC4xMTQzMTcsInN1YiI6IjUwMzY3MDY0Iiwic2NvcGVzIjpbInVzZXIud3JpdGUiLCJ0YXNrLnJlYWQiLCJ0YXNrLndyaXRlIiwid2ViaG9vay5yZWFkIiwid2ViaG9vay53cml0ZSIsInByZXNldC5yZWFkIiwicHJlc2V0LndyaXRlIiwidXNlci5yZWFkIl19.GoWuTjZxWwnADd2RIxIMuUJDFr3qs-x48hrsQhVjMCOorm8VYsbQW8ja3wcPfjzeBgE-hdYXs6mQ1fWnibCczH8fd7vheMPbJcPrlhqlaTFB8usGxT3a4-mAdKySYJtZUzcrrQyIONY9AfmoBHOftzjXt-UyUWuNVkyMgmWeHI5a3XPg5Lt0vvbJuweOhQ-tDSs_adzeQzumCz9AS8MPAdleeQU3SlY0zcqqN6A2IDffHTOhafNczb-j1zF7sF30whjCR8ZwvIEdetLbZMzsGbIQ3H6t-YwM0cHXuECbOMZgGMxl729Yd0NHmRtIsDSlT90bUIsl6NnvC3HFq0-YeE-b3aIh9goskLUCv0tmq_cMTqg4LM3LbbzTT_9I9sAeyGDiYtGusqNGP0oSvL-Geu4zCQTRBRESNtET2NY0iZbqrjjBuavXO28LIIIXZvy73vsEOEDR9SIR8-pr-8KxXiNVl4QwIu8GLsTiVTQsVc57cKv_as38Y6sQlcdPHzx-jBK9vgWmAfTApp6BySS8-9-edxQ4YmWZqJZOIfc-GDTUfzY8lVHCBFV8X447wEkQvIvkhTEMY5vb1qLa5EUENhYr-sha1XbOhidzTIaeuOVskME4_djRViqWDAxWKPLicukcr5zUJ8t5zGQGmO-5QjPPp_Lqtm6DgG15eMboRoY";
+
+
+
+        $req = new \Http\HttpRequest();
+        $req->setUrl("https://api.sandbox.cloudconvert.com/v2/jobs");
+        $req->setMethod("POST");
+        $req->addHeader(new HttpHeader("Authorization","Bearer ".$api_key));
+        $req->addHeader(new HttpHeader("Content-type","application/json"));
+        $req->setBody($body);
+
+        $config = array(
+            "returntransfer" 		=> true,
+            "useragent" 			=> "Mozilla/5.0",
+            "followlocation" 		=> true,
+            "ssl_verifyhost" 		=> false,
+            "ssl_verifypeer" 		=> false
+        );
+
+        $http = new \Http\Http($config);
+    
+        $resp = $http->send($req, true);
+        if($resp->getStatusCode() < 300){
+            var_dump($resp->getBody());
+            exit;
+            
+        }
+        var_dump($resp);
+        exit;
+    }
+
 }

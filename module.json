@@ -18,6 +18,10 @@
          "get/committees":{
             "callback":"home2",
             "content-type":"application/json"
+        },
+        "getMembersAlphaPDF":{
+         "callback":"getMembersAlphaPDF",
+         "content-type":"text\/html"
         }
     }
 }

@@ -1,0 +1,44 @@
+{
+    "tasks": {
+        "CurrentMembersAlphaHeader": {
+            "operation": "import/raw",
+            "file": "<div style=\" width: 100%; font-size: 16px;\n        padding: 5px 5px 0; position: relative; border-bottom: solid 1px #bbb;\">\n        <div style=\" position: relative; text-align:center; top: 0px;\">\n            Alphabetical Listing:\n            </div>\n    </div>",
+            "filename": "CurrentMembersAlphaHeader.html"
+        },
+        "CurrentMembersAlphaFooter": {
+            "operation": "import/raw",
+            "file": "<div style=\"border-top: solid 1px #bbb; width: 100%; font-size: 9px;\n        padding: 5px 5px 0; color: #bbb; position: relative;\">\n        <div style=\"font-size: 9px; position: relative; text-align:center; top: -20px;\">\n            (L) Lifetime (S) Sustaining (R) Regular (N) Nonlawyer (H) Honored (A)\n            Academic/Student\n            </div>\n        <div style=\"position: absolute; right: 20px; top: -14px;\"><span class=\"pageNumber\"></span>/<span class=\"totalPages\"></span></div>\n    </div>",
+            "filename": "CurrentMembersAlphaFooter.html"
+        },
+        "members_alpha_task": {
+            "operation": "capture-website",
+            "url": "https://ocdpartial-ocdla.cs169.force.com/apex/CurrentMembers",
+            "output_format": "pdf",
+            "engine": "chrome",
+            "zoom": 1,
+            "margin_top": 24,
+            "margin_bottom": 17,
+            "margin_left": 10,
+            "margin_right": 10,
+            "print_background": true,
+            "display_header_footer": false,
+            "header_template": [
+                "CurrentMembersAlphaHeader"
+            ],
+            "footer_template": [
+                "CurrentMembersAlphaFooter"
+            ],
+            "wait_until": "load",
+            "wait_time": 0,
+            "filename": "CurrentMembersAlpha.pdf"
+        },
+        "exportToURL": {
+            "operation": "export/url",
+            "input": [
+                "members_alpha_task"
+            ],
+            "inline": false,
+            "archive_multiple_files": false
+        }
+    }
+}
