@@ -13,10 +13,23 @@ use Http\HttpHeader as HttpHeader;
 // Test module name should match it's corresponding module name, ex.: 'appserver-directory'
 class DirectoryModule extends Module
 {
+    private static $sandboxUrl = "https://api.sandbox.cloudconvert.com";
+    private static $productionUrl = "https://api.cloudconvert.com";
+    private static $whichToUse;
+    private static $apiKey;
+
 
     public function __construct()
     {
+
         parent::__construct();
+        self::$whichToUse = self::$sandboxUrl;
+        if ( self::$whichToUse == self::$sandboxUrl){
+            self::$apiKey = CLOUD_CONVERT_SANDBOX_API_KEY;
+        }else{
+            self::$apiKey = CLOUD_CONVERT_API_KEY;
+        }
+        
     }
 
     // New callback that will dislay committees and committee members
@@ -132,17 +145,14 @@ class DirectoryModule extends Module
         return $committees;
     }
 
-    public function getMembersAlphaPDF(){
+    public function addCloudConvertJob($name){
         $modulePath = BASE_PATH. module_path();
-        $body = file_get_contents($modulePath .DIRECTORY_SEPARATOR. "membersAlpha.json");
-        $api_key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNGY3MTBiYjQ2MDRkZjUwZDM5ZGRiMzZhZTU5YTI5NWRhYjA3ZDAyMTU4MDRkNmYwMmRiYzdhZTYwMGRlMDQ2N2NlNjMzMTRmNTdiNDBmNjMiLCJpYXQiOjE2MjE5ODQyMjguMTQxMDgsIm5iZiI6MTYyMTk4NDIyOC4xNDEwODMsImV4cCI6NDc3NzY1NzgyOC4xMTQzMTcsInN1YiI6IjUwMzY3MDY0Iiwic2NvcGVzIjpbInVzZXIud3JpdGUiLCJ0YXNrLnJlYWQiLCJ0YXNrLndyaXRlIiwid2ViaG9vay5yZWFkIiwid2ViaG9vay53cml0ZSIsInByZXNldC5yZWFkIiwicHJlc2V0LndyaXRlIiwidXNlci5yZWFkIl19.GoWuTjZxWwnADd2RIxIMuUJDFr3qs-x48hrsQhVjMCOorm8VYsbQW8ja3wcPfjzeBgE-hdYXs6mQ1fWnibCczH8fd7vheMPbJcPrlhqlaTFB8usGxT3a4-mAdKySYJtZUzcrrQyIONY9AfmoBHOftzjXt-UyUWuNVkyMgmWeHI5a3XPg5Lt0vvbJuweOhQ-tDSs_adzeQzumCz9AS8MPAdleeQU3SlY0zcqqN6A2IDffHTOhafNczb-j1zF7sF30whjCR8ZwvIEdetLbZMzsGbIQ3H6t-YwM0cHXuECbOMZgGMxl729Yd0NHmRtIsDSlT90bUIsl6NnvC3HFq0-YeE-b3aIh9goskLUCv0tmq_cMTqg4LM3LbbzTT_9I9sAeyGDiYtGusqNGP0oSvL-Geu4zCQTRBRESNtET2NY0iZbqrjjBuavXO28LIIIXZvy73vsEOEDR9SIR8-pr-8KxXiNVl4QwIu8GLsTiVTQsVc57cKv_as38Y6sQlcdPHzx-jBK9vgWmAfTApp6BySS8-9-edxQ4YmWZqJZOIfc-GDTUfzY8lVHCBFV8X447wEkQvIvkhTEMY5vb1qLa5EUENhYr-sha1XbOhidzTIaeuOVskME4_djRViqWDAxWKPLicukcr5zUJ8t5zGQGmO-5QjPPp_Lqtm6DgG15eMboRoY";
-
-
+        $body = file_get_contents($modulePath .DIRECTORY_SEPARATOR."config".DIRECTORY_SEPARATOR.$name.".json");
 
         $req = new \Http\HttpRequest();
-        $req->setUrl("https://api.sandbox.cloudconvert.com/v2/jobs");
+        $req->setUrl(self::$whichToUse."/v2/jobs");
         $req->setMethod("POST");
-        $req->addHeader(new HttpHeader("Authorization","Bearer ".$api_key));
+        $req->addHeader(new HttpHeader("Authorization","Bearer ".self::$apiKey));
         $req->addHeader(new HttpHeader("Content-type","application/json"));
         $req->setBody($body);
 
@@ -158,12 +168,102 @@ class DirectoryModule extends Module
     
         $resp = $http->send($req, true);
         if($resp->getStatusCode() < 300){
-            var_dump($resp->getBody());
-            exit;
+            
+            $body = json_decode($resp->getBody());
+            //var_dump($body);
+            $jobId = $body->data->id;
+            $this->getCloudConvertJobStatus($jobId);
             
         }
         var_dump($resp);
         exit;
+    }
+
+    public function getCloudConvertJobStatus($jobId){
+
+        //status = waiting || processing || finished || error
+
+        $req = new \Http\HttpRequest();
+        $req->setUrl(self::$whichToUse."/v2/jobs/".$jobId."/wait");
+        $req->setMethod("GET");
+
+        $req->addHeader(new HttpHeader("Authorization","Bearer ".self::$apiKey));
+        //$req->addHeader(new HttpHeader("Content-type","application/json"));
+
+        $config = array(
+            "returntransfer" 		=> true,
+            "useragent" 			=> "Mozilla/5.0",
+            "followlocation" 		=> true,
+            "ssl_verifyhost" 		=> false,
+            "ssl_verifypeer" 		=> false
+        );
+
+        $http = new \Http\Http($config);
+        $resp = $http->send($req, true);
+        if($resp->getStatusCode() < 300){
+
+            $body = json_decode($resp->getBody());
+            if($body->data->status == "finished"){
+                $files = $body->data->tasks[0]->result->files;
+                //var_dump($files[0]);
+                $this->getCloudConvertPDF($files[0]->url);
+            }
+            
+        }else{
+            var_dump($resp);
+        }
+        
+        exit;
+
+
+        
+        
+        
+    }
+
+    public function getCloudConvertPDF($url){
+        echo ("<a href=\"".$url."\">URL</a><br/>");
+        
+        $req = new \Http\HttpRequest();
+        $req->setUrl($url);
+        $req->setMethod("GET");
+        $req->addHeader(new HttpHeader("Content-type","text/\html"));
+        $config = array(
+            "returntransfer" 		=> true,
+            "useragent" 			=> "Mozilla/5.0",
+            "followlocation" 		=> true,
+            "ssl_verifyhost" 		=> false,
+            "ssl_verifypeer" 		=> false
+        );
+
+        $http = new \Http\Http($config);
+
+        $resp = $http->send($req, true);
+        if($resp->getStatusCode() < 300){
+            return $resp->getBody();
+        }
+        echo($resp->getBody());
+        exit;
+    }
+
+    public function saveCloudConvertPDF($path,$binary){ //content/uploads/pdf/members.pdf
+        $req = new \Http\HttpRequest();
+        $req->setUrl($url);
+        $req->setMethod("GET");
+        $resp = $http->send($req, true);
+        if($resp->getStatusCode() < 300){
+            return $resp->getBody();
+        }
+    }
+
+    public function downloadPDF($name){
+
+    }
+
+    public function jobWebhook(){
+        $req = $this->getRequest();
+        $post = json_decode($req->getBody());
+
     }
 
 }

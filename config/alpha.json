@@ -21,7 +21,7 @@
             "margin_left": 10,
             "margin_right": 10,
             "print_background": true,
-            "display_header_footer": false,
+            "display_header_footer": true,
             "header_template": [
                 "CurrentMembersAlphaHeader"
             ],

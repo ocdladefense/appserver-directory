@@ -19,10 +19,22 @@
             "callback":"home2",
             "content-type":"application/json"
         },
-        "getMembersAlphaPDF":{
-         "callback":"getMembersAlphaPDF",
-         "content-type":"text\/html"
-        }
+        "directory/execute/%name":{
+            "callback":"addCloudConvertJob",
+            "content-type":"text\/html"
+        },
+        "directory/status/%jobId":{
+         "callback":"getCloudConvertJobStatus",
+         "content-type":"application\/pdf"
+         },
+        "directory/pdfs/%name":{
+            "callback":"downloadPDF",
+            "content-type":"application\/pdf"
+        },
+        "directory/webhook":{
+         "callback":"jobWebhook",
+         "content-type":"application\/json"
+     }
     }
 }
 
