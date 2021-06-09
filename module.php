@@ -205,8 +205,7 @@ class DirectoryModule extends Module
             $body = json_decode($resp->getBody());
             if($body->data->status == "finished"){
                 $files = $body->data->tasks[0]->result->files;
-                //var_dump($files[0]);
-                $this->getCloudConvertPDF($files[0]->url);
+                $this->getCloudConvertPDF($files[0]->url,$files[0]->filename);
             }
             
         }else{
@@ -214,50 +213,83 @@ class DirectoryModule extends Module
         }
         
         exit;
-
-
-        
-        
-        
     }
 
-    public function getCloudConvertPDF($url){
-        echo ("<a href=\"".$url."\">URL</a><br/>");
+    public function getCloudConvertPDF($url,$filename){
+        //echo ("<a href=\"".$url."\">URL</a><br/>");
         
-        $req = new \Http\HttpRequest();
-        $req->setUrl($url);
-        $req->setMethod("GET");
-        $req->addHeader(new HttpHeader("Content-type","text/\html"));
-        $config = array(
-            "returntransfer" 		=> true,
-            "useragent" 			=> "Mozilla/5.0",
-            "followlocation" 		=> true,
-            "ssl_verifyhost" 		=> false,
-            "ssl_verifypeer" 		=> false
-        );
+        // $req = new \Http\HttpRequest();
+        // $req->setUrl($url);
+        // $req->setMethod("GET");
+        // $req->addHeader(new HttpHeader("Content-type","text/\html"));
+        // $config = array(
+        //     "returntransfer" 		=> true,
+        //     "useragent" 			=> "Mozilla/5.0",
+        //     "followlocation" 		=> true,
+        //     "ssl_verifyhost" 		=> false,
+        //     "ssl_verifypeer" 		=> false
+        // );
 
-        $http = new \Http\Http($config);
+        // $http = new \Http\Http($config);
 
-        $resp = $http->send($req, true);
-        if($resp->getStatusCode() < 300){
-            return $resp->getBody();
-        }
-        echo($resp->getBody());
+        // $resp = $http->send($req, true);
+        // if($resp->getStatusCode() < 300){
+        //     return $resp->getBody();
+        // }
+        // echo($resp->getBody());
+
+        $PDFData = file_get_contents($url);        
+        $this->saveCloudConvertPDF($PDFData,$filename);
+        //$this->downloadPDF($filename);
+
         exit;
     }
 
-    public function saveCloudConvertPDF($path,$binary){ //content/uploads/pdf/members.pdf
-        $req = new \Http\HttpRequest();
-        $req->setUrl($url);
-        $req->setMethod("GET");
-        $resp = $http->send($req, true);
-        if($resp->getStatusCode() < 300){
-            return $resp->getBody();
+    public function saveCloudConvertPDF($PDFData, $filename){ //content/uploads/pdf/members.pdf
+        $path = path_to_uploads().DIRECTORY_SEPARATOR."pdf".DIRECTORY_SEPARATOR;
+        if(!file_exists($path)){
+            mkdir($path, 0777, true);
         }
+
+        $result = file_put_contents($path.$filename, $PDFData);
+
+        if($result){
+            echo("<h4>Added PDF: $filename</h4>");
+            
+        }
+
+        else            
+            echo("<h4>Error Adding PDF: $filename'</h4>");
+        exit;
     }
 
-    public function downloadPDF($name){
+    //users story: download alpha pdf or city pdf
+    //admin manualy click off city or alpha pdf
+        //minimal setup is var_dump of results
 
+    public function downloadPdf($filename){
+        $path = path_to_uploads().DIRECTORY_SEPARATOR."pdf".DIRECTORY_SEPARATOR.$filename;
+        $PDFData = file_get_contents($path);
+        if(!$PDFData){
+            header('Content-Type: text/html');
+            echo("<h4>Error Getting PDF: $filename'</h4>");
+            exit;
+        }
+
+        header('Content-Type: application/pdf');
+        header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
+        header('Pragma: public');
+        header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+        header('Content-Length: '.strlen($PDFData));
+        //not as a file download
+        header('Content-Disposition: inline; filename="'.basename($filename).'";');
+        //
+        ob_clean(); 
+        flush();   
+
+        echo($PDFData);
+        exit;
     }
 
     public function jobWebhook(){

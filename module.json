@@ -25,11 +25,15 @@
         },
         "directory/status/%jobId":{
          "callback":"getCloudConvertJobStatus",
-         "content-type":"application\/pdf"
+         "content-type":"text\/html"
          },
         "directory/pdfs/%name":{
-            "callback":"downloadPDF",
+            "callback":"downloadPdf",
             "content-type":"application\/pdf"
+        },
+        "directory/savepdfs/%stuff/%name":{
+            "callback":"saveCloudConvertPDF",
+            "content-type":"text\/html"
         },
         "directory/webhook":{
          "callback":"jobWebhook",
