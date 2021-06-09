@@ -144,6 +144,85 @@ class DirectoryModule extends Module
         //exit;
         return $committees;
     }
+    
+
+    /******************CLoud Convert API Implementation***********************************/
+
+
+    public function getDirectoryLinks(){
+
+        $directoryLinks = array();
+        $path = path_to_uploads().DIRECTORY_SEPARATOR."pdf".DIRECTORY_SEPARATOR."directories";
+
+        try {
+            if(!file_exists($path)){
+                //mkdir($path, 0777, true);
+                throw new Exception(" no folder found in server");
+            }
+            $filenames = scandir($path);
+        } catch (\Throwable $th) {
+            $error = "No directory Pdfs found" . $th->getMessage();
+        }
+        
+        if($filenames === false && !empty($error)){
+            $error = "No directory Pdfs found";
+        }else if(count($filenames) == 2 && !empty($error)){
+            $error = "No directory Pdfs found";
+        }
+        else{
+            foreach($filenames as $key => $filename){
+                $directoryLinks = array();
+                $directoryLinks[] ="directory/pdfs/".$filenames[$key];
+            }
+        }
+
+		$tpl = new Template("directoryLinks");
+		$tpl->addPath(__DIR__ . "/templates");
+
+		return $tpl->render(array(
+            "directoryLinks" => $directoryLinks,
+            "error" => $error
+        ));
+    }
+
+    public function createDirectoryLinks(){
+        $cloudConvertLinks = array();
+        $configPath = BASE_PATH.module_path().DIRECTORY_SEPARATOR."config".DIRECTORY_SEPARATOR;
+
+        try {
+            if(!file_exists($configPath)){
+                //mkdir($path, 0777, true);
+                throw new Exception(" no config found in server");
+            }
+            $filenames = scandir($configPath);
+        } catch (\Throwable $th) {
+            $error = "No directory Pdfs found" . $th->getMessage();
+        }
+
+
+        if(($filenames === false && !empty($error)) || 
+            (count($filenames) == 2 && !empty($error))
+        ){
+            $error = "Cannot create Pdfs";
+        }else{
+            $filenames = array_diff($filenames,array("." , ".."));
+            foreach($filenames as $key => $filename){
+                $filenames[$key] = substr($filename, 0, strpos($filename,"."));
+                $cloudConvertLinks[$filenames[$key]] = $_SERVER["HTTP_HOST"]."/directory/execute/".$filenames[$key];
+            }
+        }
+
+        
+
+
+        $tpl = new Template("createDirectoryLinks");
+		$tpl->addPath(__DIR__ . "/templates");
+
+		return $tpl->render(array(
+            "cloudConvertLinks" => $cloudConvertLinks,
+            "error" => $error
+        ));
+    }
 
     public function addCloudConvertJob($name){
         $modulePath = BASE_PATH. module_path();
@@ -246,7 +325,7 @@ class DirectoryModule extends Module
     }
 
     public function saveCloudConvertPDF($PDFData, $filename){ //content/uploads/pdf/members.pdf
-        $path = path_to_uploads().DIRECTORY_SEPARATOR."pdf".DIRECTORY_SEPARATOR;
+        $path = path_to_uploads().DIRECTORY_SEPARATOR."pdf".DIRECTORY_SEPARATOR."directories";
         if(!file_exists($path)){
             mkdir($path, 0777, true);
         }
@@ -268,7 +347,7 @@ class DirectoryModule extends Module
         //minimal setup is var_dump of results
 
     public function downloadPdf($filename){
-        $path = path_to_uploads().DIRECTORY_SEPARATOR."pdf".DIRECTORY_SEPARATOR.$filename;
+        $path = path_to_uploads().DIRECTORY_SEPARATOR."pdf".DIRECTORY_SEPARATOR."directories".DIRECTORY_SEPARATOR.$filename;
         $PDFData = file_get_contents($path);
         if(!$PDFData){
             header('Content-Type: text/html');

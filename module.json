@@ -19,6 +19,14 @@
             "callback":"home2",
             "content-type":"application/json"
         },
+        "directories":{
+            "callback":"getDirectoryLinks",
+            "content-type":"text\/html"
+        },
+        "directories/create":{
+            "callback":"createDirectoryLinks",
+            "content-type":"text\/html"
+        },
         "directory/execute/%name":{
             "callback":"addCloudConvertJob",
             "content-type":"text\/html"
