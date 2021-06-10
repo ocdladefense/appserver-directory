@@ -18,6 +18,7 @@ class DirectoryModule extends Module
     private static $whichToUse;
     private static $apiKey;
     private static $configPath; 
+    private static $uploadsPath; 
 
 
     public function __construct()
@@ -30,8 +31,16 @@ class DirectoryModule extends Module
         }else{
             self::$apiKey = CLOUD_CONVERT_API_KEY;
         }
-
+        //C:\wamp64\www\appserver\content\uploads\modules\directory\CurrentMembersAlpha.pdf
+        //C:\wamp64\www\appserver\content\uploads\modules\directory
         self::$configPath = path_to_modules_config().DIRECTORY_SEPARATOR."directory";
+        self::$uploadsPath = path_to_modules_upload().DIRECTORY_SEPARATOR."directory";
+        if(!file_exists(self::$uploadsPath)){
+            mkdir(self::$uploadsPath, 0777, true);
+        }
+        if(!file_exists(self::$configPath)){
+            mkdir(self::$uploadsPath, 0777, true);
+        }
         
     }
 
@@ -154,31 +163,17 @@ class DirectoryModule extends Module
 
     public function getDirectoryLinks(){
 
-        $directoryLinks = array();
-        $path = path_to_uploads().DIRECTORY_SEPARATOR."pdf".DIRECTORY_SEPARATOR."directories";
-
-        try {
-            if(!file_exists($path)){
-                //mkdir($path, 0777, true);
-                throw new Exception(" no folder found in server");
+        //$directoryLinks = array();
+            try {
+                $filenames = $this->listPdfFiles(self::$uploadsPath);
+                $directoryLinks = array();        
+                foreach ($filenames as $key => $filename) {
+                    
+                    $directoryLinks[$filenames[$key]] =$_SERVER["HTTP_HOST"]."/directory/pdfs/".$filenames[$key];
+                }
+            }catch(\Throwable $th) {
+                $error = "Error getting directory pdfs: " . $th->getMessage();
             }
-            $filenames = scandir($path);
-        } catch (\Throwable $th) {
-            $error = "No directory Pdfs found" . $th->getMessage();
-        }
-        
-        if($filenames === false && empty($error)){
-            $error = "No directory Pdfs found";
-        }else if(count($filenames) == 2 && empty($error)){
-            $error = "No directory Pdfs found";
-        }
-        else{
-            $filenames = array_diff($filenames,array("." , ".."));
-            foreach($filenames as $key => $filename){
-                $directoryLinks = array();
-                $directoryLinks[] ="directory/pdfs/".$filenames[$key];
-            }
-        }
 
 		$tpl = new Template("directoryLinks");
 		$tpl->addPath(__DIR__ . "/templates");
@@ -189,16 +184,16 @@ class DirectoryModule extends Module
         ));
     }
 
-    public function listPdfConfigurations($configPath){
-        if(!file_exists($configPath)){
+    public function listPdfFiles($path){
+        if(!file_exists($path)){
             //mkdir($path, 0777, true);
-            throw new Exception(" no config found in server");
+            throw new Exception(" no files found in server");
         }
         
-        $filenames = scandir($configPath);
+        $filenames = scandir($path);
 
         if($filenames === false){
-            throw new Exception(" no config found in server");
+            throw new Exception(" no files found in server");
         }//elseif()count($filenames) == 2
 
         $filenames = array_diff($filenames,array("." , ".."));
@@ -215,12 +210,12 @@ class DirectoryModule extends Module
         $cloudConvertLinks = array();
         
         try {
-            $filenames = $this->listPdfConfigurations(self::$configPath);        
+            $filenames = $this->listPdfFiles(self::$configPath);        
             foreach ($filenames as $key => $filename) {
                 $cloudConvertLinks[$filenames[$key]] = $_SERVER["HTTP_HOST"]."/directory/execute/".$filenames[$key];
             }
         }catch(\Throwable $th) {
-            $error = "No directory Pdfs found" . $th->getMessage();
+            $error = "Error getting Pdf configurations: " . $th->getMessage();
         }
 
         $tpl = new Template("createDirectoryLinks");
@@ -234,7 +229,7 @@ class DirectoryModule extends Module
 
     public function addCloudConvertJob($name){
         $modulePath = BASE_PATH. module_path();
-        $body = file_get_contents($modulePath .DIRECTORY_SEPARATOR."config".DIRECTORY_SEPARATOR.$name.".json");
+        $body = file_get_contents(self::$configPath.DIRECTORY_SEPARATOR.$name.".json");
 
         $req = new \Http\HttpRequest();
         $req->setUrl(self::$whichToUse."/v2/jobs");
@@ -257,7 +252,6 @@ class DirectoryModule extends Module
         if($resp->getStatusCode() < 300){
             
             $body = json_decode($resp->getBody());
-            //var_dump($body);
             $jobId = $body->data->id;
             $this->getCloudConvertJobStatus($jobId);
             
@@ -293,6 +287,8 @@ class DirectoryModule extends Module
             if($body->data->status == "finished"){
                 $files = $body->data->tasks[0]->result->files;
                 $this->getCloudConvertPDF($files[0]->url,$files[0]->filename);
+            }else{
+                var_dump($resp);
             }
             
         }else{
@@ -332,13 +328,13 @@ class DirectoryModule extends Module
         exit;
     }
 
-    public function saveCloudConvertPDF($PDFData, $filename){ //content/uploads/pdf/members.pdf
-        $path = path_to_uploads().DIRECTORY_SEPARATOR."pdf".DIRECTORY_SEPARATOR."directories";
-        if(!file_exists($path)){
-            mkdir($path, 0777, true);
+    public function saveCloudConvertPDF($PDFData, $filename){
+        if(!file_exists(self::$uploadsPath)){
+            mkdir(self::$uploadsPath, 0777, true);
         }
 
-        $result = file_put_contents($path.DIRECTORY_SEPARATOR.$filename, $PDFData);
+        $filename = self::$uploadsPath.DIRECTORY_SEPARATOR.$filename;
+        $result = file_put_contents($filename, $PDFData);
 
         if($result){
             echo("<h4>Added PDF: $filename</h4>");
@@ -355,8 +351,7 @@ class DirectoryModule extends Module
         //minimal setup is var_dump of results
 
     public function downloadPdf($filename){
-        $path = path_to_uploads().DIRECTORY_SEPARATOR."pdf".DIRECTORY_SEPARATOR."directories".DIRECTORY_SEPARATOR.$filename;
-        $PDFData = file_get_contents($path);
+        $PDFData = file_get_contents(self::$uploadsPath.DIRECTORY_SEPARATOR.$filename.".pdf");
         if(!$PDFData){
             header('Content-Type: text/html');
             echo("<h4>Error Getting PDF: $filename'</h4>");
@@ -369,9 +364,9 @@ class DirectoryModule extends Module
         header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
         header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
         header('Content-Length: '.strlen($PDFData));
-        //not as a file download
-        header('Content-Disposition: inline; filename="'.basename($filename).'";');
-        //
+            //not as a file download
+            header('Content-Disposition: inline; filename="'.basename($filename).'";');
+            //
         ob_clean(); 
         flush();   
 

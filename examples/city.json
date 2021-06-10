@@ -1,0 +1,44 @@
+{
+    "tasks": {
+        "CurrentMembersCityHeader": {
+            "operation": "import/raw",
+            "file": "<div style=\" width: 100%; font-size: 16px;\n        padding: 5px 5px 0; position: relative; border-bottom: solid 1px #bbb;\">\n        <div style=\" position: relative; text-align:center; top: 0px;\">\n            City Listing:\n            </div>\n    </div>",
+            "filename": "CurrentMembersCityHeader.html"
+        },
+        "CurrentMembersCityFooter": {
+            "operation": "import/raw",
+            "file": "<div style=\"border-top: solid 1px #bbb; width: 100%; font-size: 9px;\n        padding: 5px 5px 0; color: #bbb; position: relative; text-align:center;\">\n        <span class=\"pageNumber\"></span>/<span class=\"totalPages\"></span>\n</div>",
+            "filename": "CurrentMembersCityFooter.html"
+        },
+        "members_city_task": {
+            "operation": "capture-website",
+            "url": "https://ocdpartial-ocdla.cs169.force.com/apex/CurrentMembersCity",
+            "output_format": "pdf",
+            "engine": "chrome",
+            "zoom": 1,
+            "margin_top": 24,
+            "margin_bottom": 15,
+            "margin_left": 10,
+            "margin_right": 10,
+            "print_background": true,
+            "display_header_footer": true,
+            "header_template": [
+                "CurrentMembersCityHeader"
+            ],
+            "footer_template": [
+                "CurrentMembersCityFooter"
+            ],
+            "wait_until": "load",
+            "wait_time": 0,
+            "filename": "CurrentMembersCity.pdf"
+        },
+        "exportToURL": {
+            "operation": "export/url",
+            "input": [
+                "members_city_task"
+            ],
+            "inline": false,
+            "archive_multiple_files": false
+        }
+    }
+}
