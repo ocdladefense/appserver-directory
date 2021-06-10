@@ -17,6 +17,7 @@ class DirectoryModule extends Module
     private static $productionUrl = "https://api.cloudconvert.com";
     private static $whichToUse;
     private static $apiKey;
+    private static $configPath; 
 
 
     public function __construct()
@@ -29,6 +30,8 @@ class DirectoryModule extends Module
         }else{
             self::$apiKey = CLOUD_CONVERT_API_KEY;
         }
+
+        self::$configPath = path_to_modules_config().DIRECTORY_SEPARATOR."directory";
         
     }
 
@@ -164,12 +167,13 @@ class DirectoryModule extends Module
             $error = "No directory Pdfs found" . $th->getMessage();
         }
         
-        if($filenames === false && !empty($error)){
+        if($filenames === false && empty($error)){
             $error = "No directory Pdfs found";
-        }else if(count($filenames) == 2 && !empty($error)){
+        }else if(count($filenames) == 2 && empty($error)){
             $error = "No directory Pdfs found";
         }
         else{
+            $filenames = array_diff($filenames,array("." , ".."));
             foreach($filenames as $key => $filename){
                 $directoryLinks = array();
                 $directoryLinks[] ="directory/pdfs/".$filenames[$key];
@@ -185,35 +189,39 @@ class DirectoryModule extends Module
         ));
     }
 
-    public function createDirectoryLinks(){
-        $cloudConvertLinks = array();
-        $configPath = BASE_PATH.module_path().DIRECTORY_SEPARATOR."config".DIRECTORY_SEPARATOR;
+    public function listPdfConfigurations($configPath){
+        if(!file_exists($configPath)){
+            //mkdir($path, 0777, true);
+            throw new Exception(" no config found in server");
+        }
+        
+        $filenames = scandir($configPath);
 
-        try {
-            if(!file_exists($configPath)){
-                //mkdir($path, 0777, true);
-                throw new Exception(" no config found in server");
-            }
-            $filenames = scandir($configPath);
-        } catch (\Throwable $th) {
-            $error = "No directory Pdfs found" . $th->getMessage();
+        if($filenames === false){
+            throw new Exception(" no config found in server");
+        }//elseif()count($filenames) == 2
+
+        $filenames = array_diff($filenames,array("." , ".."));
+
+        foreach($filenames as $key => $filename){
+            $filenames[$key] = substr($filename, 0, strrpos($filename,"."));
         }
 
+        return $filenames;
+        
+    }
 
-        if(($filenames === false && !empty($error)) || 
-            (count($filenames) == 2 && !empty($error))
-        ){
-            $error = "Cannot create Pdfs";
-        }else{
-            $filenames = array_diff($filenames,array("." , ".."));
-            foreach($filenames as $key => $filename){
-                $filenames[$key] = substr($filename, 0, strpos($filename,"."));
+    public function admin(){
+        $cloudConvertLinks = array();
+        
+        try {
+            $filenames = $this->listPdfConfigurations(self::$configPath);        
+            foreach ($filenames as $key => $filename) {
                 $cloudConvertLinks[$filenames[$key]] = $_SERVER["HTTP_HOST"]."/directory/execute/".$filenames[$key];
             }
+        }catch(\Throwable $th) {
+            $error = "No directory Pdfs found" . $th->getMessage();
         }
-
-        
-
 
         $tpl = new Template("createDirectoryLinks");
 		$tpl->addPath(__DIR__ . "/templates");
@@ -330,7 +338,7 @@ class DirectoryModule extends Module
             mkdir($path, 0777, true);
         }
 
-        $result = file_put_contents($path.$filename, $PDFData);
+        $result = file_put_contents($path.DIRECTORY_SEPARATOR.$filename, $PDFData);
 
         if($result){
             echo("<h4>Added PDF: $filename</h4>");

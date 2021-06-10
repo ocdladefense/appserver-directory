@@ -23,8 +23,8 @@
             "callback":"getDirectoryLinks",
             "content-type":"text\/html"
         },
-        "directories/create":{
-            "callback":"createDirectoryLinks",
+        "directories/admin":{
+            "callback":"admin",
             "content-type":"text\/html"
         },
         "directory/execute/%name":{
