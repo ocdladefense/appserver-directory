@@ -169,7 +169,7 @@ class DirectoryModule extends Module
                 $directoryLinks = array();        
                 foreach ($filenames as $key => $filename) {
                     
-                    $directoryLinks[$filenames[$key]] =$_SERVER["HTTP_HOST"]."/directory/pdfs/".$filenames[$key];
+                    $directoryLinks[$filenames[$key]] ="/directory/pdfs/".$filenames[$key];
                 }
             }catch(\Throwable $th) {
                 $error = "Error getting directory pdfs: " . $th->getMessage();
