@@ -15,6 +15,8 @@
                 <strong><?php print $c->getOccupationFieldType(); ?></strong>
                 <br />
                 <?php print $c->getOcdlaOrganization(); ?>
+                <br />
+                <?php !empty($c->getMailingCity()) ? print $c->getMailingCity() : print "City Not Listed"; ?>
             </div>
 
         <?php endforeach; ?>

@@ -73,7 +73,12 @@ class DirectoryModule extends Module
             "occupationFields"   => $this->getOccupationFieldsDistinct(),
             "selectedOccupation" => $selectedOccupation,
             "areasOfInterest"    => $this->getAreasOfInterest(),
-            "selectedInterest"   => $selectedInterest
+            "selectedInterest"   => $selectedInterest,
+            "firstName"          => $params["FirstName"],
+            "lastName"           => $params["LastName"],
+            "companyName"        => $params["Ocdla_Organization__c"],
+            "city"               => $params["MailingCity"],
+            "includeExperts"     => $params["includeExperts"]
         ));
 
 
@@ -94,7 +99,7 @@ class DirectoryModule extends Module
         $areaOfInterest = $params["areaOfInterest"];
         unset($params["areaOfInterest"]);
 
-        $query = "SELECT Id, FirstName, LastName, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c FROM Contact";
+        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c FROM Contact";
         
         $conditions = array();
         foreach($params as $field => $value){
@@ -103,6 +108,11 @@ class DirectoryModule extends Module
 
                 $conditions[] = "$field LIKE '%$value%'";
             }
+        }
+
+        if(!$includeExperts){
+
+            $conditions[] = "Ocdla_is_expert_witness__c = false";
         }
 
         if(!empty($conditions)){
@@ -141,6 +151,7 @@ class DirectoryModule extends Module
         return $areas;
     }
 
+
     public function getAreasOfInterest(){
 
         $pickListId = "0Nt5b000000CbzK";
@@ -161,7 +172,6 @@ class DirectoryModule extends Module
 
         return $areasOfInterest;
     }
-
 
     ////////////////////////////////    TREVOR END        ///////////////////////////////////////////////////////////////
 
