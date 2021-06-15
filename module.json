@@ -5,17 +5,22 @@
 	"description": "A module for testing the appserver functionality.",
 	"files": ["Test.php"],
 	"routes": {
-				
-         "test/committees":{
+        "directory/search":{
+            "callback":"directorySearch",
+            "content-type":"text/html",
+            "access":"is_authenticated",
+            "authorization":"webserver"
+         },
+        "test/committees":{
             "callback":"testDisplayCommitteeMembers",
             "content-type":"text/html",
             "access":"is_authenticated"
-         },
-         "committees": {
+        },
+            "committees": {
             "callback":"home",
             "content-type":"text\/html"
-         },
-         "get/committees":{
+        },
+            "get/committees":{
             "callback":"home2",
             "content-type":"application/json"
         },

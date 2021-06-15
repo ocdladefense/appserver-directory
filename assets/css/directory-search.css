@@ -1,0 +1,36 @@
+
+.search-bar, .container{
+    background-color: lightgray;
+    border-radius:5px;
+    padding:10px;
+    margin-bottom: 10px;
+}
+.form-item{
+    display:inline-block;
+    margin:0 auto;
+    margin-right: 12px;
+}
+.form-item label{
+    display:block;
+}
+.form-selectors{
+    display:block;
+}
+select, input[type="text"]{
+    height:25px;
+}
+button{
+    border-radius:5px;
+    padding:0 5px 0 5px;
+}
+.checkbox{
+    float:right;
+}
+
+.list-item{
+    display:inline-block;
+    margin:5px;
+    background-color: rgba(50,50,50,0.1);
+    width: 32%;
+    text-align: center;
+}

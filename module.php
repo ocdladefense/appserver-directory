@@ -1,14 +1,14 @@
 <?php
 
-use Http\Http as Http;
-use File\FileList as FileList;
-use File\File as File;
-use Salesforce\SalesforceAttachment as SalesforceAttachment;
-use Salesforce\OAuthRequest as OAuthRequest;
-use Http\HttpRequest as HttpRequest;
-use Salesforce\OAuthResponse as OAuthResponse;
-use Salesforce\RestApiRequest as RestApiRequest;
-use Http\HttpHeader as HttpHeader;
+use Http\Http;
+use File\FileList;
+use File\File;
+use Salesforce\SalesforceAttachment;
+use Salesforce\OAuthRequest;
+use Http\HttpRequest;
+use Salesforce\OAuthResponse;
+use Salesforce\RestApiRequest;
+use Http\HttpHeader;
 
 // Test module name should match it's corresponding module name, ex.: 'appserver-directory'
 class DirectoryModule extends Module
@@ -21,28 +21,149 @@ class DirectoryModule extends Module
     private static $uploadsPath; 
 
 
-    public function __construct()
-    {
+    public function __construct() {
 
         parent::__construct();
-        self::$whichToUse = self::$sandboxUrl;
-        if ( self::$whichToUse == self::$sandboxUrl){
-            self::$apiKey = CLOUD_CONVERT_SANDBOX_API_KEY;
-        }else{
-            self::$apiKey = CLOUD_CONVERT_API_KEY;
-        }
-        //C:\wamp64\www\appserver\content\uploads\modules\directory\CurrentMembersAlpha.pdf
-        //C:\wamp64\www\appserver\content\uploads\modules\directory
-        self::$configPath = path_to_modules_config().DIRECTORY_SEPARATOR."directory";
-        self::$uploadsPath = path_to_modules_upload().DIRECTORY_SEPARATOR."directory";
-        if(!file_exists(self::$uploadsPath)){
-            mkdir(self::$uploadsPath, 0777, true);
-        }
-        if(!file_exists(self::$configPath)){
-            mkdir(self::$uploadsPath, 0777, true);
-        }
-        
+
+        // self::$whichToUse = self::$sandboxUrl;
+
+        // if ( self::$whichToUse == self::$sandboxUrl){
+
+        //     self::$apiKey = CLOUD_CONVERT_SANDBOX_API_KEY;
+
+        // }else{
+
+        //     self::$apiKey = CLOUD_CONVERT_API_KEY;
+        // }
+
+        // self::$configPath = path_to_modules_config().DIRECTORY_SEPARATOR."directory";
+        // self::$uploadsPath = path_to_modules_upload().DIRECTORY_SEPARATOR."directory";
+
+        // if(!file_exists(self::$uploadsPath)) mkdir(self::$uploadsPath, 0777, true);
+        // if(!file_exists(self::$configPath)) mkdir(self::$uploadsPath, 0777, true);
     }
+
+    ////////////////////////////////    TREVOR START    ///////////////////////////////////////////////////////////////
+    public function directorySearch(){
+
+        $req = $this->getRequest();
+        $params = $_POST;
+
+        $selectedOccupation = $params["Ocdla_Occupation_Field_Type__c"] != "All Occupations/Fields" ? $params["Ocdla_Occupation_Field_Type__c"] : null;
+        $selectedInterest = $params["areaOfInterest"] != "All Areas of Interest" ? $params["areaOfInterest"] : null;
+
+        if($selectedOccupation == null) unset($params["Ocdla_Occupation_Field_Type__c"]);
+        if($selectedInterest == null) unset($params["areaOfInterest"]);
+
+
+        $api = $this->loadForceApi();
+        $query = $this->buildDirectoryQuery($params);
+        $result = $api->query($query);
+
+        if(!$result->success()) throw new Exception($result->getErrorMessage());
+
+        $records = $result->getRecords();
+
+        $contacts = Contact::from_query_result_records($records);
+
+        $search = new Template("directory-search");
+        $search->addPath(__DIR__ . "/templates");
+        $search = $search->render(array(
+            "count" => count($contacts),
+            "occupationFields"   => $this->getOccupationFieldsDistinct(),
+            "selectedOccupation" => $selectedOccupation,
+            "areasOfInterest"    => $this->getAreasOfInterest(),
+            "selectedInterest"   => $selectedInterest
+        ));
+
+
+        $tpl = new Template("directory-list");
+        $tpl->addPath(__DIR__ . "/templates");
+
+        return $tpl->render(array(
+            "search"            => $search,
+            "contacts"          => $contacts
+        ));
+    }
+
+    public function buildDirectoryQuery($params){
+
+        $includeExperts = $params["IncludeExperts"];
+        unset($params["IncludeExperts"]);
+
+        $areaOfInterest = $params["areaOfInterest"];
+        unset($params["areaOfInterest"]);
+
+        $query = "SELECT Id, FirstName, LastName, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c FROM Contact";
+        
+        $conditions = array();
+        foreach($params as $field => $value){
+
+            if(!empty($value)){
+
+                $conditions[] = "$field LIKE '%$value%'";
+            }
+        }
+
+        if(!empty($conditions)){
+
+            $query .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        $query .= " ORDER BY LastName";
+
+        return $query;
+    }
+
+    public function getOccupationFieldsDistinct(){
+
+        $query = "SELECT Ocdla_Occupation_Field_Type__c FROM Contact ORDER BY Ocdla_Occupation_Field_Type__c DESC";
+
+        $api = $this->loadForceApi();
+
+        $result = $api->query($query);
+
+        $records = $result->getRecords();
+
+        $areas = array();
+
+        foreach($records as $record){
+
+            $area = $record["Ocdla_Occupation_Field_Type__c"];
+
+            if(!in_array($area, $areas)){
+
+                array_unshift($areas, $area);
+                //$areas[] = $area;
+            }
+        }
+
+        return $areas;
+    }
+
+    public function getAreasOfInterest(){
+
+        $pickListId = "0Nt5b000000CbzK";
+
+        $req = $this->loadForceApi();
+
+        $url = "/services/data/v39.0/tooling/sobjects/GlobalValueSet/$pickListId";
+
+        $resp = $req->send($url);
+
+        $picklistValues = $resp->getBody()["Metadata"]["customValue"];
+
+        $areasOfInterest = array();
+        foreach($picklistValues as $value){
+
+            $areasOfInterest[] = $value["valueName"];
+        }
+
+        return $areasOfInterest;
+    }
+
+
+    ////////////////////////////////    TREVOR END        ///////////////////////////////////////////////////////////////
 
     // New callback that will dislay committees and committee members
     public function testDisplayCommitteeMembers()
