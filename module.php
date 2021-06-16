@@ -45,7 +45,6 @@ class DirectoryModule extends Module
     ////////////////////////////////    TREVOR START    ///////////////////////////////////////////////////////////////
     public function directorySearch(){
 
-        $req = $this->getRequest();
         $params = $_POST;
 
         $selectedOccupation = $params["Ocdla_Occupation_Field_Type__c"] != "All Occupations/Fields" ? $params["Ocdla_Occupation_Field_Type__c"] : null;
@@ -54,8 +53,6 @@ class DirectoryModule extends Module
         if($selectedOccupation == null) unset($params["Ocdla_Occupation_Field_Type__c"]);
         if($selectedInterest == null) unset($params["areaOfInterest"]);
 
-
-        $api = $this->loadForceApi();
         $query = $this->buildDirectoryQuery($params);
         $result = $this->execute($query,"query");
 
@@ -115,6 +112,8 @@ class DirectoryModule extends Module
             $conditions[] = "Ocdla_is_expert_witness__c = false";
         }
 
+        // If there is an area of interest selected, query for all of the contacts who have set that as one of their areas of intersts.
+        // Only use those contacts in you query.
         if(!empty($areaOfInterest)){
 
             $interestsQuery = "SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c LIKE '%$areaOfInterest%'";

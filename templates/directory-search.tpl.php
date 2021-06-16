@@ -10,8 +10,6 @@
 	$includeExpertsCheck = $includeExperts ? "checked" : "";
 ?>
 
-
-
 <div class="container">
 
 	<form id="search-directory" action="/directory/search" method="post">
@@ -19,7 +17,7 @@
 		<div class="search-row header-row">
 
 			<div class="form-item first-item">
-				<Strong>Search</strong>
+				<Strong>Search the directory</strong>
 			</div>
 
 			<div class="form-item">
