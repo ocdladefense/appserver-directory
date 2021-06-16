@@ -27,7 +27,7 @@
 			</div>
 
 			<div class="form-item">
-				<button type="submit">SUBMIT</button>
+				<button type="submit">SUBMIT SEARCH</button>
 			</div>
 
 			<div class="form-item">
