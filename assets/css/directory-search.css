@@ -5,28 +5,40 @@
     padding:10px;
     margin-bottom: 10px;
 }
+.search-row{
+    display:table;
+    width:100%;
+    table-layout: fixed;
+    margin: 0 0 5px 0;
+}
 .form-item{
-    display:inline-block;
-    margin:0 auto;
-    margin-right: 12px;
+    display:table-cell;
+    text-align: center;
+    padding: 2px;
 }
-.form-item label{
-    display:block;
+.search-row.header-row {
+    border-bottom-style: groove;
 }
-.form-selectors{
-    display:block;
+input[type="text"]{
+    width: 90%;
+    height: 30px;
+    padding-left: 5px;
 }
-select, input[type="text"]{
-    height:25px;
+select{
+    width: 70%;
+    height: 30px;
+    padding-left: 5px;
+}
+.header-row > .first-item {
+    text-align: left;
+}
+.header-row > .last-item{
+    text-align: right;
 }
 button{
     border-radius:5px;
     padding:0 5px 0 5px;
 }
-.checkbox{
-    float:right;
-}
-
 .list-item{
     display:inline-block;
     margin:5px;

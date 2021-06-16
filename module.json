@@ -3,26 +3,13 @@
 	"comment": "Module definition file. The name key 'name' should match the name of the module appended to 'appserver-', ex. appserver-directory",
 	"name": "directory", 
 	"description": "A module for testing the appserver functionality.",
-	"files": ["Test.php"],
+	"files": [],
 	"routes": {
         "directory/search":{
             "callback":"directorySearch",
             "content-type":"text/html",
             "access":"is_authenticated",
             "authorization":"webserver"
-         },
-        "test/committees":{
-            "callback":"testDisplayCommitteeMembers",
-            "content-type":"text/html",
-            "access":"is_authenticated"
-        },
-            "committees": {
-            "callback":"home",
-            "content-type":"text\/html"
-        },
-            "get/committees":{
-            "callback":"home2",
-            "content-type":"application/json"
         },
         "directories":{
             "callback":"getDirectoryLinks",
@@ -37,8 +24,8 @@
             "content-type":"text\/html"
         },
         "directory/status/%jobId":{
-         "callback":"getCloudConvertJobStatus",
-         "content-type":"text\/html"
+            "callback":"getCloudConvertJobStatus",
+            "content-type":"text\/html"
          },
         "directory/pdfs/%name":{
             "callback":"downloadPdf",
@@ -49,9 +36,9 @@
             "content-type":"text\/html"
         },
         "directory/webhook":{
-         "callback":"jobWebhook",
-         "content-type":"application\/json"
-     }
+            "callback":"jobWebhook",
+            "content-type":"application\/json"
+        }
     }
 }
 

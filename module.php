@@ -10,7 +10,6 @@ use Salesforce\OAuthResponse;
 use Salesforce\RestApiRequest;
 use Http\HttpHeader;
 
-// Test module name should match it's corresponding module name, ex.: 'appserver-directory'
 class DirectoryModule extends Module
 {
     private static $sandboxUrl = "https://api.sandbox.cloudconvert.com";
@@ -58,7 +57,7 @@ class DirectoryModule extends Module
 
         $api = $this->loadForceApi();
         $query = $this->buildDirectoryQuery($params);
-        $result = $api->query($query);
+        $result = $this->execute($query,"query");
 
         if(!$result->success()) throw new Exception($result->getErrorMessage());
 
@@ -68,6 +67,7 @@ class DirectoryModule extends Module
 
         $search = new Template("directory-search");
         $search->addPath(__DIR__ . "/templates");
+
         $search = $search->render(array(
             "count" => count($contacts),
             "occupationFields"   => $this->getOccupationFieldsDistinct(),
@@ -78,7 +78,7 @@ class DirectoryModule extends Module
             "lastName"           => $params["LastName"],
             "companyName"        => $params["Ocdla_Organization__c"],
             "city"               => $params["MailingCity"],
-            "includeExperts"     => $params["includeExperts"]
+            "includeExperts"     => $params["IncludeExperts"]
         ));
 
 
@@ -115,6 +115,19 @@ class DirectoryModule extends Module
             $conditions[] = "Ocdla_is_expert_witness__c = false";
         }
 
+        if(!empty($areaOfInterest)){
+
+            $interestsQuery = "SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c LIKE '%$areaOfInterest%'";
+            $records = $this->execute($interestsQuery, "query")->getRecords();
+
+            $contactIds = array();
+            foreach($records as $record) $contactIds[] = $record["Contact__c"];
+
+            $contactIds = "('" . implode("','", $contactIds) . "')";
+
+            $conditions[] = "id IN $contactIds";
+        }
+
         if(!empty($conditions)){
 
             $query .= " WHERE " . implode(" AND ", $conditions);
@@ -144,7 +157,6 @@ class DirectoryModule extends Module
             if(!in_array($area, $areas)){
 
                 array_unshift($areas, $area);
-                //$areas[] = $area;
             }
         }
 
@@ -175,136 +187,25 @@ class DirectoryModule extends Module
 
     ////////////////////////////////    TREVOR END        ///////////////////////////////////////////////////////////////
 
-    // New callback that will dislay committees and committee members
-    public function testDisplayCommitteeMembers()
-    {
-        // List all the committees
-        $api = $this->loadForceApi();
-        //$results = $api->query("SELECT id, name from committee__c");
-        // List commiittees and related contact info for each member
-        $results = $api->query("SELECT id, Name, (SELECT Contact__r.Id, Contact__r.Title, Contact__r.Name, Role__c, Contact__r.Email, Contact__r.Phone FROM Relationships__r) FROM Committee__c");
-        print "<pre>";
-        print print_r($results, true);
-        print "</pre>";
-    }
-
-    // TODO:
-    // Then display all the members of a specific committee (links)
-    // Then display the personal info for a single member
-
-    // Queries salesforce for all "Committee" objects and related members, and renders the objects in a template.
-    public function home()
-    {
-        $tpl = new Template("committee-list");
-        $tpl->addPath(__DIR__ . "/templates");
-
-        $api = $this->loadForceApi();
-
-        // Query for committee records and members belonging to each committe
-        $resp = $api->query("SELECT Id, Name, (SELECT Contact__r.Id, Contact__r.Title, Contact__r.Name, Role__c, Contact__r.Phone, Contact__r.Email FROM Relationships__r) FROM Committee__c");
-        if (!$resp->isSuccess()) {
-
-            var_dump($resp);
-            exit;
-        }
-        // Creates an array for holding "Committee__c" objects.
-        $committeeRecords = $resp->getRecords();
-        //var_dump($committeeRecords);
-        //exit;
-
-        $formattedCommitteeRecords = $this->includeMemberInfo($committeeRecords);
-        //$testContactPath = $committeeRecords[0]['members'][0]['Relationships__r']['records']; //[0]['Contact__r'];
-        //var_dump($committeeRecords); // TESTING
-        //exit;
-
-        return $tpl->render(array(
-            "committees" => $formattedCommitteeRecords,
-            "isAdmin" => false,
-            "isMember" => true // is_authenticated()
-        ));
-    }
-
-    // TESTING API FROM WP
-    public function home2()
-    {
-        //$tpl = new Template("committee-list");
-        //$tpl->addPath(__DIR__ . "/templates");
-
-        $api = $this->loadForceApi();
-
-        // Query for committee records and members belonging to each committe
-        $resp = $api->query("SELECT Id, Name, (SELECT Contact__r.Id, Contact__r.Title, Contact__r.Name, Role__c, Contact__r.Phone, Contact__r.Email FROM Relationships__r) FROM Committee__c");
-        if (!$resp->isSuccess()) {
-
-            var_dump($resp);
-            exit;
-        }
-        // Creates an array for holding "Committee__c" objects.
-        $committeeRecords = $resp->getRecords();
-        //var_dump($committeeRecords);
-        //exit;
-
-        $formattedCommitteeRecords = $this->includeMemberInfo($committeeRecords);
-        //$testContactPath = $committeeRecords[0]['members'][0]['Relationships__r']['records']; //[0]['Contact__r'];
-        //var_dump($committeeRecords); // TESTING
-        //exit;
-
-        $committees = $formattedCommitteeRecords;
-
-        return $committees; // array("committees" => $formattedCommitteeRecords); // Returning a formatted array that I can use to test my WP plugin
-    }
-
-
-
-    // This function parses an array with 'raw' data containing committee and member information
-    // It then takes necessary attributes and puts them into a new formatted 'human-friendly' array
-    public function includeMemberInfo($committeeRecords)
-    {
-        $committees = array(); // Initializing an empty array that will hold all the necessary data
-
-        foreach ($committeeRecords as $record) {
-            $committee = []; // Initializing an empty array for a single committee object (local to the loop)
-            // creating and assigning an array that contains all members (raw data) of the committee that is being added
-            $members = $record['Relationships__r']['records'];
-
-            $committee["Name"] = $record["Name"]; // getting a committee name
-            foreach ($members as $rec) {
-                $member = array( // Settting each member's attributes for the committee
-                    "Id" => $rec["Contact__r"]["Id"],
-                    "Title" => $rec["Contact__r"]["Title"],
-                    "Role" => $rec["Role__c"],
-                    "Name" => $rec["Contact__r"]["Name"],
-                    "Phone" => $rec["Contact__r"]["Phone"],
-                    "Email" => $rec["Contact__r"]["Email"]
-                );
-                $committee["members"][] = $member; // adding a member entry to the 'members' array
-                //var_dump($member);
-                //exit;
-            }
-            $committees[] = $committee; // filling 'committees' array with committee/members data after every itireation
-        }
-        //var_dump($committees); // TESTING
-        //exit;
-        return $committees;
-    }
-    
-
     /******************CLoud Convert API Implementation***********************************/
 
 
     public function getDirectoryLinks(){
 
-        //$directoryLinks = array();
-            try {
-                $filenames = $this->listPdfFiles(self::$uploadsPath);
-                $directoryLinks = array();        
-                foreach ($filenames as $key => $filename) {
-                    
-                    $directoryLinks[$filenames[$key]] ="/directory/pdfs/".$filenames[$key];
-                }
-            }catch(\Throwable $th) {
-                $error = "Error getting directory pdfs: " . $th->getMessage();
+        try {
+
+            $filenames = $this->listPdfFiles(self::$uploadsPath);
+            
+            $directoryLinks = array();        
+            foreach ($filenames as $key => $filename) {
+                
+                $directoryLinks[$filenames[$key]] ="/directory/pdfs/".$filenames[$key];
             }
+
+        }catch(\Throwable $th) {
+
+            $error = "Error getting directory pdfs: " . $th->getMessage();
+        }
 
 		$tpl = new Template("directoryLinks");
 		$tpl->addPath(__DIR__ . "/templates");
@@ -316,36 +217,43 @@ class DirectoryModule extends Module
     }
 
     public function listPdfFiles($path){
+
         if(!file_exists($path)){
-            //mkdir($path, 0777, true);
+
             throw new Exception(" no files found in server");
         }
         
         $filenames = scandir($path);
 
         if($filenames === false){
+
             throw new Exception(" no files found in server");
-        }//elseif()count($filenames) == 2
+        }
 
         $filenames = array_diff($filenames,array("." , ".."));
 
         foreach($filenames as $key => $filename){
+
             $filenames[$key] = substr($filename, 0, strrpos($filename,"."));
         }
 
         return $filenames;
-        
     }
 
     public function admin(){
+
         $cloudConvertLinks = array();
         
         try {
-            $filenames = $this->listPdfFiles(self::$configPath);        
+
+            $filenames = $this->listPdfFiles(self::$configPath);
+
             foreach ($filenames as $key => $filename) {
                 $cloudConvertLinks[$filenames[$key]] = $_SERVER["HTTP_HOST"]."/directory/execute/".$filenames[$key];
             }
+
         }catch(\Throwable $th) {
+
             $error = "Error getting Pdf configurations: " . $th->getMessage();
         }
 
@@ -359,6 +267,7 @@ class DirectoryModule extends Module
     }
 
     public function addCloudConvertJob($name){
+
         $modulePath = BASE_PATH. module_path();
         $body = file_get_contents(self::$configPath.DIRECTORY_SEPARATOR.$name.".json");
 
@@ -380,6 +289,7 @@ class DirectoryModule extends Module
         $http = new \Http\Http($config);
     
         $resp = $http->send($req, true);
+
         if($resp->getStatusCode() < 300){
             
             $body = json_decode($resp->getBody());
@@ -387,6 +297,7 @@ class DirectoryModule extends Module
             $this->getCloudConvertJobStatus($jobId);
             
         }
+
         var_dump($resp);
         exit;
     }
@@ -398,7 +309,6 @@ class DirectoryModule extends Module
         $req = new \Http\HttpRequest();
         $req->setUrl(self::$whichToUse."/v2/jobs/".$jobId."/wait");
         $req->setMethod("GET");
-
         $req->addHeader(new HttpHeader("Authorization","Bearer ".self::$apiKey));
         //$req->addHeader(new HttpHeader("Content-type","application/json"));
 
@@ -411,18 +321,25 @@ class DirectoryModule extends Module
         );
 
         $http = new \Http\Http($config);
+
         $resp = $http->send($req, true);
+
         if($resp->getStatusCode() < 300){
 
             $body = json_decode($resp->getBody());
-            if($body->data->status == "finished"){
+
+            if($body->data->status == "finished") {
+
                 $files = $body->data->tasks[0]->result->files;
                 $this->getCloudConvertPDF($files[0]->url,$files[0]->filename);
-            }else{
+
+            } else {
+
                 var_dump($resp);
             }
             
-        }else{
+        } else {
+
             var_dump($resp);
         }
         
@@ -460,30 +377,29 @@ class DirectoryModule extends Module
     }
 
     public function saveCloudConvertPDF($PDFData, $filename){
+
         if(!file_exists(self::$uploadsPath)){
+
             mkdir(self::$uploadsPath, 0777, true);
         }
 
         $filename = self::$uploadsPath.DIRECTORY_SEPARATOR.$filename;
         $result = file_put_contents($filename, $PDFData);
 
-        if($result){
-            echo("<h4>Added PDF: $filename</h4>");
-            
-        }
+        if($result) echo("<h4>Added PDF: $filename</h4>");
 
-        else            
-            echo("<h4>Error Adding PDF: $filename'</h4>");
+        else echo("<h4>Error Adding PDF: $filename'</h4>");
+
         exit;
     }
 
-    //users story: download alpha pdf or city pdf
-    //admin manualy click off city or alpha pdf
-        //minimal setup is var_dump of results
-
+    //Users story: download alpha pdf or city pdf, admin manualy click off city or alpha pdf.
     public function downloadPdf($filename){
+
         $PDFData = file_get_contents(self::$uploadsPath.DIRECTORY_SEPARATOR.$filename.".pdf");
+
         if(!$PDFData){
+
             header('Content-Type: text/html');
             echo("<h4>Error Getting PDF: $filename'</h4>");
             exit;
@@ -495,9 +411,10 @@ class DirectoryModule extends Module
         header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
         header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
         header('Content-Length: '.strlen($PDFData));
-            //not as a file download
-            header('Content-Disposition: inline; filename="'.basename($filename).'";');
-            //
+
+        //not as a file download
+        header('Content-Disposition: inline; filename="'.basename($filename).'";');
+
         ob_clean(); 
         flush();   
 
@@ -506,9 +423,9 @@ class DirectoryModule extends Module
     }
 
     public function jobWebhook(){
+
         $req = $this->getRequest();
         $post = json_decode($req->getBody());
-
     }
 
 }
