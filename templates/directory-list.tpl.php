@@ -6,6 +6,10 @@
     </div>
 
     <h1 style="text-align:center; margin-bottom:10px;">OCDLA Member Directory</h1>
+    
+    <?php if(empty($contacts)) : ?>
+        <h1 style="text-align:center;">Couldn't find anyone using those search parameters......</h1>
+    <?php endif; ?>
 
     <div class="directory-list">
 
