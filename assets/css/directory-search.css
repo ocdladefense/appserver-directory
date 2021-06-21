@@ -46,3 +46,14 @@ button{
     width: 32%;
     text-align: center;
 }
+
+.sidenav{
+    display: none;
+}
+div#stage {
+    width: unset;
+}
+
+.search-row.optional-row {
+    display: none;
+}

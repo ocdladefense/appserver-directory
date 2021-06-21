@@ -21,10 +21,6 @@
 			</div>
 
 			<div class="form-item">
-				<?php print "showing $count people."; ?>
-			</div>
-
-			<div class="form-item">
 				<button type="submit">SUBMIT SEARCH</button>
 			</div>
 
@@ -58,9 +54,39 @@
 				<input name="MailingCity" size="20" value="<?php print $city; ?>" maxlength="35" type="text" placeholder="City">
 			</div>
 
+			<div class="form-item form-select">
+				<select name="Ocdla_Occupation_Field_Type__c" onchange="document.getElementById('search-directory').submit()">
+
+					<?php
+						foreach ($occupationFields as $field){
+
+							$selected = $selectedOccupationField == $field ? "selected" : "";
+						?>
+
+						<option value="<?php print $field; ?>" <?php print $selected; ?>><?php print $field; ?></option>
+
+					<?php } ?>
+					
+				</select>
+			</div>
+						
+			<div class="form-item form-select">
+				<select name="areaOfInterest" onchange="document.getElementById('search-directory').submit()">
+					<?php
+							foreach ($areasOfInterest as $area){
+
+								$selected = $selectedAreaOfInterest == $area ? "selected" : "";
+							?>
+
+							<option value="<?php print $area; ?>" <?php print $selected; ?>><?php print $area; ?></option>
+
+						<?php } ?>
+				</select>
+			</div>
+
 		</div> <!--end search row -->
 
-		<div class="search-row">
+		<div class="search-row optional-row">
 
 			<div class="form-item form-select">
 				<select name="Ocdla_Occupation_Field_Type__c" onchange="document.getElementById('search-directory').submit()">
@@ -97,25 +123,3 @@
 	</form>
 
 </div>
-
-<script>
-
-	var timer;              
-	var doneTypingInterval = 1000;
-	var $input = $('input');
-
-	$input.on('keyup', function () {
-	clearTimeout(timer);
-	timer = setTimeout(doneTyping, doneTypingInterval);
-	});
-
-	$input.on('keydown', function () {
-	clearTimeout(timer);
-	});
-
-	function doneTyping () {
-	
-		document.getElementById("search-directory").submit();
-	}
-
-</script>

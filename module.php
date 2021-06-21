@@ -54,6 +54,8 @@ class DirectoryModule extends Module
         if($selectedInterest == null) unset($params["areaOfInterest"]);
 
         $query = $this->buildDirectoryQuery($params);
+
+        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c FROM Contact WHERE Id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = 'Bilingual') ORDER BY LastName";
         $result = $this->execute($query,"query");
 
         if(!$result->success()) throw new Exception($result->getErrorMessage());
@@ -66,7 +68,6 @@ class DirectoryModule extends Module
         $search->addPath(__DIR__ . "/templates");
 
         $search = $search->render(array(
-            "count" => count($contacts),
             "occupationFields"   => $this->getOccupationFieldsDistinct(),
             "selectedOccupation" => $selectedOccupation,
             "areasOfInterest"    => $this->getAreasOfInterest(),
@@ -83,8 +84,11 @@ class DirectoryModule extends Module
         $tpl->addPath(__DIR__ . "/templates");
 
         return $tpl->render(array(
+            "count"             => count($contacts),
             "search"            => $search,
-            "contacts"          => $contacts
+            "contacts"          => $contacts,
+            "showQuery"         => true,
+            "query"             => $query
         ));
     }
 
@@ -116,15 +120,7 @@ class DirectoryModule extends Module
         // Only use those contacts in you query.
         if(!empty($areaOfInterest)){
 
-            $interestsQuery = "SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c LIKE '%$areaOfInterest%'";
-            $records = $this->execute($interestsQuery, "query")->getRecords();
-
-            $contactIds = array();
-            foreach($records as $record) $contactIds[] = $record["Contact__c"];
-
-            $contactIds = "('" . implode("','", $contactIds) . "')";
-
-            $conditions[] = "id IN $contactIds";
+            $conditions[] = "id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')";
         }
 
         if(!empty($conditions)){
