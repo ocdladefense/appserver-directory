@@ -87,37 +87,6 @@
 		</div> <!--end search row -->
 
 		<div class="search-row optional-row">
-
-			<div class="form-item form-select">
-				<select name="Ocdla_Occupation_Field_Type__c" onchange="document.getElementById('search-directory').submit()">
-
-					<?php
-						foreach ($occupationFields as $field){
-
-							$selected = $selectedOccupationField == $field ? "selected" : "";
-						?>
-
-						<option value="<?php print $field; ?>" <?php print $selected; ?>><?php print $field; ?></option>
-
-					<?php } ?>
-					
-				</select>
-			</div>
-						
-			<div class="form-item form-select">
-				<select name="areaOfInterest" onchange="document.getElementById('search-directory').submit()">
-					<?php
-							foreach ($areasOfInterest as $area){
-
-								$selected = $selectedAreaOfInterest == $area ? "selected" : "";
-							?>
-
-							<option value="<?php print $area; ?>" <?php print $selected; ?>><?php print $area; ?></option>
-
-						<?php } ?>
-				</select>
-			</div>
-
 		</div> <!--end search row -->
 
 	</form>

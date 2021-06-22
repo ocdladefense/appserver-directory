@@ -55,7 +55,7 @@ class DirectoryModule extends Module
 
         $query = $this->buildDirectoryQuery($params);
 
-        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c FROM Contact WHERE Id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = 'Bilingual') ORDER BY LastName";
+       //$query = "SELECT Id, FirstName, LastName, MailingCity, MailingState, Phone, email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c FROM Contact WHERE Id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = 'Bilingual') ORDER BY LastName";
         $result = $this->execute($query,"query");
 
         if(!$result->success()) throw new Exception($result->getErrorMessage());
@@ -100,7 +100,7 @@ class DirectoryModule extends Module
         $areaOfInterest = $params["areaOfInterest"];
         unset($params["areaOfInterest"]);
 
-        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c FROM Contact";
+        $query = "SELECT Id, FirstName, LastName, MailingCity, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c FROM Contact";
         
         $conditions = array();
         foreach($params as $field => $value){

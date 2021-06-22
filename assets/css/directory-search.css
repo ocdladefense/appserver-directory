@@ -57,3 +57,12 @@ div#stage {
 .search-row.optional-row {
     display: none;
 }
+
+p.primary {
+    font-weight: 900;
+    font-size: 1.4em;
+}
+
+p.secondary{
+    font-weight: 700;
+}
