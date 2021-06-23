@@ -35,6 +35,16 @@
                 <p><?php !empty($c->getPhone()) ? print $c->getPhone() : print "<br />"; ?></p>
                 <p><?php !empty($c->getMailingCity()) ? print $c->getMailingCity() . ", " . $c->getMailingState() : print "City Not Listed"; ?></p>
                 <?php !empty($c->getEmail()) ? print "<a href='mailto: {$c->getEmail()}' style='text-decoration:none;'>{$c->getEmail()}</a>" : print "No Email Available"; ?>
+
+                <?php if(!empty($c->getAreasOfInterest())) : ?>
+                    <p style="text-decoration:underline;">
+                        <strong>
+                            Areas of Interest
+                        </strong>
+                    </p>
+                    
+                    <p><?php print $c->getAreasOfInterest(); ?></p>
+                <?php endif; ?>
             </div>
 
         <?php endforeach; ?>

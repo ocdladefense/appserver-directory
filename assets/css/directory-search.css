@@ -45,6 +45,9 @@ button{
     background-color: rgba(50,50,50,0.1);
     width: 32%;
     text-align: center;
+    height:15em;
+    padding:5px;
+    vertical-align: middle;
 }
 
 .sidenav{
