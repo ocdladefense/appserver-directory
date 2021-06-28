@@ -54,9 +54,10 @@ class DirectoryModule extends Module
         if($selectedInterest == null) unset($params["areaOfInterest"]);
 
         $query = $this->buildDirectoryQuery($params);
-
         //$query = "SELECT Id, FirstName, LastName, MailingCity, MailingState, Phone, email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact WHERE Id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = 'Bilingual') ORDER BY LastName";
-        $result = $this->execute($query,"query");
+        
+        $api = $this->loadForceApi();
+        $result = $api->query($query);
 
         if(!$result->success()) throw new Exception($result->getErrorMessage());
 
@@ -64,10 +65,51 @@ class DirectoryModule extends Module
         
         $contacts = Contact::from_query_result_records($records);
 
+
+        $tpl = new Template("directory-list");
+        $tpl->addPath(__DIR__ . "/templates");
+
+        return $tpl->render(array(
+            "count"             => count($contacts),
+            "search"            => $this->getSearchBar(),
+            "contacts"          => $contacts,
+            "showQuery"         => true,
+            "query"             => $query
+        ));
+    }
+
+    public function showDirectoryContact($id){
+
+        $api = $this->loadForceApi();
+
+        $query = "SELECT Id, FirstName, LastName, MailingCity, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact WHERE Id = '$id'";
+
+        $records = $api->query($query)->getRecords();
+
+        $contacts = Contact::from_query_result_records($records);
+
+
+        $tpl = new Template("directory-list");
+        $tpl->addPath(__DIR__ . "/templates");
+
+        return $tpl->render(array(
+            "count"             => count($contacts),
+            "search"            => $this->getSearchBar(),
+            "contacts"          => $contacts,
+            "isSingle"          => true,
+            "showQuery"         => true,
+            "query"             => $query
+        ));
+
+
+    }
+
+    public function getSearchBar(){
+
         $search = new Template("directory-search");
         $search->addPath(__DIR__ . "/templates");
 
-        $search = $search->render(array(
+        return $search->render(array(
             "occupationFields"   => $this->getOccupationFieldsDistinct(),
             "selectedOccupation" => $selectedOccupation,
             "areasOfInterest"    => $this->getAreasOfInterest(),
@@ -78,20 +120,7 @@ class DirectoryModule extends Module
             "city"               => $params["MailingCity"],
             "includeExperts"     => $params["IncludeExperts"]
         ));
-
-
-        $tpl = new Template("directory-list");
-        $tpl->addPath(__DIR__ . "/templates");
-
-        return $tpl->render(array(
-            "count"             => count($contacts),
-            "search"            => $search,
-            "contacts"          => $contacts,
-            "showQuery"         => true,
-            "query"             => $query
-        ));
     }
-
     public function buildDirectoryQuery($params){
 
         $includeExperts = $params["IncludeExperts"];

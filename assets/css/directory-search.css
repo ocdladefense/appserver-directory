@@ -49,7 +49,9 @@ button{
     padding:5px;
     vertical-align: middle;
 }
-
+.is-single{
+    width:100%;
+}
 .sidenav{
     display: none;
 }

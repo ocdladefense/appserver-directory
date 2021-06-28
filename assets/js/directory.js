@@ -1,19 +1,22 @@
 
+let listItems = document.getElementsByClassName("list-item");
 
-	var timer;              
-	var doneTypingInterval = 1000;
-	var $input = $('input');
+for(let i = 0; i < listItems.length; i++){
 
-	$input.on('keyup', function () {
-	clearTimeout(timer);
-	timer = setTimeout(doneTyping, doneTypingInterval);
-	});
+	listItems[i].addEventListener("click", handleEvent);
+}
 
-	$input.on('keydown', function () {
-	clearTimeout(timer);
-	});
+function handleEvent(e){
 
-	function doneTyping () {
-	
-		document.getElementById("search-directory").submit();
+	let contactId = e.srcElement.dataset.contactid;
+
+	if(contactId == null) {
+
+		contactId = e.target.parentElement.dataset.contactid;
 	}
+
+	let link = document.createElement("a");
+	let href = "/directory/single/" + contactId;
+	link.setAttribute("href", href);
+	link.click();
+}
