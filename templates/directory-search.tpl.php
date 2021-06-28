@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory-search.css" />
+<link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css" />
 
 <?php
 	array_unshift($occupationFields, "All Occupations/Fields");
@@ -12,7 +12,7 @@
 
 <div class="container">
 
-	<form id="search-directory" action="/directory/search" method="post">
+	<form id="search-directory" action="/directory/members" method="post">
 
 		<div class="search-row header-row">
 
@@ -25,7 +25,7 @@
 			</div>
 
 			<div class="form-item">
-				<a href="/directory/search" style="text-decoration:none;">CLEAR SEARCH</a>
+				<a href="/directory/members" style="text-decoration:none;">CLEAR SEARCH</a>
 			</div>
 
 

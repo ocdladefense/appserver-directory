@@ -24,13 +24,11 @@
         <h1 style="text-align:center;">Couldn't find anyone using those search parameters......</h1>
     <?php endif; ?>
 
-    <?php $isSingle ? $singleClass = "is-single" : ""; ?>
-
     <div class="directory-list">
 
         <?php foreach($contacts as $c) : ?>
 
-            <div class="list-item <?php print $singleClass; ?>" data-contactId="<?php print $c->getId(); ?>">
+            <div class="list-item" data-contactId="<?php print $c->getId(); ?>">
                 <p class="primary"><?php !empty($c->getFirstName()) ? print $c->getFirstName() . " " . $c->getLastName() : print "<br />";  ?></p>
                 <p class="secondary"><?php !empty($c->getOccupationFieldType()) ? print $c->getOccupationFieldType() : print "<br />"; ?></p>
                 <p><?php !empty($c->getOcdlaOrganization()) ? print $c->getOcdlaOrganization() : print "<br />"; ?></p>

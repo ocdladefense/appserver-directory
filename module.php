@@ -89,7 +89,7 @@ class DirectoryModule extends Module
         $contacts = Contact::from_query_result_records($records);
 
 
-        $tpl = new Template("directory-list");
+        $tpl = new Template("directory-single");
         $tpl->addPath(__DIR__ . "/templates");
 
         return $tpl->render(array(

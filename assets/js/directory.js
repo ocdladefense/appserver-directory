@@ -16,7 +16,7 @@ function handleEvent(e){
 	}
 
 	let link = document.createElement("a");
-	let href = "/directory/single/" + contactId;
+	let href = "/directory/members/" + contactId;
 	link.setAttribute("href", href);
 	link.click();
 }

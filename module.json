@@ -6,13 +6,23 @@
     "connectedApp":"default",
 	"files": [],
 	"routes": {
-        "directory/search":{
+        "directory/members":{
             "callback":"directorySearch",
             "content-type":"text/html"
         },
-        "directory/single/%id":{
+        "directory/experts":{
+            "callback":"directorySearch",
+            "content-type":"text/html",
+            "comment":"Have not built the callback yet"
+        },
+        "directory/members/%id":{
             "callback":"showDirectoryContact",
             "content-type":"text/html"
+        },
+        "directory/experts/%id":{
+            "callback":"showDirectoryContact",
+            "content-type":"text/html",
+            "comment":"Have not built the callback yet"
         },
         "directories":{
             "callback":"getDirectoryLinks",
