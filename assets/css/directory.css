@@ -71,3 +71,17 @@ p.primary {
 p.secondary{
     font-weight: 700;
 }
+
+@media only screen and (max-width:750px){
+    .list-item {
+        display: block;
+        width: unset;
+        margin-bottom: 20px;
+    }
+    .form-item{
+        display:block;
+    }
+    .header-row .form-item{
+        text-align: left;
+    }
+}
