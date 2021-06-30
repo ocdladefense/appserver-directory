@@ -74,7 +74,7 @@ class DirectoryModule extends Module
             "search"            => $this->getSearchBar(),
             "contacts"          => $contacts,
             "showQuery"         => true,
-            "query"             => $query
+            "query"             => "" //$query
         ));
     }
 
@@ -98,7 +98,7 @@ class DirectoryModule extends Module
             "contacts"          => $contacts,
             "isSingle"          => true,
             "showQuery"         => true,
-            "query"             => $query
+            "query"             => "" //$query
         ));
 
 
