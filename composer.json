@@ -1,0 +1,13 @@
+{
+    "name": "ocdladefense/appserver-directory",
+    "description": "A module for viewing member and expert witnesses within the OCDLA orginization.",
+    "type": "wordpress-theme",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "TrevorUehlin",
+            "email": "trevoruehlinx1@gmail.com"
+        }
+    ],
+    "require": {}
+}
