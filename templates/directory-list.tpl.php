@@ -1,56 +1,60 @@
+<link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css"></link>
 
-<div class="directory-container">
-
-    <div class="search">
+<div class="search">
         <?php print $search; ?>
-    </div>
-
-
-    <h1 style="text-align:center; margin-bottom:10px;">SEARCH RESULTS</h1>
-
-    <?php if($showQuery) : ?>
-        <div>
-            <p><?php print $query; ?></p>
-        </div>
-    <?php endif; ?>
-
-    <div>
-        <br />
-        <p><?php print "Showing $count results."; ?></p>
-        <br />
-    </div>
-    
-    <?php if(empty($contacts)) : ?>
-        <h1 style="text-align:center;">Couldn't find anyone using those search parameters......</h1>
-    <?php endif; ?>
-
-    <div class="directory-list">
-
-        <?php foreach($contacts as $c) : ?>
-
-            <div class="list-item" data-contactId="<?php print $c->getId(); ?>">
-                <p class="primary"><?php !empty($c->getFirstName()) ? print $c->getFirstName() . " " . $c->getLastName() : print "<br />";  ?></p>
-                <p class="secondary"><?php !empty($c->getOccupationFieldType()) ? print $c->getOccupationFieldType() : print "<br />"; ?></p>
-                <p><?php !empty($c->getOcdlaOrganization()) ? print $c->getOcdlaOrganization() : print "<br />"; ?></p>
-                <p><?php !empty($c->getPhone()) ? print $c->getPhone() : print "<br />"; ?></p>
-                <p><?php !empty($c->getMailingCity()) ? print $c->getMailingCity() . ", " . $c->getMailingState() : print "City Not Listed"; ?></p>
-                <?php !empty($c->getEmail()) ? print "<a href='mailto: {$c->getEmail()}' style='text-decoration:none;'>{$c->getEmail()}</a>" : print "No Email Available"; ?>
-
-                <?php if(!empty($c->getAreasOfInterest())) : ?>
-                    <p style="text-decoration:underline;">
-                        <strong>
-                            Areas of Interest
-                        </strong>
-                    </p>
-                    
-                    <p><?php print $c->getAreasOfInterest(); ?></p>
-                <?php endif; ?>
-            </div>
-
-        <?php endforeach; ?>
-
-    </div>
-
 </div>
 
-<script src="<?php print module_path(); ?>/assets/js/directory.js"></script>
+<div>
+	<h2>OCDLA Member Directory</h2>
+</div>
+
+<div>
+	<p><?php print "Showing $count members"; ?></p>
+</div>
+
+<div class="table">
+	<tbody>
+
+		<ul class="table-row">
+			<li class="table-header">Name</li>
+			<li class="table-header">Field</li>
+			<li class="table-header">Organization</li>
+			<li class="table-header">Phone</li>
+			<li class="table-header">City</li>
+			<li class="table-header">Email</li>
+			<li class="table-header">Areas of Interest</li>
+		</ul>
+
+			
+		<?php if(!isset($contacts) || (isset($contacts) && count($contacts) < 1)): ?>
+			<ul class="table-row">
+				<li>There are members that meet your search criteria.</li>
+			</ul>
+			
+		<?php else: ?>
+		
+			<?php foreach($contacts as $contact):
+				$areasOfInterest = $contact->getAreasOfInterest();
+			?>
+
+				<ul class="table-row"> 
+
+					<li class="table-cell">
+						<a href="/directory/members/<?php print $contact->getId(); ?>"><?php print $contact->getName(); ?></a>
+					</li>
+					<li class="table-cell"><?php print $contact->getOccupationFieldType(); ?></li>
+					<li class="table-cell"><?php print $contact->getOcdlaOrganization(); ?></li>
+					<li class="table-cell">
+						<a href="tel:<?php print $contact->getPhoneNumericOnly(); ?>"><?php print $contact->getPhone(); ?></a>
+					</li>
+					<li class="table-cell"><?php print $contact->getMailingCity(); ?></li>
+					<li class="table-cell">
+						<a href="mailto:<?php print $contact->getEmail(); ?>"><?php print $contact->getEmail(); ?></a>
+					</li>
+					<li class="table-cell long-cell"><?php print $contact->getAreasOfInterest(); ?></li>
+					
+				</ul>
+			<?php endforeach; ?>
+		<?php endif; ?>
+	</tbody>
+</table>

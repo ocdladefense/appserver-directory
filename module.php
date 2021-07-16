@@ -45,6 +45,7 @@ class DirectoryModule extends Module
         if(!$result->success()) throw new Exception($result->getErrorMessage());
 
         $records = $result->getRecords();
+
         
         $contacts = Contact::from_query_result_records($records);
 
@@ -66,7 +67,7 @@ class DirectoryModule extends Module
 
         $api = $this->loadForceApi();
 
-        $query = "SELECT Id, FirstName, LastName, MailingCity, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact WHERE Id = '$id'";
+        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact WHERE Id = '$id'";
 
         $records = $api->query($query)->getRecords();
 
@@ -113,7 +114,7 @@ class DirectoryModule extends Module
         $areaOfInterest = $params["areaOfInterest"];
         unset($params["areaOfInterest"]);
 
-        $query = "SELECT Id, FirstName, LastName, MailingCity, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact";
+        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact";
         
         $conditions = array();
         foreach($params as $field => $value){
@@ -142,6 +143,7 @@ class DirectoryModule extends Module
         }
 
         $query.= " AND (NOT Email LIKE '%qq.com%')";
+        $query.= " AND  Ocdla_Current_Member_Flag__c = True";
 
         $query .= " ORDER BY LastName";
 
