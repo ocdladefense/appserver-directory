@@ -11,7 +11,7 @@
             "content-type":"text/html"
         },
         "directory/experts":{
-            "callback":"directorySearch",
+            "callback":"directorySearchExperts",
             "content-type":"text/html",
             "comment":"Have not built the callback yet"
         },

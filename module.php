@@ -23,23 +23,6 @@ class DirectoryModule extends Module
     public function __construct() {
 
         parent::__construct();
-
-        // self::$whichToUse = self::$sandboxUrl;
-
-        // if ( self::$whichToUse == self::$sandboxUrl){
-
-        //     self::$apiKey = CLOUD_CONVERT_SANDBOX_API_KEY;
-
-        // }else{
-
-        //     self::$apiKey = CLOUD_CONVERT_API_KEY;
-        // }
-
-        // self::$configPath = path_to_modules_config().DIRECTORY_SEPARATOR."directory";
-        // self::$uploadsPath = path_to_modules_upload().DIRECTORY_SEPARATOR."directory";
-
-        // if(!file_exists(self::$uploadsPath)) mkdir(self::$uploadsPath, 0777, true);
-        // if(!file_exists(self::$configPath)) mkdir(self::$uploadsPath, 0777, true);
     }
 
     ////////////////////////////////    TREVOR START    ///////////////////////////////////////////////////////////////
@@ -77,6 +60,7 @@ class DirectoryModule extends Module
             "query"             => "" //$query
         ));
     }
+
 
     public function showDirectoryContact($id){
 
@@ -157,6 +141,8 @@ class DirectoryModule extends Module
             $query .= " WHERE " . implode(" AND ", $conditions);
         }
 
+        $query.= " AND (NOT Email LIKE '%qq.com%')";
+
         $query .= " ORDER BY LastName";
 
         return $query;
@@ -207,6 +193,62 @@ class DirectoryModule extends Module
         }
 
         return $areasOfInterest;
+    }
+
+
+
+
+    ////    Expert Witnesses    /////
+
+    public function directorySearchExperts(){
+
+        $search = new Template("expert-search");
+        $search->addPath(__DIR__ . "/templates");
+
+        $primaryFields = $this->getPrimaryFields();
+
+        $expertQuery = $this->buildDirectoryQuery(array("IncludeExperts" => true));
+
+        var_dump($expertQuery);exit;
+
+
+        return $search->render(array(
+            "primaryFields" => $primaryFields
+        ));
+
+        $experts = $this->getExperts();
+
+
+    }
+
+    public function getPrimaryFields(){
+
+        $endpoint = "/services/data/v23.0/sobjects/Contact/describe";
+        $api = $this->loadForceApi();
+        $resp = $api->send($endpoint);
+        $primaryFieldObjs = $resp->getBody()["fields"];
+
+        $primaryFields = array();
+
+        foreach($primaryFieldObjs as $field){
+
+            if($field["name"] == "Ocdla_Expert_Witness_Primary__c"){
+
+                $values = $field["picklistValues"];
+
+                foreach($values as $value){
+
+                    $primaryFields[] = $value["value"];
+                }
+            }
+        }
+
+        return $primaryFields;
+    }
+
+    public function getExperts(){
+
+        $api = $this->loadForceApi();
     }
 
     ////////////////////////////////    TREVOR END        ///////////////////////////////////////////////////////////////
