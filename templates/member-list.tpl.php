@@ -53,10 +53,10 @@
 					</li>
 					<li class="table-cell"><?php print $contact->getOccupationFieldType(); ?></li>
 					<li class="table-cell"><?php print $contact->getOcdlaOrganization(); ?></li>
-					<li class="table-cell">
+					<li class="table-cell short-cell">
 						<a href="tel:<?php print $contact->getPhoneNumericOnly(); ?>"><?php print $contact->getPhone(); ?></a>
 					</li>
-					<li class="table-cell"><?php print $contact->getMailingCity(); ?></li>
+					<li class="table-cell short-cell"><?php print $contact->getMailingCity(); ?></li>
 					<li class="table-cell">
 						<a href="mailto:<?php print $contact->getEmail(); ?>"><?php print $contact->getEmail(); ?></a>
 					</li>
