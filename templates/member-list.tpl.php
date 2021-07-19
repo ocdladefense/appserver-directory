@@ -4,9 +4,18 @@
         <?php print $search; ?>
 </div>
 
+<?php if(!empty($query)) : ?>
+<br />
+<div>
+	<strong><?php print $query; ?></strong>
+</div>
+<br />
+<?php endif; ?>
+
 <div>
 	<h2>OCDLA Member Directory</h2>
 </div>
+
 
 <div>
 	<p><?php print "Showing $count members"; ?></p>

@@ -4,13 +4,11 @@
 	array_unshift($primaryFields, "All Primary Fields");
 
 	$selectedPrimaryField = empty($selectedPrimaryField) ? "All Primary Fields" : $selectedPrimaryField;
-
-	$includeExpertsCheck = $includeExperts ? "checked" : "";
 ?>
 
 <div class="container">
 
-	<form id="search-directory" action="/directory/members" method="post">
+	<form id="search-directory" action="/directory/experts" method="post">
 
 		<div class="search-row header-row">
 
@@ -23,7 +21,7 @@
 			</div>
 
 			<div class="form-item">
-				<a href="/directory/members" style="text-decoration:none;">CLEAR SEARCH</a>
+				<a href="/directory/experts" style="text-decoration:none;">CLEAR SEARCH</a>
 			</div>
 
 		</div> <!--end search row -->

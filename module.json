@@ -7,50 +7,20 @@
 	"files": [],
 	"routes": {
         "directory/members":{
-            "callback":"directorySearch",
+            "callback":"showMemberDirectory",
             "content-type":"text/html"
         },
         "directory/experts":{
-            "callback":"directorySearchExperts",
-            "content-type":"text/html",
-            "comment":"Have not built the callback yet"
+            "callback":"showExpertDirectory",
+            "content-type":"text/html"
         },
         "directory/members/%id":{
-            "callback":"showDirectoryContact",
+            "callback":"showMemberSingle",
             "content-type":"text/html"
         },
         "directory/experts/%id":{
-            "callback":"showDirectoryContact",
-            "content-type":"text/html",
-            "comment":"Have not built the callback yet"
-        },
-        "directories":{
-            "callback":"getDirectoryLinks",
-            "content-type":"text\/html"
-        },
-        "directories/admin":{
-            "callback":"admin",
-            "content-type":"text\/html"
-        },
-        "directory/execute/%name":{
-            "callback":"addCloudConvertJob",
-            "content-type":"text\/html"
-        },
-        "directory/status/%jobId":{
-            "callback":"getCloudConvertJobStatus",
-            "content-type":"text\/html"
-         },
-        "directory/pdfs/%name":{
-            "callback":"downloadPdf",
-            "content-type":"application\/pdf"
-        },
-        "directory/savepdfs/%stuff/%name":{
-            "callback":"saveCloudConvertPDF",
-            "content-type":"text\/html"
-        },
-        "directory/webhook":{
-            "callback":"jobWebhook",
-            "content-type":"application\/json"
+            "callback":"showExpertSingle",
+            "content-type":"text/html"
         }
     }
 }

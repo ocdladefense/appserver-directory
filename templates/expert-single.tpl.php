@@ -1,12 +1,11 @@
+<link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css"></link>
 
 <div class="directory-container">
 
-<div class="search">
-    <?php print $search; ?>
-</div>
+<a class="back-link" href="/directory/members" style="float: left;"><i class="fa fa-arrow-left" style="font-size:25px;color:blue"></i></a><br /><br />
 
 
-<h1 style="text-align:center; margin-bottom:10px;">SEARCH RESULTS</h1>
+<h1 style="text-align:center; margin-bottom:10px;">OCDLA Member</h1>
 
 <?php if($showQuery) : ?>
     <div>

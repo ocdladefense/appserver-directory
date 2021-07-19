@@ -1,56 +1,68 @@
+<link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css"></link>
 
-<div class="directory-container">
-
-    <div class="search">
+<div class="search">
         <?php print $search; ?>
-    </div>
-
-
-    <h1 style="text-align:center; margin-bottom:10px;">SEARCH RESULTS</h1>
-
-    <?php if($showQuery) : ?>
-        <div>
-            <p><?php print $query; ?></p>
-        </div>
-    <?php endif; ?>
-
-    <div>
-        <br />
-        <p><?php print "Showing $count results."; ?></p>
-        <br />
-    </div>
-    
-    <?php if(empty($contacts)) : ?>
-        <h1 style="text-align:center;">Couldn't find anyone using those search parameters......</h1>
-    <?php endif; ?>
-
-    <div class="directory-list">
-
-        <?php foreach($contacts as $c) : ?>
-
-            <div class="list-item" data-contactId="<?php print $c->getId(); ?>">
-                <p class="primary"><?php !empty($c->getFirstName()) ? print $c->getFirstName() . " " . $c->getLastName() : print "<br />";  ?></p>
-                <p class="secondary"><?php !empty($c->getOccupationFieldType()) ? print $c->getOccupationFieldType() : print "<br />"; ?></p>
-                <p><?php !empty($c->getOcdlaOrganization()) ? print $c->getOcdlaOrganization() : print "<br />"; ?></p>
-                <p><?php !empty($c->getPhone()) ? print $c->getPhone() : print "<br />"; ?></p>
-                <p><?php !empty($c->getMailingCity()) ? print $c->getMailingCity() . ", " . $c->getMailingState() : print "City Not Listed"; ?></p>
-                <?php !empty($c->getEmail()) ? print "<a href='mailto: {$c->getEmail()}' style='text-decoration:none;'>{$c->getEmail()}</a>" : print "No Email Available"; ?>
-
-                <?php if(!empty($c->getAreasOfInterest())) : ?>
-                    <p style="text-decoration:underline;">
-                        <strong>
-                            Areas of Interest
-                        </strong>
-                    </p>
-                    
-                    <p><?php print $c->getAreasOfInterest(); ?></p>
-                <?php endif; ?>
-            </div>
-
-        <?php endforeach; ?>
-
-    </div>
-
 </div>
 
-<script src="<?php print module_path(); ?>/assets/js/directory.js"></script>
+<?php if(!empty($query)) : ?>
+<br />
+<div>
+	<strong><?php print $query; ?></strong>
+</div>
+<br />
+<?php endif; ?>
+
+<div>
+	<h2>OCDLA Expert Witness Directory</h2>
+</div>
+
+
+<div>
+	<p><?php print "Showing $count expert witnesses"; ?></p>
+</div>
+
+<div class="table">
+	<tbody>
+			
+		<?php if(!isset($experts) || (isset($experts) && count($experts) < 1)): ?>
+			<ul class="table-row">
+				<li>There are no experts that meet your search criteria.</li>
+			</ul>
+			
+		<?php else: ?>
+
+			<ul class="table-row">
+					<li class="table-header">Name</li>
+					<li class="table-header">Primary Field</li>
+					<li class="table-header">Organization</li>
+					<li class="table-header">Phone</li>
+					<li class="table-header">City</li>
+					<li class="table-header">Email</li>
+					<li class="table-header">Other Areas</li>
+				</ul>
+		
+			<?php foreach($experts as $expert):
+				$areasOfInterest = $expert->getAreasOfInterest();
+			?>
+
+				<ul class="table-row"> 
+
+					<li class="table-cell">
+						<a href="/directory/experts/<?php print $expert->getId(); ?>"><?php print $expert->getName(); ?></a>
+					</li>
+					<li class="table-cell long-cell"><?php print $expert->getPrimaryFields(); ?></li>
+					<li class="table-cell"><?php print $expert->getOcdlaOrganization(); ?></li>
+					<li class="table-cell short-cell">
+						<a href="tel:<?php print $expert->getPhoneNumericOnly(); ?>"><?php print $expert->getPhone(); ?></a>
+					</li>
+					<li class="table-cell short-cell"><?php print $expert->getMailingCity(); ?></li>
+					<li class="table-cell">
+						<a href="mailto:<?php print $expert->getEmail(); ?>"><?php print $expert->getEmail(); ?></a>
+					</li>
+					<li class="table-cell long-cell"><?php print $expert->getExpertWitnessOtherAreas(); ?></li>
+					
+				</ul>
+			<?php endforeach; ?>
+		<?php endif; ?>
+	</tbody>
+</table>

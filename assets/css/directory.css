@@ -85,6 +85,10 @@ div#sidenav {
 
 li.table-cell.long-cell {
     max-width: 18vw;
+    word-wrap: break-word;
+}
+li.table-cell.short-cell {
+    min-width: 8vw;
 }
 
 @media screen and (max-width: 750px) {
