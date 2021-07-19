@@ -17,17 +17,13 @@
 		<div class="search-row header-row">
 
 			<div class="form-item first-item">
-				<Strong>Search the directory</strong>
-			</div>
-
-			<div class="form-item">
-				<button type="submit">SUBMIT SEARCH</button>
+				<a href="/directory/experts" style="text-decoration:none;">Go to Expert Witness Directory</a>
 			</div>
 
 			<div class="form-item">
 				<a href="/directory/members" style="text-decoration:none;">CLEAR SEARCH</a>
+				<button type="submit">SUBMIT SEARCH</button>
 			</div>
-
 
 			<div class="form-item last-item">
 				Include Expert Witnesses:

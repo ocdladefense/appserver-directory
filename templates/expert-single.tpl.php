@@ -2,24 +2,18 @@
 
 <div class="directory-container">
 
-<a class="back-link" href="/directory/members" style="float: left;"><i class="fa fa-arrow-left" style="font-size:25px;color:blue"></i></a><br /><br />
+<a class="back-link" href="/directory/experts" style="float: left;"><i class="fa fa-arrow-left" style="font-size:25px;color:blue"></i></a><br /><br />
 
 
-<h1 style="text-align:center; margin-bottom:10px;">OCDLA Member</h1>
+<h1 style="text-align:center; margin-bottom:10px;">OCDLA Expert Witness</h1>
 
-<?php if($showQuery) : ?>
+<?php if(!empty($query)) : ?>
     <div>
         <p><?php print $query; ?></p>
     </div>
 <?php endif; ?>
 
-<div>
-    <br />
-    <p><?php print "Showing $count results."; ?></p>
-    <br />
-</div>
-
-<?php if(empty($contacts)) : ?>
+<?php if(empty($experts)) : ?>
     <h1 style="text-align:center;">Couldn't find anyone using those search parameters......</h1>
 <?php endif; ?>
 
@@ -27,24 +21,24 @@
 
 <div class="directory-list">
 
-    <?php foreach($contacts as $c) : ?>
+    <?php foreach($experts as $ex) : ?>
 
-        <div class="list-item <?php print $singleClass; ?>" data-contactId="<?php print $c->getId(); ?>">
-            <p class="primary"><?php !empty($c->getFirstName()) ? print $c->getFirstName() . " " . $c->getLastName() : print "<br />";  ?></p>
-            <p class="secondary"><?php !empty($c->getOccupationFieldType()) ? print $c->getOccupationFieldType() : print "<br />"; ?></p>
-            <p><?php !empty($c->getOcdlaOrganization()) ? print $c->getOcdlaOrganization() : print "<br />"; ?></p>
-            <a href="tel:<?php print $c->getPhoneNumericOnly(); ?>"><?php print $c->getPhone(); ?></a>
-            <p><?php !empty($c->getMailingCity()) ? print $c->getMailingCity() . ", " . $c->getMailingState() : print "City Not Listed"; ?></p>
-            <?php !empty($c->getEmail()) ? print "<a href='mailto: {$c->getEmail()}' style='text-decoration:none;'>{$c->getEmail()}</a>" : print "No Email Available"; ?>
+        <div class="list-item <?php print $singleClass; ?>" data-contactId="<?php print $ex->getId(); ?>">
+            <p class="primary"><?php !empty($ex->getFirstName()) ? print $ex->getFirstName() . " " . $ex->getLastName() : print "<br />";  ?></p>
+            <p class="secondary"><?php !empty($ex->getPrimaryFields()) ? print $ex->getPrimaryFields() : print "<br />"; ?></p>
+            <p><?php !empty($ex->getOcdlaOrganization()) ? print $ex->getOcdlaOrganization() : print "<br />"; ?></p>
+            <a href="tel:<?php print $ex->getPhoneNumericOnly(); ?>"><?php print $ex->getPhone(); ?></a>
+            <p><?php !empty($ex->getMailingCity()) ? print $ex->getMailingCity() . ", " . $ex->getMailingState() : print "City Not Listed"; ?></p>
+            <?php !empty($ex->getEmail()) ? print "<a href='mailto: {$ex->getEmail()}' style='text-decoration:none;'>{$ex->getEmail()}</a>" : print "No Email Available"; ?>
 
-            <?php if(!empty($c->getAreasOfInterest())) : ?>
+            <?php if(!empty($ex->getAreasOfInterest())) : ?>
                 <p style="text-decoration:underline;">
                     <strong>
-                        Areas of Interest
+                        Other Areas/Info
                     </strong>
                 </p>
                 
-                <p><?php print $c->getAreasOfInterest(); ?></p>
+                <p><?php print $ex->getExpertWitnessOtherAreas(); ?></p>
             <?php endif; ?>
         </div>
 

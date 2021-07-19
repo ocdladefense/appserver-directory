@@ -13,7 +13,7 @@
 		<div class="search-row header-row">
 
 			<div class="form-item first-item">
-				<Strong>Search the directory</strong>
+				<a href="/directory/members" style="text-decoration:none;">Go to member directory</a>
 			</div>
 
 			<div class="form-item">

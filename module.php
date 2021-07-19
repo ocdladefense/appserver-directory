@@ -273,4 +273,28 @@ class DirectoryModule extends Module {
 
         return $tmp;
     }
+
+    public function showExpertSingle($id){
+
+        $api = $this->loadForceApi();
+
+        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact WHERE Id = '$id'";
+
+        $records = $api->query($query)->getRecords();
+
+        $experts = Contact::from_query_result_records($records);
+
+
+        $tpl = new Template("expert-single");
+        $tpl->addPath(__DIR__ . "/templates");
+
+        return $tpl->render(array(
+            "experts"           => $experts,
+            "isSingle"          => true,
+            "showQuery"         => true,
+            "query"             => $query
+        ));
+
+
+    }
 }
