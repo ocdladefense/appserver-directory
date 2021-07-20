@@ -7,8 +7,8 @@ class DirectoryModule extends Module {
         parent::__construct();
     }
 
-    // This is a test comment that is being written for a test commit.
-    
+    // This is a test comment that is being written for a test commit message.
+
     public function showMemberDirectory(){
 
         $params = $_POST;
