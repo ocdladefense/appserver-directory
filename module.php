@@ -7,7 +7,7 @@ class DirectoryModule extends Module {
         parent::__construct();
     }
 
-    // This is the edited comment.
+    // This is the edited comment.  Editing.
 
     public function showMemberDirectory(){
 
