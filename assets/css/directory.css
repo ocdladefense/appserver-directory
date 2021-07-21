@@ -91,6 +91,10 @@ li.table-cell.short-cell {
     min-width: 8vw;
 }
 
+a{
+    cursor:pointer;
+}
+
 @media screen and (max-width: 750px) {
     ul.table-row {
         display: block;
