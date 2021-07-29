@@ -106,7 +106,7 @@ class DirectoryModule extends Module {
 
             if(!empty($value)){
 
-                $conditions[] = "$fields LIKE '%$value%'";
+                $conditions[] = "$field LIKE '%$value%'";
             }
         }
 
@@ -133,8 +133,6 @@ class DirectoryModule extends Module {
 
             $query .= " WHERE " . implode(" AND ", $conditions);
         }
-
-        $query.= " AND (NOT Email LIKE '%qq.com%')";
 
         $query .= " ORDER BY LastName";
 
