@@ -89,7 +89,7 @@ li.table-cell.short-cell {
     min-width: 8vw;
 }
 
-@media screen and (max-width: 750px) {
+@media screen and (max-width: 768px) {
     ul.table-row {
         display: block;
         margin-bottom: 10px;
