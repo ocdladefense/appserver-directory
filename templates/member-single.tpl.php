@@ -7,17 +7,14 @@
 
 <h1 style="text-align:center; margin-bottom:10px;">OCDLA Member</h1>
 
-<?php if($showQuery) : ?>
+<?php if($user->isAdmin()) : ?>
     <div>
         <p><?php print $query; ?></p>
     </div>
 <?php endif; ?>
 
-<div>
-    <br />
-    <p><?php print "Showing $count results."; ?></p>
-    <br />
-</div>
+<br />
+<br />
 
 <?php if(empty($contacts)) : ?>
     <h1 style="text-align:center;">Couldn't find anyone using those search parameters......</h1>
@@ -37,10 +34,12 @@
             <p><?php !empty($c->getMailingCity()) ? print $c->getMailingCity() . ", " . $c->getMailingState() : print "City Not Listed"; ?></p>
             <?php !empty($c->getEmail()) ? print "<a href='mailto: {$c->getEmail()}' style='text-decoration:none;'>{$c->getEmail()}</a>" : print "No Email Available"; ?>
 
+            <br /><br />
+            
             <?php if(!empty($c->getAreasOfInterest())) : ?>
-                <p style="text-decoration:underline;">
+                <p>
                     <strong>
-                        Areas of Interest
+                        Areas of Interest:
                     </strong>
                 </p>
                 

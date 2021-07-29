@@ -9,7 +9,7 @@
         <?php print $search; ?>
 </div>
 
-<?php if(!empty($query)) : ?>
+<?php if($user->isAdmin()) : ?>
 <br />
 <div>
 	<strong><?php print $query; ?></strong>

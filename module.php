@@ -1,5 +1,7 @@
 <?php
 
+use function Session\get_current_user;
+
 class DirectoryModule extends Module {
 
     public function __construct() {
@@ -38,8 +40,8 @@ class DirectoryModule extends Module {
             "count"             => count($contacts),
             "search"            => $searchBar,
             "contacts"          => $contacts,
-            "showQuery"         => true,
-            "query"             => $query
+            "query"             => $query,
+            "user"              => get_current_user()
         ));
     }
 
@@ -61,8 +63,8 @@ class DirectoryModule extends Module {
         return $tpl->render(array(
             "contacts"          => $contacts,
             "isSingle"          => true,
-            "showQuery"         => true,
-            "query"             => $query
+            "query"             => $query,
+            "user"              => get_current_user()
         ));
 
 
@@ -218,7 +220,8 @@ class DirectoryModule extends Module {
             "search"    =>  $search->render(array("primaryFields" => $primaryFields, "selectedPrimaryField" => $selectedPrimaryField)),
             "experts"   =>  $experts,
             "count"     =>  count($experts),
-            "query"     =>  $expertQuery 
+            "query"     =>  $expertQuery,
+            "user"      =>  get_current_user()
         ));
     }
 
@@ -293,8 +296,8 @@ class DirectoryModule extends Module {
         return $tpl->render(array(
             "experts"           => $experts,
             "isSingle"          => true,
-            "showQuery"         => true,
-            "query"             => $query
+            "query"             => $query,
+            "user"              => get_current_user()
         ));
 
 

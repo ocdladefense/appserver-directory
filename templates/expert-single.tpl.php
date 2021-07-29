@@ -7,7 +7,9 @@
 
 <h1 style="text-align:center; margin-bottom:10px;">OCDLA Expert Witness</h1>
 
-<?php if(!empty($query)) : ?>
+<br /><br />
+
+<?php if($user->isAdmin()) : ?>
     <div>
         <p><?php print $query; ?></p>
     </div>
