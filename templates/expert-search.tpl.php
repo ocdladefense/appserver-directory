@@ -17,11 +17,11 @@
 			</div>
 
 			<div class="form-item">
-				<button type="submit">SUBMIT SEARCH</button>
+				<a href="/directory/experts" style="text-decoration:none;">CLEAR SEARCH</a>
 			</div>
 
 			<div class="form-item">
-				<a href="/directory/experts" style="text-decoration:none;">CLEAR SEARCH</a>
+				<button type="submit">SUBMIT SEARCH</button>
 			</div>
 
 		</div> <!--end search row -->

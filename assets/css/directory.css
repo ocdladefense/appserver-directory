@@ -47,9 +47,6 @@ button{
 .sidenav{
     display: none;
 }
-div#stage {
-    width: unset;
-}
 
 .search-row.optional-row {
     display: none;
