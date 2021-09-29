@@ -187,19 +187,15 @@ class DirectoryModule extends Module {
     /* #region Expert Witness Directory */
     public function showExpertDirectory(){
 
-        $params = $_POST;
+        $_POST["Ocdla_Is_Expert_Witness__c"] = True;
 
+        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c FROM Contact";
 
-        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c FROM Contact WHERE Ocdla_Is_Expert_Witness__c = True ORDER BY LastName";
+        $whereClause = $this->buildExpertWhereClause();
 
-        $whereClause = $this->buildExpertWhereClause($params);
+        if($whereClause != null) $query .= $whereClause;
 
-        if($whereClause != null){
-
-            //modify the query
-            var_dump($whereClause);exit;
-
-        }
+        $query .= " ORDER BY LastName";
 
         $api = $this->loadForceApi();
         $resp = $api->query($query);
@@ -209,16 +205,11 @@ class DirectoryModule extends Module {
         $records = $resp->getRecords();
         $experts = Contact::from_query_result_records($records);
 
-        if(!empty($selectedPrimaryField)){
-
-            $experts = $this->filterOnPrimaryField($experts, $selectedPrimaryField);
-        }
-
 
         $tpl = new Template("expert-list");
         $tpl->addPath(__DIR__ . "/templates");
 
-        $search = $this->getExpertWitnessSearchBar($params, $selectedPrimaryField);
+        $search = $this->getExpertWitnessSearchBar($_POST);
 
         return $tpl->render(array(
             "search"    =>  $search,
@@ -229,20 +220,20 @@ class DirectoryModule extends Module {
         ));
     }
 
-    public function buildExpertWhereClause($params){
+    public function buildExpertWhereClause(){
 
-        // Build an array of conditions based on the search params.
         $conditions = array();
 
         $fields = array(
             "FirstName" => "LIKE '%%%s%%'",
-            "LastName" => "LIKE '%%s%'",
-            "Ocdla_Organization__c" => "LIKE '%%s%'",
-            "MailingCity" => "LIKE '%%s%'",
-            "Ocdla_Expert_Witness_Primary__c" => "INCLUDES('%s')"
+            "LastName" => "LIKE '%%%s%%'",
+            "Ocdla_Organization__c" => "LIKE '%%%s%%'",
+            "MailingCity" => "LIKE '%%%s%%'",
+            "Ocdla_Expert_Witness_Primary__c" => "INCLUDES('%s')",
+            "Ocdla_Is_Expert_Witness__c" => "= True"
         );
 
-        $fieldsWithValues = array_filter($params);
+        $fieldsWithValues = array_filter($_POST);
 
         if(empty($fieldsWithValues)) return null;
 
@@ -256,23 +247,26 @@ class DirectoryModule extends Module {
             $conditions[] = $field . " " . $formatted;
         }
 
-        return $conditions;
+        $clause = " WHERE " . implode(" AND ", $conditions);
+
+        return $clause;
     }
 
-    public function getExpertWitnessSearchBar($params, $selectedPrimaryField){
+    public function getExpertWitnessSearchBar(){
 
-        $primaryField = $this->getContactField("Ocdla_Expert_Witness_Primary__c");
+        $witnessPrimaryField = $this->getContactField("Ocdla_Expert_Witness_Primary__c");
 
-        $primaryFieldPicklistValues = $this->getPicklistValues($primaryField);
+        $primaryFieldPicklistValues = $this->getPicklistValues($witnessPrimaryField);
 
         $search = new Template("expert-search");
         $search->addPath(__DIR__ . "/templates");
 
+
         return $search->render(array(
-            "firstName"     => $params["FirstName"],
-            "lastName"      => $params["LastName"],
+            "firstName"     => $_POST["FirstName"],
+            "lastName"      => $_POST["LastName"],
             "primaryFields" => $primaryFieldPicklistValues,
-            "selectedPrimaryField" => $selectedPrimaryField
+            "selectedPrimaryField" => $_POST["Ocdla_Expert_Witness_Primary__c"]
         ));
     }
 
@@ -309,29 +303,12 @@ class DirectoryModule extends Module {
         return $pValues;
     }
 
-    public function filterOnPrimaryField($contacts, $selectedPrimaryField){
-
-        $tmp = array();
-
-        foreach($contacts as $c){
-
-            $getAsArray = true;
-            $primaryFields = $c->getPrimaryFields($getAsArray);
-
-            if(in_array($selectedPrimaryField, $primaryFields)) {
-
-                $tmp[] = $c;
-
-            }
-        }
-
-        return $tmp;
-    }
-
     public function showExpertSingle($id){
 
+        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c FROM Contact WHERE Id = '$id'";
+
         $api = $this->loadForceApi();
-        $query = $this->buildExpertWitnessQuery(array("Id" => $id));
+
         $resp = $api->query($query);
 
         if(!$resp->IsSuccess()) throw new Exception($resp->getErrorMessage());

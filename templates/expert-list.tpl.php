@@ -4,7 +4,7 @@
         <?php print $search; ?>
 </div>
 
-<?php if($user->isAdmin()) : ?>
+<?php if(True || $user->isAdmin()) : ?>
 <br />
 <div>
 	<strong><?php print $query; ?></strong>
