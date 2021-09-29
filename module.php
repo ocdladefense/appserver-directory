@@ -1,6 +1,7 @@
 <?php
 
 use function Session\get_current_user;
+use Salesforce\RestApiRequest;
 
 class DirectoryModule extends Module {
 
@@ -51,6 +52,9 @@ class DirectoryModule extends Module {
 
     public function buildMemberWhereClause(){
 
+        $areaOfInterest = $_POST["areaOfInterest"];
+        unset($_POST["areaOfInterest"]);
+
         $fieldSyntaxes = array(
           "FirstName"                     => "LIKE '%%%s%%'",
           "LastName"                      => "LIKE '%%%s%%'",
@@ -70,6 +74,10 @@ class DirectoryModule extends Module {
             $syntax = sprintf($fieldSyntaxes[$field], $postFieldsWithValues[$field]);
             $formatted = $field . " " . $syntax;
             $conditions[] = $formatted;
+        }
+
+        if(!empty($areaOfInterest)) {
+            $conditions[] = "id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')";
         }
 
         $clause = " WHERE " . implode(" AND ", $conditions);
@@ -123,57 +131,6 @@ class DirectoryModule extends Module {
     }
 
 
-    public function getOccupationFieldsDistinct(){
-
-        $query = "SELECT Ocdla_Occupation_Field_Type__c FROM Contact ORDER BY Ocdla_Occupation_Field_Type__c DESC";
-
-        $api = $this->loadForceApi();
-
-        $result = $api->query($query);
-
-        if(!$result->isSuccess()) throw new Exception($result->getErrorMessage());
-
-        $records = $result->getRecords();
-
-        $areas = array();
-
-        foreach($records as $record){
-
-            $area = $record["Ocdla_Occupation_Field_Type__c"];
-
-            $areas[$area] = $area;
-        }
-
-        //var_dump($areas);exit;
-
-        return $areas;
-    }
-
-
-    public function getAreasOfInterest(){
-
-        $pickListId = "0Nt5b000000CbzK";
-
-        $req = $this->loadForceApi();
-
-        $url = "/services/data/v39.0/tooling/sobjects/GlobalValueSet/$pickListId";
-
-        $resp = $req->send($url);
-
-        $picklistValues = $resp->getBody()["Metadata"]["customValue"];
-
-        $areasOfInterest = array();
-        foreach($picklistValues as $value){
-
-            $valueName = $value["valueName"];
-
-            $areasOfInterest[$valueName] = $valueName;
-        }
-
-        return $areasOfInterest;
-    }
-
-
     /* #endregion */
 
 
@@ -182,13 +139,20 @@ class DirectoryModule extends Module {
 
         $_POST["Ocdla_Is_Expert_Witness__c"] = True;
 
+        $fields = array(
+            "FirstName" => "LIKE '%%%s%%'",
+            "LastName" => "LIKE '%%%s%%'",
+            "Ocdla_Organization__c" => "LIKE '%%%s%%'",
+            "MailingCity" => "LIKE '%%%s%%'",
+            "Ocdla_Expert_Witness_Primary__c" => "INCLUDES('%s')",
+            "Ocdla_Is_Expert_Witness__c" => "= %s"
+        );
+
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c FROM Contact";
 
-        $whereClause = $this->buildExpertWhereClause();
+        $conditions = RestApiRequest::getSoqlConditions($_POST, $fields);
 
-        if($whereClause != null) $query .= $whereClause;
-
-        $query .= " ORDER BY LastName";
+        $query .= (" WHERE " . implode(" AND ", $conditions) . " ORDER BY LastName");
 
         $api = $this->loadForceApi();
         $resp = $api->query($query);
@@ -213,36 +177,6 @@ class DirectoryModule extends Module {
         ));
     }
 
-    public function buildExpertWhereClause(){
-
-        $conditions = array();
-
-        $fields = array(
-            "FirstName" => "LIKE '%%%s%%'",
-            "LastName" => "LIKE '%%%s%%'",
-            "Ocdla_Organization__c" => "LIKE '%%%s%%'",
-            "MailingCity" => "LIKE '%%%s%%'",
-            "Ocdla_Expert_Witness_Primary__c" => "INCLUDES('%s')",
-            "Ocdla_Is_Expert_Witness__c" => "= True"
-        );
-
-        $fieldsWithValues = array_filter($_POST);
-
-        if(empty($fieldsWithValues)) return null;
-
-
-        foreach($fieldsWithValues as $field => $value){
-
-            $syntax = $fields[$field];
-            $formatted = sprintf($syntax, $value);
-            $conditions[] = $field . " " . $formatted;
-        }
-
-        $clause = " WHERE " . implode(" AND ", $conditions);
-
-        return $clause;
-    }
-
     public function getExpertWitnessSearchBar(){
 
         $witnessPrimaryField = $this->getContactField("Ocdla_Expert_Witness_Primary__c");
@@ -264,37 +198,7 @@ class DirectoryModule extends Module {
     }
 
 
-    public function getContactField($fieldName){
 
-        $endpoint = "/services/data/v23.0/sobjects/Contact/describe";
-        $api = $this->loadForceApi();
-        $resp = $api->send($endpoint);
-        $fields = $resp->getBody()["fields"];
-
-        foreach($fields as $field){
-
-            if($field["name"] == $fieldName){
-
-                return $field;
-            }
-        }
-
-        return null;
-    }
-
-    public function getPicklistValues($field){
-
-        $pValues = array();
-
-        $pickListValues = $field["picklistValues"];
-
-        foreach($pickListValues as $value){
-
-            $pValues[$value["value"]] = $value["label"];
-        }
-
-        return $pValues;
-    }
 
     public function showExpertSingle($id){
 
