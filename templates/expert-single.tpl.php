@@ -33,6 +33,10 @@
             <p><?php !empty($ex->getMailingCity()) ? print $ex->getMailingCity() . ", " . $ex->getMailingState() : print "City Not Listed"; ?></p>
             <?php !empty($ex->getEmail()) ? print "<a href='mailto: {$ex->getEmail()}' style='text-decoration:none;'>{$ex->getEmail()}</a>" : print "No Email Available"; ?>
 
+            <br />
+            <br />
+            <p><?php print $ex->getExpertWitnessOtherAreas(); ?></p>
+
             <?php if(!empty($ex->getAreasOfInterest())) : ?>
                 <p style="text-decoration:underline;">
                     <strong>

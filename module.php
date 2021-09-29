@@ -241,9 +241,7 @@ class DirectoryModule extends Module {
         foreach($fieldsWithValues as $field => $value){
 
             $syntax = $fields[$field];
-
             $formatted = sprintf($syntax, $value);
-
             $conditions[] = $field . " " . $formatted;
         }
 
@@ -265,6 +263,8 @@ class DirectoryModule extends Module {
         return $search->render(array(
             "firstName"     => $_POST["FirstName"],
             "lastName"      => $_POST["LastName"],
+            "companyName"   => $_POST["Ocdla_Organization__c"],
+            "city"          => $_POST["MailingCity"],
             "primaryFields" => $primaryFieldPicklistValues,
             "selectedPrimaryField" => $_POST["Ocdla_Expert_Witness_Primary__c"]
         ));
