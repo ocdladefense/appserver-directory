@@ -52,7 +52,7 @@ class DirectoryModule extends Module {
         $tpl = new Template("member-list");
         $tpl->addPath(__DIR__ . "/templates");
 
-        $searchBar = $this->getMemberSearchBar($params);
+        $searchBar = $this->getMemberSearchBar($params, $areaOfInterest);
 
         return $tpl->render(array(
             "count"             => count($contacts),
@@ -87,7 +87,7 @@ class DirectoryModule extends Module {
 
     }
 
-    public function getMemberSearchBar($params){
+    public function getMemberSearchBar($params, $areaOfInterest){
 
         $areasOfInterestPicklistId = "0Nt5b000000CbzK";
 
@@ -105,7 +105,7 @@ class DirectoryModule extends Module {
             "occupationFields"   => $occupationFieldsList,
             "selectedOccupation" => $_POST["Ocdla_Occupation_Field_Type__c"],
             "areasOfInterest"    => $areasOfInterest,
-            "selectedInterest"   => $_POST["areaOfInterest"],
+            "selectedInterest"   => $areaOfInterest,
             "firstName"          => $_POST["FirstName"],
             "lastName"           => $_POST["LastName"],
             "companyName"        => $_POST["Ocdla_Organization__c"],
