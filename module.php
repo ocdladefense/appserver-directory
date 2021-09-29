@@ -1,7 +1,7 @@
 <?php
 
 use function Session\get_current_user;
-use Salesforce\RestApiRequest;
+use Salesforce\ApiHelper;
 
 class DirectoryModule extends Module {
 
@@ -17,16 +17,29 @@ class DirectoryModule extends Module {
 
         $_POST["Ocdla_Current_Member_Flag__c"] = True;
 
+        $areaOfInterest = $_POST["areaOfInterest"];
+        unset($_POST["areaOfInterest"]);
+
+        $fieldSyntaxes = array(
+          "FirstName"                     => "LIKE '%%%s%%'",
+          "LastName"                      => "LIKE '%%%s%%'",
+          "Ocdla_Organization__c"         => "LIKE '%%%s%%'",
+          "MailingCity"                   => "LIKE '%%%s%%'",
+          "Ocdla_Occupation_Field_Type__c"=> "LIKE '%%%s%%'",
+          "Ocdla_Current_Member_Flag__c"  => "= %s"  
+        );
+
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact";
 
-        $whereClause = $this->buildMemberWhereClause();
+        $conditions = ApiHelper::getSoqlConditions($_POST, $fieldSyntaxes);
 
-        if($whereClause != null) $query .= $whereClause;
+        if(!empty($areaOfInterest)) {
+            $conditions[] = "id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')";
+        }
 
-        $query .= " ORDER BY LastName";
+        $query .= " WHERE " . implode(" AND ", $conditions) . " ORDER BY LastName";
 
         $api = $this->loadForceApi();
-
         $result = $api->query($query);
 
         if(!$result->success()) throw new Exception($result->getErrorMessage());
@@ -49,42 +62,6 @@ class DirectoryModule extends Module {
             "user"              => get_current_user()
         ));
     }
-
-    public function buildMemberWhereClause(){
-
-        $areaOfInterest = $_POST["areaOfInterest"];
-        unset($_POST["areaOfInterest"]);
-
-        $fieldSyntaxes = array(
-          "FirstName"                     => "LIKE '%%%s%%'",
-          "LastName"                      => "LIKE '%%%s%%'",
-          "Ocdla_Organization__c"         => "LIKE '%%%s%%'",
-          "MailingCity"                   => "LIKE '%%%s%%'",
-          "Ocdla_Occupation_Field_Type__c"=> "LIKE '%%%s%%'",
-          "Ocdla_Current_Member_Flag__c"  => "= True"  
-        );
-
-        $postFieldsWithValues = array_filter($_POST);
-
-        if(empty($postFieldsWithValues)) return null;
-
-        $conditions = array();
-        foreach($postFieldsWithValues as $field => $value){
-
-            $syntax = sprintf($fieldSyntaxes[$field], $postFieldsWithValues[$field]);
-            $formatted = $field . " " . $syntax;
-            $conditions[] = $formatted;
-        }
-
-        if(!empty($areaOfInterest)) {
-            $conditions[] = "id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')";
-        }
-
-        $clause = " WHERE " . implode(" AND ", $conditions);
-
-        return $clause;
-    }
-
 
     public function showMemberSingle($id){
 
@@ -112,15 +89,22 @@ class DirectoryModule extends Module {
 
     public function getMemberSearchBar($params){
 
+        $areasOfInterestPicklistId = "0Nt5b000000CbzK";
+
+        $api = $this->loadForceApi();
+        $occupationFieldTypeMeta = $api->getsObjectField("Contact", "Ocdla_Occupation_Field_Type__c");
+        $occupationFieldsList = ApiHelper::getPicklistValues($occupationFieldTypeMeta);
+        
+        $areasOfInterest = $api->getAreasOfInterest($areasOfInterestPicklistId);
+
+        
         $search = new Template("member-search");
         $search->addPath(__DIR__ . "/templates");
 
-        
-
         return $search->render(array(
-            "occupationFields"   => $this->getOccupationFieldsDistinct(),
+            "occupationFields"   => $occupationFieldsList,
             "selectedOccupation" => $_POST["Ocdla_Occupation_Field_Type__c"],
-            "areasOfInterest"    => $this->getAreasOfInterest(),
+            "areasOfInterest"    => $areasOfInterest,
             "selectedInterest"   => $_POST["areaOfInterest"],
             "firstName"          => $_POST["FirstName"],
             "lastName"           => $_POST["LastName"],
@@ -150,7 +134,7 @@ class DirectoryModule extends Module {
 
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c FROM Contact";
 
-        $conditions = RestApiRequest::getSoqlConditions($_POST, $fields);
+        $conditions = ApiHelper::getSoqlConditions($_POST, $fields);
 
         $query .= (" WHERE " . implode(" AND ", $conditions) . " ORDER BY LastName");
 
@@ -177,29 +161,6 @@ class DirectoryModule extends Module {
         ));
     }
 
-    public function getExpertWitnessSearchBar(){
-
-        $witnessPrimaryField = $this->getContactField("Ocdla_Expert_Witness_Primary__c");
-
-        $primaryFieldPicklistValues = $this->getPicklistValues($witnessPrimaryField);
-
-        $search = new Template("expert-search");
-        $search->addPath(__DIR__ . "/templates");
-
-
-        return $search->render(array(
-            "firstName"     => $_POST["FirstName"],
-            "lastName"      => $_POST["LastName"],
-            "companyName"   => $_POST["Ocdla_Organization__c"],
-            "city"          => $_POST["MailingCity"],
-            "primaryFields" => $primaryFieldPicklistValues,
-            "selectedPrimaryField" => $_POST["Ocdla_Expert_Witness_Primary__c"]
-        ));
-    }
-
-
-
-
     public function showExpertSingle($id){
 
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c FROM Contact WHERE Id = '$id'";
@@ -217,11 +178,36 @@ class DirectoryModule extends Module {
         $tpl = new Template("expert-single");
         $tpl->addPath(__DIR__ . "/templates");
 
+        $search = $this->getExpertWitnessSearchBar($_POST);
+
         return $tpl->render(array(
+            "search"            => $search,
             "experts"           => $experts,
             "isSingle"          => true,
             "query"             => $query,
             "user"              => get_current_user()
+        ));
+    }
+
+    public function getExpertWitnessSearchBar(){
+
+        $api = $this->loadForceApi();
+
+        $witnessPrimaryFieldData = $api->getSobjectField("Contact", "Ocdla_Expert_Witness_Primary__c");
+
+        $primaryFieldPicklistValues = $api->getPicklistValues($witnessPrimaryFieldData);
+
+        $search = new Template("expert-search");
+        $search->addPath(__DIR__ . "/templates");
+
+
+        return $search->render(array(
+            "firstName"     => $_POST["FirstName"],
+            "lastName"      => $_POST["LastName"],
+            "companyName"   => $_POST["Ocdla_Organization__c"],
+            "city"          => $_POST["MailingCity"],
+            "primaryFields" => $primaryFieldPicklistValues,
+            "selectedPrimaryField" => $_POST["Ocdla_Expert_Witness_Primary__c"]
         ));
     }
 

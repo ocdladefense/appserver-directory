@@ -1,5 +1,9 @@
 <link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css"></link>
 
+<div class="search">
+    <?php print $search; ?>
+</div>
+
 <div class="directory-container">
 
 <a class="back-link" href="/directory/experts" style="float: left;"><i class="fa fa-arrow-left" style="font-size:25px;color:blue"></i></a><br /><br />
