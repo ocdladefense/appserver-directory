@@ -4,6 +4,8 @@
 	$default = array("" => "All Primary Fields");
 	$all = $default + $primaryFields;
 
+	var_dump($all);exit;
+
 	$selectedPrimaryField = empty($selectedPrimaryField) ? "" : $selectedPrimaryField;
 ?>
 

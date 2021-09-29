@@ -14,18 +14,18 @@ class DirectoryModule extends Module {
 
     public function showMemberDirectory(){
 
-        $params = $_POST;
-        $searchBar = $this->getMemberSearchBar($params);
+        $_POST["Ocdla_Current_Member_Flag__c"] = True;
 
-        $selectedOccupation = $params["Ocdla_Occupation_Field_Type__c"] != "All Occupations/Fields" ? $params["Ocdla_Occupation_Field_Type__c"] : null;
-        $selectedInterest = $params["areaOfInterest"] != "All Areas of Interest" ? $params["areaOfInterest"] : null;
+        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact";
 
-        if($selectedOccupation == null) unset($params["Ocdla_Occupation_Field_Type__c"]);
-        if($selectedInterest == null) unset($params["areaOfInterest"]);
+        $whereClause = $this->buildMemberWhereClause();
 
-        $query = $this->buildMemberQuery($params);
+        if($whereClause != null) $query .= $whereClause;
+
+        $query .= " ORDER BY LastName";
 
         $api = $this->loadForceApi();
+
         $result = $api->query($query);
 
         if(!$result->success()) throw new Exception($result->getErrorMessage());
@@ -34,8 +34,11 @@ class DirectoryModule extends Module {
 
         $contacts = Contact::from_query_result_records($records);
 
+
         $tpl = new Template("member-list");
         $tpl->addPath(__DIR__ . "/templates");
+
+        $searchBar = $this->getMemberSearchBar($params);
 
         return $tpl->render(array(
             "count"             => count($contacts),
@@ -44,6 +47,34 @@ class DirectoryModule extends Module {
             "query"             => $query,
             "user"              => get_current_user()
         ));
+    }
+
+    public function buildMemberWhereClause(){
+
+        $fieldSyntaxes = array(
+          "FirstName"                     => "LIKE '%%%s%%'",
+          "LastName"                      => "LIKE '%%%s%%'",
+          "Ocdla_Organization__c"         => "LIKE '%%%s%%'",
+          "MailingCity"                   => "LIKE '%%%s%%'",
+          "Ocdla_Occupation_Field_Type__c"=> "LIKE '%%%s%%'",
+          "Ocdla_Current_Member_Flag__c"  => "= True"  
+        );
+
+        $postFieldsWithValues = array_filter($_POST);
+
+        if(empty($postFieldsWithValues)) return null;
+
+        $conditions = array();
+        foreach($postFieldsWithValues as $field => $value){
+
+            $syntax = sprintf($fieldSyntaxes[$field], $postFieldsWithValues[$field]);
+            $formatted = $field . " " . $syntax;
+            $conditions[] = $formatted;
+        }
+
+        $clause = " WHERE " . implode(" AND ", $conditions);
+
+        return $clause;
     }
 
 
@@ -75,61 +106,22 @@ class DirectoryModule extends Module {
 
         $search = new Template("member-search");
         $search->addPath(__DIR__ . "/templates");
+
         
 
         return $search->render(array(
             "occupationFields"   => $this->getOccupationFieldsDistinct(),
-            "selectedOccupation" => $params["Ocdla_Occupation_Field_Type__c"],
+            "selectedOccupation" => $_POST["Ocdla_Occupation_Field_Type__c"],
             "areasOfInterest"    => $this->getAreasOfInterest(),
-            "selectedInterest"   => $params["areaOfInterest"],
-            "firstName"          => $params["FirstName"],
-            "lastName"           => $params["LastName"],
-            "companyName"        => $params["Ocdla_Organization__c"],
-            "city"               => $params["MailingCity"],
-            "includeExperts"     => $params["IncludeExperts"]
+            "selectedInterest"   => $_POST["areaOfInterest"],
+            "firstName"          => $_POST["FirstName"],
+            "lastName"           => $_POST["LastName"],
+            "companyName"        => $_POST["Ocdla_Organization__c"],
+            "city"               => $_POST["MailingCity"],
+            "includeExperts"     => $_POST["IncludeExperts"]
         ));
     }
-    public function buildMemberQuery($params){
 
-        $includeExperts = $params["IncludeExperts"];
-        unset($params["IncludeExperts"]);
-
-        $areaOfInterest = $params["areaOfInterest"];
-        unset($params["areaOfInterest"]);
-
-        $fields = "Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r)";
-        
-        $conditions = array();
-        foreach($params as $field => $value){
-
-            if(!empty($value)){
-
-                $conditions[] = "$field LIKE '%$value%'";
-            }
-        }
-
-        if(!empty($includeExperts) && $includeExperts) $conditions[] = "Ocdla_is_expert_witness__c = false";
-
-        // If there is an area of interest selected, query for all of the contacts who have set that as one of their areas of intersts.
-        // Only use those contacts in you query.
-        if(!empty($areaOfInterest)){
-
-            $conditions[] = "id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')";
-        }
-
-        $conditions[] = "Ocdla_Current_Member_Flag__c = True";
-
-        $query = "SELECT $fields FROM Contact";
-
-        if(!empty($conditions)){
-
-            $query .= " WHERE " . implode(" AND ", $conditions);
-        }
-
-        $query .= " ORDER BY LastName";
-
-        return $query;
-    }
 
     public function getOccupationFieldsDistinct(){
 
@@ -149,11 +141,10 @@ class DirectoryModule extends Module {
 
             $area = $record["Ocdla_Occupation_Field_Type__c"];
 
-            if(!in_array($area, $areas)){
-
-                array_unshift($areas, $area);
-            }
+            $areas[$area] = $area;
         }
+
+        //var_dump($areas);exit;
 
         return $areas;
     }
@@ -174,7 +165,9 @@ class DirectoryModule extends Module {
         $areasOfInterest = array();
         foreach($picklistValues as $value){
 
-            $areasOfInterest[] = $value["valueName"];
+            $valueName = $value["valueName"];
+
+            $areasOfInterest[$valueName] = $valueName;
         }
 
         return $areasOfInterest;
