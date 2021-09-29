@@ -1,9 +1,10 @@
 <link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css" />
 
 <?php
-	array_unshift($primaryFields, "All Primary Fields");
+	$default = array("" => "All Primary Fields");
+	$all = $default + $primaryFields;
 
-	$selectedPrimaryField = empty($selectedPrimaryField) ? "All Primary Fields" : $selectedPrimaryField;
+	$selectedPrimaryField = empty($selectedPrimaryField) ? "" : $selectedPrimaryField;
 ?>
 
 <div class="container">
@@ -37,7 +38,7 @@
 			</div>
 			
 			<div class="form-item">
-				<input name="Ocdla_Organization__c" value="<?php print $companyName; ?>" size="20" maxlength="35" type="text" placeholder="Company Name"> 
+				<input name="Ocdla_Organization__c" value="<?php print $companyName; ?>" size="20" maxlength="35" type="text" placeholder="Organization Name"> 
 			</div>
 				
 			<div class="form-item">
@@ -45,15 +46,15 @@
 			</div>
 
 			<div class="form-item form-select">
-				<select name="Ocdla_Occupation_Field_Type__c" onchange="document.getElementById('search-directory').submit()">
+				<select name="Ocdla_Expert_Witness_Primary__c" onchange="document.getElementById('search-directory').submit()">
 
 					<?php
-						foreach ($primaryFields as $field){
+						foreach ($all as $value => $label){
 
-							$selected = $selectedPrimaryField == $field ? "selected" : "";
+							$selected = $selectedPrimaryField == $value ? "selected" : "";
 						?>
 
-						<option value="<?php print $field; ?>" <?php print $selected; ?>><?php print $field; ?></option>
+						<option value="<?php print $value; ?>" <?php print $selected; ?>><?php print $label; ?></option>
 
 					<?php } ?>
 					
