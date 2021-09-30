@@ -16,9 +16,18 @@ class DirectoryModule extends Module {
     public function showMemberDirectory(){
 
         $_POST["Ocdla_Current_Member_Flag__c"] = True;
+        $includeExperts = True;
+        
+        if(empty($_POST["IncludeExperts"])){
+
+            $_POST["Ocdla_Is_Expert_Witness__c"] = False;
+            $includeExperts = False;
+        }
 
         $areaOfInterest = $_POST["areaOfInterest"];
         unset($_POST["areaOfInterest"]);
+        unset($_POST["IncludeExperts"]);
+
 
         $fieldSyntaxes = array(
           "FirstName"                     => "LIKE '%%%s%%'",
@@ -26,7 +35,8 @@ class DirectoryModule extends Module {
           "Ocdla_Organization__c"         => "LIKE '%%%s%%'",
           "MailingCity"                   => "LIKE '%%%s%%'",
           "Ocdla_Occupation_Field_Type__c"=> "LIKE '%%%s%%'",
-          "Ocdla_Current_Member_Flag__c"  => "= %s"  
+          "Ocdla_Current_Member_Flag__c"  => "= %s",
+          "Ocdla_Is_Expert_Witness__c"    => "= %s"
         );
 
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact";
@@ -36,6 +46,8 @@ class DirectoryModule extends Module {
         if(!empty($areaOfInterest)) {
             $conditions[] = "id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')";
         }
+
+        //var_dump($conditions);exit;
 
         $query .= " WHERE " . implode(" AND ", $conditions) . " ORDER BY LastName";
 
@@ -52,7 +64,7 @@ class DirectoryModule extends Module {
         $tpl = new Template("member-list");
         $tpl->addPath(__DIR__ . "/templates");
 
-        $searchBar = $this->getMemberSearchBar($params, $areaOfInterest);
+        $searchBar = $this->getMemberSearchBar($params, $areaOfInterest, $includeExperts);
 
         return $tpl->render(array(
             "count"             => count($contacts),
@@ -87,17 +99,21 @@ class DirectoryModule extends Module {
 
     }
 
-    public function getMemberSearchBar($params, $areaOfInterest){
-
-        $areasOfInterestPicklistId = "0Nt5b000000CbzK";
+    public function getMemberSearchBar($params, $areaOfInterest, $includeExperts){
 
         $api = $this->loadForceApi();
-        $occupationFieldTypeMeta = $api->getsObjectField("Contact", "Ocdla_Occupation_Field_Type__c");
-        $occupationFieldsList = ApiHelper::getPicklistValues($occupationFieldTypeMeta);
-        
-        $areasOfInterest = $api->getAreasOfInterest($areasOfInterestPicklistId);
 
-        
+        //$areasOfInterestPicklistId = "0Nt5b000000CbzK";
+        $areasOfInterestPicklistId = $api->getGlobalValueSetIdByDeveloperName("AOI");
+        $areasOfInterest = $api->getGlobalValueSetNames($areasOfInterestPicklistId);
+
+
+        $occupationFieldData = $api->getsObjectField("Contact", "Ocdla_Occupation_Field_Type__c");
+        $occupationFieldsList = ApiHelper::getPicklistFieldValues($occupationFieldData);
+
+        // $list = $api->getSoqlDistinctFieldValues("Contact", "LastName", True);
+        // var_dump($list);exit;
+
         $search = new Template("member-search");
         $search->addPath(__DIR__ . "/templates");
 
@@ -110,7 +126,7 @@ class DirectoryModule extends Module {
             "lastName"           => $_POST["LastName"],
             "companyName"        => $_POST["Ocdla_Organization__c"],
             "city"               => $_POST["MailingCity"],
-            "includeExperts"     => $_POST["IncludeExperts"]
+            "includeExperts"     => $includeExperts
         ));
     }
 
@@ -193,9 +209,9 @@ class DirectoryModule extends Module {
 
         $api = $this->loadForceApi();
 
-        $witnessPrimaryFieldData = $api->getSobjectField("Contact", "Ocdla_Expert_Witness_Primary__c");
+        $witnessPrimaryFieldMeta= $api->getSobjectField("Contact", "Ocdla_Expert_Witness_Primary__c");
 
-        $primaryFieldPicklistValues = $api->getPicklistValues($witnessPrimaryFieldData);
+        $primaryFieldPicklistValues = ApiHelper::getPicklistFieldValues($witnessPrimaryFieldMeta);
 
         $search = new Template("expert-search");
         $search->addPath(__DIR__ . "/templates");
