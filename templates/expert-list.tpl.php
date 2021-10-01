@@ -1,20 +1,21 @@
 <link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css"></link>
 
+
+<div>
+	<h2>OCDLA Expert Witness Directory</h2>
+</div>
+
 <div class="search">
         <?php print $search; ?>
 </div>
 
-<?php if(True || $user->isAdmin()) : ?>
+<?php if($user->isAdmin()) : ?>
 <br />
 <div>
 	<strong><?php print $query; ?></strong>
 </div>
 <br />
 <?php endif; ?>
-
-<div>
-	<h2>OCDLA Expert Witness Directory</h2>
-</div>
 
 
 <div>
