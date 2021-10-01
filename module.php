@@ -1,7 +1,7 @@
 <?php
 
 use function Session\get_current_user;
-use Salesforce\ApiHelper;
+use Salesforce\SoqlQueryBuilder;
 use Salesforce\SObject;
 
 class DirectoryModule extends Module {
@@ -33,7 +33,7 @@ class DirectoryModule extends Module {
 
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c FROM AreasOfInterest__r) FROM Contact";
 
-        $conditions = ApiHelper::getSoqlConditions($_POST, $fields);
+        $conditions = SoqlQueryBuilder::getSoqlConditions($_POST, $fields);
 
         if(!empty($areaOfInterest)) {
             $conditions[] = "Id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')";
@@ -133,7 +133,7 @@ class DirectoryModule extends Module {
 
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c FROM Contact";
 
-        $conditions = ApiHelper::getSoqlConditions($_POST, $fields);
+        $conditions = SoqlQueryBuilder::getSoqlConditions($_POST, $fields);
 
         $query .= (" WHERE " . implode(" AND ", $conditions) . " ORDER BY LastName");
 
@@ -148,14 +148,14 @@ class DirectoryModule extends Module {
 
         $metadata = $api->getSobjectMetadata("Contact");
         $sobject = SObject::fromMetadata($metadata);
-        $_POST["primary-fields"] = $sobject->getPicklist("Ocdla_Expert_Witness_Primary__c");
+        $primaryFields = $sobject->getPicklist("Ocdla_Expert_Witness_Primary__c");
 
 
         $tpl = new Template("expert-list");
         $tpl->addPath(__DIR__ . "/templates");
 
         return $tpl->render(array(
-            "search"    =>  $this->getExpertWitnessSearchBar($_POST),
+            "search"    =>  $this->getExpertWitnessSearchBar($_POST, $primaryFields),
             "experts"   =>  $experts,
             "count"     =>  count($experts),
             "query"     =>  $query,
@@ -188,19 +188,19 @@ class DirectoryModule extends Module {
         ));
     }
 
-    public function getExpertWitnessSearchBar($params){
+    public function getExpertWitnessSearchBar($state, $primaryFields){
 
         $search = new Template("expert-search");
         $search->addPath(__DIR__ . "/templates");
 
 
         return $search->render(array(
-            "firstName"     => $params["FirstName"],
-            "lastName"      => $params["LastName"],
-            "companyName"   => $params["Ocdla_Organization__c"],
-            "city"          => $params["MailingCity"],
-            "primaryFields" => $params["primary-fields"],
-            "selectedPrimaryField" => $_POST["Ocdla_Expert_Witness_Primary__c"]
+            "firstName"     => $state["FirstName"],
+            "lastName"      => $state["LastName"],
+            "companyName"   => $state["Ocdla_Organization__c"],
+            "city"          => $state["MailingCity"],
+            "primaryFields" => $primaryFields,
+            "selectedPrimaryField" => $state["Ocdla_Expert_Witness_Primary__c"]
         ));
     }
 
