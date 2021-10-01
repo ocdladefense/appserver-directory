@@ -48,8 +48,8 @@ class DirectoryModule extends Module {
         $contacts = Contact::from_query_result_records($records);
 
         $metadata = $api->getSobjectMetadata("Contact");
-        $sobject = SObject::fromSobjectName("Contact", $metadata);
-        
+        $sobject = SObject::fromMetadata($metadata);
+
         $occupations = $sobject->getPicklist("Ocdla_Occupation_Field_Type__c");
         $areasOfInterestPicklistId = $api->getGlobalValueSetIdByDeveloperName("AOI");
         $areasOfInterest = $api->getGlobalValueSetNames($areasOfInterestPicklistId);
@@ -147,7 +147,7 @@ class DirectoryModule extends Module {
 
 
         $metadata = $api->getSobjectMetadata("Contact");
-        $sobject = SObject::fromSobjectName("Contact", $metadata);
+        $sobject = SObject::fromMetadata($metadata);
         $_POST["primary-fields"] = $sobject->getPicklist("Ocdla_Expert_Witness_Primary__c");
 
 
