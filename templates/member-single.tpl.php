@@ -1,13 +1,12 @@
 <link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css"></link>
 
+<a class="back-link" href="/directory/members" style="float: left;"><i class="fa fa-arrow-left" style="font-size:25px;color:blue"></i></a><br /><br />
+
 <div class="search">
     <?php print $search; ?>
 </div>
 
 <div class="directory-container">
-
-<a class="back-link" href="/directory/members" style="float: left;"><i class="fa fa-arrow-left" style="font-size:25px;color:blue"></i></a><br /><br />
-
 
 <h1 style="text-align:center; margin-bottom:10px;">OCDLA Member</h1>
 

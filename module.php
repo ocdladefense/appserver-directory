@@ -41,14 +41,21 @@ class DirectoryModule extends Module {
 
         $query .= " WHERE " . implode(" AND ", $conditions) . " ORDER BY LastName";
 
+
         $api = $this->loadForceApi();
-
         $result = $api->queryAll($query);
-
         $records = $result->getRecords();
-
         $contacts = Contact::from_query_result_records($records);
 
+        $metadata = $api->getSobjectMetadata("Contact");
+        $sobject = SObject::fromSobjectName("Contact", $metadata);
+        
+        $occupations = $sobject->getPicklist("Ocdla_Occupation_Field_Type__c");
+        $areasOfInterestPicklistId = $api->getGlobalValueSetIdByDeveloperName("AOI");
+        $areasOfInterest = $api->getGlobalValueSetNames($areasOfInterestPicklistId);
+
+        $_POST["areasOfInterest"] = $areasOfInterest;
+        $_POST["occupationalFields"] = $occupations;
 
         $tpl = new Template("member-list");
         $tpl->addPath(__DIR__ . "/templates");
@@ -78,7 +85,6 @@ class DirectoryModule extends Module {
 
         return $tpl->render(array(
             "contacts"          => $contacts,
-            "search"            => $this->getMemberSearchBar($params),
             "isSingle"          => true,
             "query"             => $query,
             "user"              => get_current_user()
@@ -89,20 +95,15 @@ class DirectoryModule extends Module {
 
     public function getMemberSearchBar($params){
 
-        $api = $this->loadForceApi();
-        $sobject = SObject::fromSobjectName("Contact", $api);
         $includeExperts = $params["IncludeExperts"] == 1 ? True : False;
-        $areasOfInterestPicklistId = $api->getGlobalValueSetIdByDeveloperName("AOI");
-        $areasOfInterest = $api->getGlobalValueSetNames($areasOfInterestPicklistId);
-
 
         $search = new Template("member-search");
         $search->addPath(__DIR__ . "/templates");
 
         return $search->render(array(
-            "occupationFields"   => $sobject->getPicklist("Ocdla_Occupation_Field_Type__c"),
+            "occupationFields"   => $params["occupationalFields"],
             "selectedOccupation" => $params["Ocdla_Occupation_Field_Type__c"],
-            "areasOfInterest"    => $areasOfInterest,
+            "areasOfInterest"    => $params["areasOfInterest"],
             "selectedInterest"   => $params["areaOfInterest"],
             "firstName"          => $params["FirstName"],
             "lastName"           => $params["LastName"],
@@ -145,6 +146,11 @@ class DirectoryModule extends Module {
         $experts = Contact::from_query_result_records($records);
 
 
+        $metadata = $api->getSobjectMetadata("Contact");
+        $sobject = SObject::fromSobjectName("Contact", $metadata);
+        $_POST["primary-fields"] = $sobject->getPicklist("Ocdla_Expert_Witness_Primary__c");
+
+
         $tpl = new Template("expert-list");
         $tpl->addPath(__DIR__ . "/templates");
 
@@ -175,7 +181,6 @@ class DirectoryModule extends Module {
         $tpl->addPath(__DIR__ . "/templates");
 
         return $tpl->render(array(
-            "search"            => $this->getExpertWitnessSearchBar($_POST),
             "experts"           => $experts,
             "isSingle"          => true,
             "query"             => $query,
@@ -183,21 +188,18 @@ class DirectoryModule extends Module {
         ));
     }
 
-    public function getExpertWitnessSearchBar(){
-
-        $api = $this->loadForceApi();
-        $sobject = SObject::fromSobjectName("Contact", $api);
+    public function getExpertWitnessSearchBar($params){
 
         $search = new Template("expert-search");
         $search->addPath(__DIR__ . "/templates");
 
 
         return $search->render(array(
-            "firstName"     => $_POST["FirstName"],
-            "lastName"      => $_POST["LastName"],
-            "companyName"   => $_POST["Ocdla_Organization__c"],
-            "city"          => $_POST["MailingCity"],
-            "primaryFields" => $sobject->getPicklist("Ocdla_Expert_Witness_Primary__c"),
+            "firstName"     => $params["FirstName"],
+            "lastName"      => $params["LastName"],
+            "companyName"   => $params["Ocdla_Organization__c"],
+            "city"          => $params["MailingCity"],
+            "primaryFields" => $params["primary-fields"],
             "selectedPrimaryField" => $_POST["Ocdla_Expert_Witness_Primary__c"]
         ));
     }
