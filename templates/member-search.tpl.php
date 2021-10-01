@@ -1,11 +1,13 @@
 <link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css" />
 
 <?php
-	array_unshift($occupationFields, "All Occupations/Fields");
-	array_unshift($areasOfInterest, "All Areas of Interest");
+	$occupationFieldsDefault = array("" => "All Occupation Fields");
+	$allOccupationFields = $occupationFieldsDefault + $occupationFields;
+	$selectedOccupationField = empty($selectedOccupation) ? "" : $selectedOccupation;
 
-	$selectedOccupationField = empty($selectedOccupation) ? "All Fields" : $selectedOccupation;
-	$selectedAreaOfInterest = empty($selectedInterest) ? "All Interests" : $selectedInterest;
+	$areasOfInterestDefault = array("" => "All Areas of Interest");
+	$AllAreasOfInterest = $areasOfInterestDefault + $areasOfInterest;
+	$selectedAreaOfInterest = empty($selectedInterest) ? "" : $selectedInterest;
 
 	$includeExpertsCheck = $includeExperts ? "checked" : "";
 ?>
@@ -54,12 +56,14 @@
 				<select name="Ocdla_Occupation_Field_Type__c" onchange="document.getElementById('search-directory').submit()">
 
 					<?php
-						foreach ($occupationFields as $field){
 
-							$selected = $selectedOccupationField == $field ? "selected" : "";
+
+						foreach ($allOccupationFields as $value => $label){
+
+							$selected = $selectedOccupationField == $value ? "selected" : "";
 						?>
 
-						<option value="<?php print $field; ?>" <?php print $selected; ?>><?php print $field; ?></option>
+						<option value="<?php print $value; ?>" <?php print $selected; ?>><?php print $label; ?></option>
 
 					<?php } ?>
 					
@@ -69,12 +73,12 @@
 			<div class="form-item form-select">
 				<select name="areaOfInterest" onchange="document.getElementById('search-directory').submit()">
 					<?php
-							foreach ($areasOfInterest as $area){
+							foreach ($AllAreasOfInterest as $value => $label){
 
-								$selected = $selectedAreaOfInterest == $area ? "selected" : "";
+								$selected = $selectedAreaOfInterest == $value ? "selected" : "";
 							?>
 
-							<option value="<?php print $area; ?>" <?php print $selected; ?>><?php print $area; ?></option>
+							<option value="<?php print $value; ?>" <?php print $selected; ?>><?php print $label; ?></option>
 
 						<?php } ?>
 				</select>
