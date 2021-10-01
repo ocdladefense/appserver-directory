@@ -1,24 +1,20 @@
+<link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css"></link>
 
 <div class="directory-container">
 
-<div class="search">
-    <?php print $search; ?>
-</div>
+<a class="back-link" href="/directory/members" style="float: left;"><i class="fa fa-arrow-left" style="font-size:25px;color:blue"></i></a><br /><br />
 
 
-<h1 style="text-align:center; margin-bottom:10px;">SEARCH RESULTS</h1>
+<h1 style="text-align:center; margin-bottom:10px;">OCDLA Member</h1>
 
-<?php if($showQuery) : ?>
+<?php if($user->isAdmin()) : ?>
     <div>
         <p><?php print $query; ?></p>
     </div>
 <?php endif; ?>
 
-<div>
-    <br />
-    <p><?php print "Showing $count results."; ?></p>
-    <br />
-</div>
+<br />
+<br />
 
 <?php if(empty($contacts)) : ?>
     <h1 style="text-align:center;">Couldn't find anyone using those search parameters......</h1>
@@ -34,14 +30,16 @@
             <p class="primary"><?php !empty($c->getFirstName()) ? print $c->getFirstName() . " " . $c->getLastName() : print "<br />";  ?></p>
             <p class="secondary"><?php !empty($c->getOccupationFieldType()) ? print $c->getOccupationFieldType() : print "<br />"; ?></p>
             <p><?php !empty($c->getOcdlaOrganization()) ? print $c->getOcdlaOrganization() : print "<br />"; ?></p>
-            <p><?php !empty($c->getPhone()) ? print $c->getPhone() : print "<br />"; ?></p>
+            <a href="tel:<?php print $c->getPhoneNumericOnly(); ?>"><?php print $c->getPhone(); ?></a>
             <p><?php !empty($c->getMailingCity()) ? print $c->getMailingCity() . ", " . $c->getMailingState() : print "City Not Listed"; ?></p>
             <?php !empty($c->getEmail()) ? print "<a href='mailto: {$c->getEmail()}' style='text-decoration:none;'>{$c->getEmail()}</a>" : print "No Email Available"; ?>
 
+            <br /><br />
+            
             <?php if(!empty($c->getAreasOfInterest())) : ?>
-                <p style="text-decoration:underline;">
+                <p>
                     <strong>
-                        Areas of Interest
+                        Areas of Interest:
                     </strong>
                 </p>
                 

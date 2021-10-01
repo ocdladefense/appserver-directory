@@ -1,51 +1,21 @@
 <?php
 
-use Http\Http;
-use File\FileList;
-use File\File;
-use Salesforce\SalesforceAttachment;
-use Salesforce\OAuthRequest;
-use Http\HttpRequest;
-use Salesforce\OAuthResponse;
-use Salesforce\RestApiRequest;
-use Http\HttpHeader;
+use function Session\get_current_user;
 
-class DirectoryModule extends Module
-{
-    private static $sandboxUrl = "https://api.sandbox.cloudconvert.com";
-    private static $productionUrl = "https://api.cloudconvert.com";
-    private static $whichToUse;
-    private static $apiKey;
-    private static $configPath; 
-    private static $uploadsPath; 
-
+class DirectoryModule extends Module {
 
     public function __construct() {
 
         parent::__construct();
-
-        // self::$whichToUse = self::$sandboxUrl;
-
-        // if ( self::$whichToUse == self::$sandboxUrl){
-
-        //     self::$apiKey = CLOUD_CONVERT_SANDBOX_API_KEY;
-
-        // }else{
-
-        //     self::$apiKey = CLOUD_CONVERT_API_KEY;
-        // }
-
-        // self::$configPath = path_to_modules_config().DIRECTORY_SEPARATOR."directory";
-        // self::$uploadsPath = path_to_modules_upload().DIRECTORY_SEPARATOR."directory";
-
-        // if(!file_exists(self::$uploadsPath)) mkdir(self::$uploadsPath, 0777, true);
-        // if(!file_exists(self::$configPath)) mkdir(self::$uploadsPath, 0777, true);
     }
 
-    ////////////////////////////////    TREVOR START    ///////////////////////////////////////////////////////////////
-    public function directorySearch(){
+
+    /* #region Member Directory */
+
+    public function showMemberDirectory(){
 
         $params = $_POST;
+        $searchBar = $this->getMemberSearchBar($params);
 
         $selectedOccupation = $params["Ocdla_Occupation_Field_Type__c"] != "All Occupations/Fields" ? $params["Ocdla_Occupation_Field_Type__c"] : null;
         $selectedInterest = $params["areaOfInterest"] != "All Areas of Interest" ? $params["areaOfInterest"] : null;
@@ -53,67 +23,65 @@ class DirectoryModule extends Module
         if($selectedOccupation == null) unset($params["Ocdla_Occupation_Field_Type__c"]);
         if($selectedInterest == null) unset($params["areaOfInterest"]);
 
-        $query = $this->buildDirectoryQuery($params);
-        //$query = "SELECT Id, FirstName, LastName, MailingCity, MailingState, Phone, email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact WHERE Id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = 'Bilingual') ORDER BY LastName";
-        
+        $query = $this->buildMemberQuery($params);
+
         $api = $this->loadForceApi();
         $result = $api->query($query);
 
         if(!$result->success()) throw new Exception($result->getErrorMessage());
 
         $records = $result->getRecords();
-        
+
         $contacts = Contact::from_query_result_records($records);
 
-
-        $tpl = new Template("directory-list");
+        $tpl = new Template("member-list");
         $tpl->addPath(__DIR__ . "/templates");
 
         return $tpl->render(array(
             "count"             => count($contacts),
-            "search"            => $this->getSearchBar(),
+            "search"            => $searchBar,
             "contacts"          => $contacts,
-            "showQuery"         => true,
-            "query"             => "" //$query
+            "query"             => $query,
+            "user"              => get_current_user()
         ));
     }
 
-    public function showDirectoryContact($id){
+
+    public function showMemberSingle($id){
 
         $api = $this->loadForceApi();
 
-        $query = "SELECT Id, FirstName, LastName, MailingCity, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact WHERE Id = '$id'";
+        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact WHERE Id = '$id'";
 
         $records = $api->query($query)->getRecords();
 
         $contacts = Contact::from_query_result_records($records);
 
 
-        $tpl = new Template("directory-single");
+        $tpl = new Template("member-single");
         $tpl->addPath(__DIR__ . "/templates");
 
         return $tpl->render(array(
-            "count"             => count($contacts),
-            "search"            => $this->getSearchBar(),
             "contacts"          => $contacts,
             "isSingle"          => true,
-            "showQuery"         => true,
-            "query"             => "" //$query
+            "query"             => $query,
+            "user"              => get_current_user()
         ));
 
 
     }
 
-    public function getSearchBar(){
+    public function getMemberSearchBar($params){
 
-        $search = new Template("directory-search");
+        $search = new Template("member-search");
         $search->addPath(__DIR__ . "/templates");
+        
 
         return $search->render(array(
             "occupationFields"   => $this->getOccupationFieldsDistinct(),
-            "selectedOccupation" => $selectedOccupation,
+            "selectedOccupation" => $params["Ocdla_Occupation_Field_Type__c"],
             "areasOfInterest"    => $this->getAreasOfInterest(),
-            "selectedInterest"   => $selectedInterest,
+            "selectedInterest"   => $params["areaOfInterest"],
             "firstName"          => $params["FirstName"],
             "lastName"           => $params["LastName"],
             "companyName"        => $params["Ocdla_Organization__c"],
@@ -121,7 +89,7 @@ class DirectoryModule extends Module
             "includeExperts"     => $params["IncludeExperts"]
         ));
     }
-    public function buildDirectoryQuery($params){
+    public function buildMemberQuery($params){
 
         $includeExperts = $params["IncludeExperts"];
         unset($params["IncludeExperts"]);
@@ -129,7 +97,7 @@ class DirectoryModule extends Module
         $areaOfInterest = $params["areaOfInterest"];
         unset($params["areaOfInterest"]);
 
-        $query = "SELECT Id, FirstName, LastName, MailingCity, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact";
+        $fields = "Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r)";
         
         $conditions = array();
         foreach($params as $field => $value){
@@ -140,10 +108,7 @@ class DirectoryModule extends Module
             }
         }
 
-        if(!$includeExperts){
-
-            $conditions[] = "Ocdla_is_expert_witness__c = false";
-        }
+        if(!empty($includeExperts) && $includeExperts) $conditions[] = "Ocdla_is_expert_witness__c = false";
 
         // If there is an area of interest selected, query for all of the contacts who have set that as one of their areas of intersts.
         // Only use those contacts in you query.
@@ -151,6 +116,10 @@ class DirectoryModule extends Module
 
             $conditions[] = "id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')";
         }
+
+        $conditions[] = "Ocdla_Current_Member_Flag__c = True";
+
+        $query = "SELECT $fields FROM Contact";
 
         if(!empty($conditions)){
 
@@ -169,6 +138,8 @@ class DirectoryModule extends Module
         $api = $this->loadForceApi();
 
         $result = $api->query($query);
+
+        if(!$result->isSuccess()) throw new Exception($result->getErrorMessage());
 
         $records = $result->getRecords();
 
@@ -209,247 +180,153 @@ class DirectoryModule extends Module
         return $areasOfInterest;
     }
 
-    ////////////////////////////////    TREVOR END        ///////////////////////////////////////////////////////////////
 
-    /******************CLoud Convert API Implementation***********************************/
+    /* #endregion */
 
 
-    public function getDirectoryLinks(){
+    /* #region Expert Witness Directory */
+    public function showExpertDirectory(){
 
-        try {
+        $_POST["Ocdla_Is_Expert_Witness__c"] = True;
 
-            $filenames = $this->listPdfFiles(self::$uploadsPath);
-            
-            $directoryLinks = array();        
-            foreach ($filenames as $key => $filename) {
-                
-                $directoryLinks[$filenames[$key]] ="/directory/pdfs/".$filenames[$key];
-            }
+        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c FROM Contact";
 
-        }catch(\Throwable $th) {
+        $whereClause = $this->buildExpertWhereClause();
 
-            $error = "Error getting directory pdfs: " . $th->getMessage();
-        }
+        if($whereClause != null) $query .= $whereClause;
 
-		$tpl = new Template("directoryLinks");
-		$tpl->addPath(__DIR__ . "/templates");
+        $query .= " ORDER BY LastName";
 
-		return $tpl->render(array(
-            "directoryLinks" => $directoryLinks,
-            "error" => $error
+        $api = $this->loadForceApi();
+        $resp = $api->query($query);
+
+        if(!$resp->isSuccess()) throw new Exception($resp->getErrorMessage());
+
+        $records = $resp->getRecords();
+        $experts = Contact::from_query_result_records($records);
+
+
+        $tpl = new Template("expert-list");
+        $tpl->addPath(__DIR__ . "/templates");
+
+        $search = $this->getExpertWitnessSearchBar($_POST);
+
+        return $tpl->render(array(
+            "search"    =>  $search,
+            "experts"   =>  $experts,
+            "count"     =>  count($experts),
+            "query"     =>  $query,
+            "user"      =>  get_current_user()
         ));
     }
 
-    public function listPdfFiles($path){
+    public function buildExpertWhereClause(){
 
-        if(!file_exists($path)){
+        $conditions = array();
 
-            throw new Exception(" no files found in server");
+        $fields = array(
+            "FirstName" => "LIKE '%%%s%%'",
+            "LastName" => "LIKE '%%%s%%'",
+            "Ocdla_Organization__c" => "LIKE '%%%s%%'",
+            "MailingCity" => "LIKE '%%%s%%'",
+            "Ocdla_Expert_Witness_Primary__c" => "INCLUDES('%s')",
+            "Ocdla_Is_Expert_Witness__c" => "= True"
+        );
+
+        $fieldsWithValues = array_filter($_POST);
+
+        if(empty($fieldsWithValues)) return null;
+
+
+        foreach($fieldsWithValues as $field => $value){
+
+            $syntax = $fields[$field];
+            $formatted = sprintf($syntax, $value);
+            $conditions[] = $field . " " . $formatted;
         }
-        
-        $filenames = scandir($path);
 
-        if($filenames === false){
+        $clause = " WHERE " . implode(" AND ", $conditions);
 
-            throw new Exception(" no files found in server");
-        }
-
-        $filenames = array_diff($filenames,array("." , ".."));
-
-        foreach($filenames as $key => $filename){
-
-            $filenames[$key] = substr($filename, 0, strrpos($filename,"."));
-        }
-
-        return $filenames;
+        return $clause;
     }
 
-    public function admin(){
+    public function getExpertWitnessSearchBar(){
 
-        $cloudConvertLinks = array();
-        
-        try {
+        $witnessPrimaryField = $this->getContactField("Ocdla_Expert_Witness_Primary__c");
 
-            $filenames = $this->listPdfFiles(self::$configPath);
+        $primaryFieldPicklistValues = $this->getPicklistValues($witnessPrimaryField);
 
-            foreach ($filenames as $key => $filename) {
-                $cloudConvertLinks[$filenames[$key]] = $_SERVER["HTTP_HOST"]."/directory/execute/".$filenames[$key];
-            }
+        $search = new Template("expert-search");
+        $search->addPath(__DIR__ . "/templates");
 
-        }catch(\Throwable $th) {
 
-            $error = "Error getting Pdf configurations: " . $th->getMessage();
-        }
-
-        $tpl = new Template("createDirectoryLinks");
-		$tpl->addPath(__DIR__ . "/templates");
-
-		return $tpl->render(array(
-            "cloudConvertLinks" => $cloudConvertLinks,
-            "error" => $error
+        return $search->render(array(
+            "firstName"     => $_POST["FirstName"],
+            "lastName"      => $_POST["LastName"],
+            "companyName"   => $_POST["Ocdla_Organization__c"],
+            "city"          => $_POST["MailingCity"],
+            "primaryFields" => $primaryFieldPicklistValues,
+            "selectedPrimaryField" => $_POST["Ocdla_Expert_Witness_Primary__c"]
         ));
     }
 
-    public function addCloudConvertJob($name){
 
-        $modulePath = BASE_PATH. module_path();
-        $body = file_get_contents(self::$configPath.DIRECTORY_SEPARATOR.$name.".json");
+    public function getContactField($fieldName){
 
-        $req = new \Http\HttpRequest();
-        $req->setUrl(self::$whichToUse."/v2/jobs");
-        $req->setMethod("POST");
-        $req->addHeader(new HttpHeader("Authorization","Bearer ".self::$apiKey));
-        $req->addHeader(new HttpHeader("Content-type","application/json"));
-        $req->setBody($body);
+        $endpoint = "/services/data/v23.0/sobjects/Contact/describe";
+        $api = $this->loadForceApi();
+        $resp = $api->send($endpoint);
+        $fields = $resp->getBody()["fields"];
 
-        $config = array(
-            "returntransfer" 		=> true,
-            "useragent" 			=> "Mozilla/5.0",
-            "followlocation" 		=> true,
-            "ssl_verifyhost" 		=> false,
-            "ssl_verifypeer" 		=> false
-        );
+        foreach($fields as $field){
 
-        $http = new \Http\Http($config);
-    
-        $resp = $http->send($req, true);
+            if($field["name"] == $fieldName){
 
-        if($resp->getStatusCode() < 300){
-            
-            $body = json_decode($resp->getBody());
-            $jobId = $body->data->id;
-            $this->getCloudConvertJobStatus($jobId);
-            
-        }
-
-        var_dump($resp);
-        exit;
-    }
-
-    public function getCloudConvertJobStatus($jobId){
-
-        //status = waiting || processing || finished || error
-
-        $req = new \Http\HttpRequest();
-        $req->setUrl(self::$whichToUse."/v2/jobs/".$jobId."/wait");
-        $req->setMethod("GET");
-        $req->addHeader(new HttpHeader("Authorization","Bearer ".self::$apiKey));
-        //$req->addHeader(new HttpHeader("Content-type","application/json"));
-
-        $config = array(
-            "returntransfer" 		=> true,
-            "useragent" 			=> "Mozilla/5.0",
-            "followlocation" 		=> true,
-            "ssl_verifyhost" 		=> false,
-            "ssl_verifypeer" 		=> false
-        );
-
-        $http = new \Http\Http($config);
-
-        $resp = $http->send($req, true);
-
-        if($resp->getStatusCode() < 300){
-
-            $body = json_decode($resp->getBody());
-
-            if($body->data->status == "finished") {
-
-                $files = $body->data->tasks[0]->result->files;
-                $this->getCloudConvertPDF($files[0]->url,$files[0]->filename);
-
-            } else {
-
-                var_dump($resp);
+                return $field;
             }
-            
-        } else {
-
-            var_dump($resp);
-        }
-        
-        exit;
-    }
-
-    public function getCloudConvertPDF($url,$filename){
-        //echo ("<a href=\"".$url."\">URL</a><br/>");
-        
-        // $req = new \Http\HttpRequest();
-        // $req->setUrl($url);
-        // $req->setMethod("GET");
-        // $req->addHeader(new HttpHeader("Content-type","text/\html"));
-        // $config = array(
-        //     "returntransfer" 		=> true,
-        //     "useragent" 			=> "Mozilla/5.0",
-        //     "followlocation" 		=> true,
-        //     "ssl_verifyhost" 		=> false,
-        //     "ssl_verifypeer" 		=> false
-        // );
-
-        // $http = new \Http\Http($config);
-
-        // $resp = $http->send($req, true);
-        // if($resp->getStatusCode() < 300){
-        //     return $resp->getBody();
-        // }
-        // echo($resp->getBody());
-
-        $PDFData = file_get_contents($url);        
-        $this->saveCloudConvertPDF($PDFData,$filename);
-        //$this->downloadPDF($filename);
-
-        exit;
-    }
-
-    public function saveCloudConvertPDF($PDFData, $filename){
-
-        if(!file_exists(self::$uploadsPath)){
-
-            mkdir(self::$uploadsPath, 0777, true);
         }
 
-        $filename = self::$uploadsPath.DIRECTORY_SEPARATOR.$filename;
-        $result = file_put_contents($filename, $PDFData);
-
-        if($result) echo("<h4>Added PDF: $filename</h4>");
-
-        else echo("<h4>Error Adding PDF: $filename'</h4>");
-
-        exit;
+        return null;
     }
 
-    //Users story: download alpha pdf or city pdf, admin manualy click off city or alpha pdf.
-    public function downloadPdf($filename){
+    public function getPicklistValues($field){
 
-        $PDFData = file_get_contents(self::$uploadsPath.DIRECTORY_SEPARATOR.$filename.".pdf");
+        $pValues = array();
 
-        if(!$PDFData){
+        $pickListValues = $field["picklistValues"];
 
-            header('Content-Type: text/html');
-            echo("<h4>Error Getting PDF: $filename'</h4>");
-            exit;
+        foreach($pickListValues as $value){
+
+            $pValues[$value["value"]] = $value["label"];
         }
 
-        header('Content-Type: application/pdf');
-        header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
-        header('Pragma: public');
-        header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-        header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-        header('Content-Length: '.strlen($PDFData));
-
-        //not as a file download
-        header('Content-Disposition: inline; filename="'.basename($filename).'";');
-
-        ob_clean(); 
-        flush();   
-
-        echo($PDFData);
-        exit;
+        return $pValues;
     }
 
-    public function jobWebhook(){
+    public function showExpertSingle($id){
 
-        $req = $this->getRequest();
-        $post = json_decode($req->getBody());
+        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c FROM Contact WHERE Id = '$id'";
+
+        $api = $this->loadForceApi();
+
+        $resp = $api->query($query);
+
+        if(!$resp->IsSuccess()) throw new Exception($resp->getErrorMessage());
+
+        $records = $resp->getRecords();
+        $experts = Contact::from_query_result_records($records);
+
+
+        $tpl = new Template("expert-single");
+        $tpl->addPath(__DIR__ . "/templates");
+
+        return $tpl->render(array(
+            "experts"           => $experts,
+            "isSingle"          => true,
+            "query"             => $query,
+            "user"              => get_current_user()
+        ));
     }
 
+    /* #endregion */
 }
