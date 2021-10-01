@@ -1,9 +1,13 @@
 <link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css"></link>
 
-<div class="directory-container">
-
 <a class="back-link" href="/directory/experts" style="float: left;"><i class="fa fa-arrow-left" style="font-size:25px;color:blue"></i></a><br /><br />
 
+
+<div class="search">
+    <?php print $search; ?>
+</div>
+
+<div class="directory-container">
 
 <h1 style="text-align:center; margin-bottom:10px;">OCDLA Expert Witness</h1>
 
