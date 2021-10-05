@@ -33,6 +33,39 @@ class DirectoryModule extends Module {
 
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c FROM AreasOfInterest__r) FROM Contact";
 
+
+        $group = array(
+            "op" => "AND",
+            "conditions" => array(
+                array(
+                    "fieldname"  => "FirstName",
+                    "value"      => "Trevor",
+                    "op"         => " = ",
+                    "syntax"     => "%%%s%%'"
+                ),
+                array(
+                    "op" => "OR",
+                    "isGroup" => True,
+                    "conditions" => array(
+                        array(
+                            "fieldname"  => "LastName",
+                            "value"      => "Uehlin",
+                            "op"         => " = ",
+                            "syntax"     => "%%%s%%'"
+                        ),
+                        array(
+                            "fieldname"  => "LastName",
+                            "value"      => "Johnson",
+                            "op"         => " = ",
+                            "syntax"     => "%%%s%%'"
+                        )
+                    )
+                )
+            )
+        );
+
+        SoqlQueryBuilder::buildConditions($group);
+
         $conditions = SoqlQueryBuilder::getSoqlConditions($_POST, $fields);
 
         if(!empty($areaOfInterest)) {
