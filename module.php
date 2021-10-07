@@ -21,51 +21,52 @@ class DirectoryModule extends Module {
 
         if(empty($_POST["IncludeExperts"])) $_POST["Ocdla_Is_Expert_Witness__c"] = False;
 
+
+
+
+
+
+
+
         $conditionGroup = array(
             "op" => "AND",
             "conditions" => array(
                 array(
                     "fieldname"  => "Ocdla_Current_Member_Flag__c",
-                    "value"      => True,
                     "op"         => "=",
                     "syntax"     => "%s"
                 ),
                 array(
                     "fieldname"  => "FirstName",
-                    "value"      => $_POST["FirstName"],
                     "op"         => "LIKE",
                     "syntax"     => "'%%%s%%'"
                 ),
                 array(
                     "fieldname"  => "LastName",
-                    "value"      => $_POST["LastName"],
                     "op"         => "LIKE",
                     "syntax"     => "'%%%s%%'"
                 ),
                 array(
                     "fieldname"  => "Ocdla_Organization__c",
-                    "value"      => $_POST["Ocdla_Organization__c"],
                     "op"         => "LIKE",
                     "syntax"     => "'%%%s%%'"
                 ),
                 array(
                     "fieldname"  => "MailingCity",
-                    "value"      => $_POST["MailingCity"],
                     "op"         => "LIKE",
                     "syntax"     => "'%%%s%%'"
                 ),
                 array(
                     "fieldname"  => "Ocdla_Occupation_Field_Type__c",
-                    "value"      => $_POST["Ocdla_Occupation_Field_Type__c"],
                     "op"         => "LIKE",
                     "syntax"     => "'%%%s%%'"
                 ),
                 array(
                     "fieldname"  => "Ocdla_Is_Expert_Witness__c",
-                    "value"      => $_POST["Ocdla_Is_Expert_Witness__c"],
                     "op"         => "=",
                     "syntax"     => "%s"
                 )
+                
             )
         );
 
@@ -73,12 +74,15 @@ class DirectoryModule extends Module {
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c FROM AreasOfInterest__r) FROM Contact";
 
         $queryBuilder = new SoqlQueryBuilder($query);
-        $queryBuilder->buildConditions($conditionGroup);
+
+        $conditions = $queryBuilder->mergeValues($conditionGroup, $_POST);
+
+        $queryBuilder->setConditions($conditions);
         $queryBuilder->setOrderBy("LastName");
 
         if(!empty($areaOfInterest)) $queryBuilder->addCondition(" AND Id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')");
 
-        $query = $queryBuilder->compile();          
+        $query = $queryBuilder->compile();
 
 
         $api = $this->loadForceApi();
@@ -206,7 +210,7 @@ class DirectoryModule extends Module {
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c FROM Contact";
 
         $queryBuilder = new SoqlQueryBuilder($query);
-        $queryBuilder->buildConditions($conditionGroup);
+        $queryBuilder->setConditions($conditionGroup);
         $queryBuilder->setOrderBy("LastName");
         $query = $queryBuilder->compile();
 
