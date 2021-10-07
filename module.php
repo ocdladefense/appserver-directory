@@ -170,37 +170,31 @@ class DirectoryModule extends Module {
             "conditions" => array(
                 array(
                     "fieldname"  => "FirstName",
-                    "value"      => $_POST["FirstName"],
                     "op"         => "LIKE",
                     "syntax"     => "'%%%s%%'"
                 ),
                 array(
                     "fieldname"  => "LastName",
-                    "value"      => $_POST["LastName"],
                     "op"         => "LIKE",
                     "syntax"     => "'%%%s%%'"
                 ),
                 array(
                     "fieldname"  => "Ocdla_Organization__c",
-                    "value"      => $_POST["Ocdla_Organization__c"],
                     "op"         => "LIKE",
                     "syntax"     => "'%%%s%%'"
                 ),
                 array(
                     "fieldname"  => "MailingCity",
-                    "value"      => $_POST["MailingCity"],
                     "op"         => "LIKE",
                     "syntax"     => "'%%%s%%'"
                 ),
                 array(
                     "fieldname"  => "Ocdla_Expert_Witness_Primary__c",
-                    "value"      => $_POST["Ocdla_Expert_Witness_Primary__c"],
                     "op"         => null,
                     "syntax"     => "INCLUDES('%s')"
                 ),
                 array(
                     "fieldname"  => "Ocdla_Is_Expert_Witness__c",
-                    "value"      => $_POST["Ocdla_Is_Expert_Witness__c"],
                     "op"         => "=",
                     "syntax"     => "%s"
                 )
