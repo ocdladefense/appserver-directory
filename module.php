@@ -210,7 +210,8 @@ class DirectoryModule extends Module {
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c FROM Contact";
 
         $queryBuilder = new SoqlQueryBuilder($query);
-        $queryBuilder->setConditions($conditionGroup);
+        $conditions = $queryBuilder->mergeValues($conditionGroup, $_POST);
+        $queryBuilder->setConditions($conditions);
         $queryBuilder->setOrderBy("LastName");
         $query = $queryBuilder->compile();
 
