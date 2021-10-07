@@ -65,17 +65,20 @@ class DirectoryModule extends Module {
         );
 
 
-        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c FROM AreasOfInterest__r) FROM Contact";
+        $fields = array("Id", "FirstName", "LastName", "MailingCity", "Ocdla_Current_Member_Flag__c", "MailingState", "Phone", "Email", "Ocdla_Occupation_Field_Type__c", "Ocdla_Organization__c", "(SELECT Interest__c FROM AreasOfInterest__r)");
 
-        $queryBuilder = new SoqlQueryBuilder($query);
-        $conditions = $queryBuilder->mergeValues($conditionGroup, $_POST);
+        $soql = new SoqlQueryBuilder("Contact");
+        $soql->setFields($fields);
+        $soql->setConditions($conditionGroup, $_POST);
+        $soql->setOrderBy("LastName");
 
-        $queryBuilder->setConditions($conditions);
-        $queryBuilder->setOrderBy("LastName");
+        if(!empty($areaOfInterest)) {
 
-        if(!empty($areaOfInterest)) $queryBuilder->addCondition("Id", "IN", $areaOfInterest, "(SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '%s')");
+            $condition = " AND Id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')";
+            $soql->addCondition($condition);
+        }
 
-        $query = $queryBuilder->compile();
+        $query = $soql->compile();
 
 
         $api = $this->loadForceApi();
