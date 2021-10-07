@@ -22,12 +22,6 @@ class DirectoryModule extends Module {
         if(empty($_POST["IncludeExperts"])) $_POST["Ocdla_Is_Expert_Witness__c"] = False;
 
 
-
-
-
-
-
-
         $conditionGroup = array(
             "op" => "AND",
             "conditions" => array(
@@ -74,13 +68,12 @@ class DirectoryModule extends Module {
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c FROM AreasOfInterest__r) FROM Contact";
 
         $queryBuilder = new SoqlQueryBuilder($query);
-
         $conditions = $queryBuilder->mergeValues($conditionGroup, $_POST);
 
         $queryBuilder->setConditions($conditions);
         $queryBuilder->setOrderBy("LastName");
 
-        if(!empty($areaOfInterest)) $queryBuilder->addCondition(" AND Id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')");
+        if(!empty($areaOfInterest)) $queryBuilder->addCondition("Id", "IN", $areaOfInterest, "(SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '%s')");
 
         $query = $queryBuilder->compile();
 
