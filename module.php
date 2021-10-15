@@ -1,7 +1,7 @@
 <?php
 
 use function Session\get_current_user;
-use Salesforce\SoqlQueryBuilder;
+use Salesforce\QueryBuilder;
 use Salesforce\SObject;
 
 class DirectoryModule extends Module {
@@ -67,7 +67,7 @@ class DirectoryModule extends Module {
 
         $fields = array("Id", "FirstName", "LastName", "MailingCity", "Ocdla_Current_Member_Flag__c", "MailingState", "Phone", "Email", "Ocdla_Occupation_Field_Type__c", "Ocdla_Organization__c", "(SELECT Interest__c FROM AreasOfInterest__r)");
 
-        $soql = new SoqlQueryBuilder("Contact");
+        $soql = new QueryBuilder("Contact");
         $soql->setFields($fields);
         $soql->setConditions($conditionGroup, $_POST);
         $soql->setOrderBy("LastName");
@@ -199,7 +199,7 @@ class DirectoryModule extends Module {
 
         $fields = array("Id", "FirstName", "LastName", "MailingCity", "Ocdla_Current_Member_Flag__c", "MailingState", "Phone", "Email", "Ocdla_Occupation_Field_Type__c", "Ocdla_Organization__c", "Ocdla_Expert_Witness_Other_Areas__c", "Ocdla_Expert_Witness_Primary__c");
 
-        $soql = new SoqlQueryBuilder("Contact");
+        $soql = new QueryBuilder("Contact");
         $soql->setFields($fields);
         $soql->setConditions($conditionGroup, $_POST);
         $soql->setOrderBy("LastName");
