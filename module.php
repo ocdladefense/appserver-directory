@@ -21,25 +21,64 @@ class DirectoryModule extends Module {
 
         if(empty($_POST["IncludeExperts"])) $_POST["Ocdla_Is_Expert_Witness__c"] = False;
 
-        $fields = array(
-          "FirstName"                     => "LIKE '%%%s%%'",
-          "LastName"                      => "LIKE '%%%s%%'",
-          "Ocdla_Organization__c"         => "LIKE '%%%s%%'",
-          "MailingCity"                   => "LIKE '%%%s%%'",
-          "Ocdla_Occupation_Field_Type__c"=> "LIKE '%%%s%%'",
-          "Ocdla_Current_Member_Flag__c"  => "= %s",
-          "Ocdla_Is_Expert_Witness__c"    => "= %s"
+
+        $conditionGroup = array(
+            "op" => "AND",
+            "conditions" => array(
+                array(
+                    "fieldname"  => "Ocdla_Current_Member_Flag__c",
+                    "op"         => "=",
+                    "syntax"     => "%s"
+                ),
+                array(
+                    "fieldname"  => "FirstName",
+                    "op"         => "LIKE",
+                    "syntax"     => "'%%%s%%'"
+                ),
+                array(
+                    "fieldname"  => "LastName",
+                    "op"         => "LIKE",
+                    "syntax"     => "'%%%s%%'"
+                ),
+                array(
+                    "fieldname"  => "Ocdla_Organization__c",
+                    "op"         => "LIKE",
+                    "syntax"     => "'%%%s%%'"
+                ),
+                array(
+                    "fieldname"  => "MailingCity",
+                    "op"         => "LIKE",
+                    "syntax"     => "'%%%s%%'"
+                ),
+                array(
+                    "fieldname"  => "Ocdla_Occupation_Field_Type__c",
+                    "op"         => "LIKE",
+                    "syntax"     => "'%%%s%%'"
+                ),
+                array(
+                    "fieldname"  => "Ocdla_Is_Expert_Witness__c",
+                    "op"         => "=",
+                    "syntax"     => "%s"
+                )
+                
+            )
         );
 
-        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c FROM AreasOfInterest__r) FROM Contact";
 
-        $conditions = SoqlQueryBuilder::getSoqlConditions($_POST, $fields);
+        $fields = array("Id", "FirstName", "LastName", "MailingCity", "Ocdla_Current_Member_Flag__c", "MailingState", "Phone", "Email", "Ocdla_Occupation_Field_Type__c", "Ocdla_Organization__c", "(SELECT Interest__c FROM AreasOfInterest__r)");
+
+        $soql = new SoqlQueryBuilder("Contact");
+        $soql->setFields($fields);
+        $soql->setConditions($conditionGroup, $_POST);
+        $soql->setOrderBy("LastName");
 
         if(!empty($areaOfInterest)) {
-            $conditions[] = "Id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')";
+
+            $condition = " AND Id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')";
+            $soql->addCondition($condition);
         }
 
-        $query .= " WHERE " . implode(" AND ", $conditions) . " ORDER BY LastName";
+        $query = $soql->compile();
 
 
         $api = $this->loadForceApi();
@@ -122,20 +161,50 @@ class DirectoryModule extends Module {
 
         $_POST["Ocdla_Is_Expert_Witness__c"] = True;
 
-        $fields = array(
-            "FirstName" => "LIKE '%%%s%%'",
-            "LastName" => "LIKE '%%%s%%'",
-            "Ocdla_Organization__c" => "LIKE '%%%s%%'",
-            "MailingCity" => "LIKE '%%%s%%'",
-            "Ocdla_Expert_Witness_Primary__c" => "INCLUDES('%s')",
-            "Ocdla_Is_Expert_Witness__c" => "= %s"
+        $conditionGroup = array(
+            "op" => "AND",
+            "conditions" => array(
+                array(
+                    "fieldname"  => "FirstName",
+                    "op"         => "LIKE",
+                    "syntax"     => "'%%%s%%'"
+                ),
+                array(
+                    "fieldname"  => "LastName",
+                    "op"         => "LIKE",
+                    "syntax"     => "'%%%s%%'"
+                ),
+                array(
+                    "fieldname"  => "Ocdla_Organization__c",
+                    "op"         => "LIKE",
+                    "syntax"     => "'%%%s%%'"
+                ),
+                array(
+                    "fieldname"  => "MailingCity",
+                    "op"         => "LIKE",
+                    "syntax"     => "'%%%s%%'"
+                ),
+                array(
+                    "fieldname"  => "Ocdla_Expert_Witness_Primary__c",
+                    "op"         => null,
+                    "syntax"     => "INCLUDES('%s')"
+                ),
+                array(
+                    "fieldname"  => "Ocdla_Is_Expert_Witness__c",
+                    "op"         => "=",
+                    "syntax"     => "%s"
+                )
+            )
         );
 
-        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c FROM Contact";
+        $fields = array("Id", "FirstName", "LastName", "MailingCity", "Ocdla_Current_Member_Flag__c", "MailingState", "Phone", "Email", "Ocdla_Occupation_Field_Type__c", "Ocdla_Organization__c", "Ocdla_Expert_Witness_Other_Areas__c", "Ocdla_Expert_Witness_Primary__c");
 
-        $conditions = SoqlQueryBuilder::getSoqlConditions($_POST, $fields);
+        $soql = new SoqlQueryBuilder("Contact");
+        $soql->setFields($fields);
+        $soql->setConditions($conditionGroup, $_POST);
+        $soql->setOrderBy("LastName");
+        $query = $soql->compile();
 
-        $query .= (" WHERE " . implode(" AND ", $conditions) . " ORDER BY LastName");
 
         $api = $this->loadForceApi();
         $resp = $api->query($query);
