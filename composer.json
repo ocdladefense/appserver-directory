@@ -9,5 +9,8 @@
             "email": "trevoruehlinx1@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "ocdladefense/lib-salesforce-rest-api":"dev-development",
+        "ocdladefense/lib-salesforce":"dev-development"
+    }
 }
