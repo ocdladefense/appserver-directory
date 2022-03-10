@@ -1,8 +1,9 @@
 <?php
 
-use function Session\get_current_user;
 use Salesforce\QueryBuilder;
 use Salesforce\SObject;
+
+
 
 class DirectoryModule extends Module {
 
@@ -104,7 +105,7 @@ class DirectoryModule extends Module {
             "search"            => $this->getMemberSearchBar($_POST),
             "contacts"          => $contacts,
             "query"             => $query,
-            "user"              => get_current_user()
+            "user"              => current_user()
         ));
     }
 
@@ -126,7 +127,7 @@ class DirectoryModule extends Module {
             "contacts"          => $contacts,
             "isSingle"          => true,
             "query"             => $query,
-            "user"              => get_current_user()
+            "user"              => current_user()
         ));
 
 
@@ -228,7 +229,7 @@ class DirectoryModule extends Module {
             "experts"   =>  $experts,
             "count"     =>  count($experts),
             "query"     =>  $query,
-            "user"      =>  get_current_user()
+            "user"      =>  current_user()
         ));
     }
 
@@ -253,7 +254,7 @@ class DirectoryModule extends Module {
             "experts"           => $experts,
             "isSingle"          => true,
             "query"             => $query,
-            "user"              => get_current_user()
+            "user"              => current_user()
         ));
     }
 
