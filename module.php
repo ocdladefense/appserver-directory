@@ -92,7 +92,7 @@ class DirectoryModule extends Module {
         //print $query;exit;
 
         $api = $this->loadForceApi();
-        $result = $api->queryAll($query);
+        $result = $api->query($query);
         $records = $result->getRecords();
         $contacts = Contact::from_query_result_records($records);
 
@@ -288,11 +288,11 @@ class DirectoryModule extends Module {
 
     public function importDeletedContacts() {
 
-		$query = "SELECT Id FROM Contact WHERE IsDeleted = True";
+		$query = "SELECT Name FROM Contact WHERE IsDeleted = True";
 
         $api = $this->loadForceApi();
 
-        $result = $api->query($query);
+        $result = $api->queryAll($query);
 
         var_dump($result); exit;
 
