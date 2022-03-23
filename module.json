@@ -6,6 +6,14 @@
     "connectedApp":"default",
 	"files": [],
 	"routes": {
+        "directory": {
+            "callback": "home",
+            "content-type":"text/html"
+        },
+        "deleted": {
+            "callback": "importDeletedContacts",
+            "content-type":"text/html"
+        },
         "directory/members":{
             "callback":"showMemberDirectory",
             "content-type":"text/html"
