@@ -19,7 +19,7 @@
 
 
 
-
+<!-- NOTE: COUNT WILL HAVE TO BE RECALCULATED -->
 <div>
 	<p><?php print "Showing $count members"; ?></p>
 </div>

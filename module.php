@@ -14,8 +14,7 @@ class DirectoryModule extends Module {
 
 
     /* #region Member Directory */
-
-    public function showMemberDirectory(){
+    public function showMemberDirectory() {
 
         $areaOfInterest = $_POST["areaOfInterest"];
         $_POST["Ocdla_Current_Member_Flag__c"] = True;
@@ -55,12 +54,13 @@ class DirectoryModule extends Module {
                     "fieldname"  => "Ocdla_Occupation_Field_Type__c",
                     "op"         => "LIKE",
                     "syntax"     => "'%%%s%%'"
-                ),
-                array(
+                )
+            /*                array(
                     "fieldname"  => "Ocdla_Is_Expert_Witness__c",
                     "op"         => "=",
                     "syntax"     => "%s"
                 )
+                */
                 
             )
         );
@@ -79,11 +79,20 @@ class DirectoryModule extends Module {
             $soql->addCondition($condition);
         }
 
+        /**
+         * 
+         * Jennifer, Tracye, Alene, Bernal, Browning
+         * 
+         * Jose
+         * 
+         */
+
         $query = $soql->compile();
 
+        //print $query;exit;
 
         $api = $this->loadForceApi();
-        $result = $api->queryAll($query);
+        $result = $api->query($query);
         $records = $result->getRecords();
         $contacts = Contact::from_query_result_records($records);
 
@@ -108,6 +117,8 @@ class DirectoryModule extends Module {
             "user"              => current_user()
         ));
     }
+
+
 
     public function showMemberSingle($id){
 
@@ -274,5 +285,22 @@ class DirectoryModule extends Module {
         ));
     }
 
-    /* #endregion */
+
+    public function importDeletedContacts() {
+
+		$query = "SELECT Name FROM Contact WHERE IsDeleted = True";
+
+        $api = $this->loadForceApi();
+
+        $result = $api->queryAll($query);
+
+        var_dump($result); exit;
+
+
+        foreach($result->getRecords() as $record) {
+            // \db_query('INSERT INTO force__contact_deleted (Id,Type) VALUES(:Id,:Type) ON DUPLICATE KEY UPDATE Id=VALUES(Id), Type=VALUES(Type)',$record+array('Type'=>'Contact'),'pdo',false);
+        }
+
+    }        
+    
 }
