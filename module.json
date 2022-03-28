@@ -21,8 +21,8 @@
         "directory/experts":{
             "callback":"showExpertDirectory",
             "content-type":"text/html",
-						"access":"is_authenticated",
-						"authorization":"webserver"
+            "access":"is_authenticated",
+            "authorization":"webserver"
         },
         "directory/members/%id":{
             "callback":"showMemberSingle",
@@ -31,8 +31,8 @@
         "directory/experts/%id":{
             "callback":"showExpertSingle",
             "content-type":"text/html",
-						"access":"is_authenticated",
-						"authorization":"webserver"
+            "access":"is_authenticated",
+            "authorization":"webserver"
         }
     }
 }
