@@ -13,6 +13,14 @@ class DirectoryModule extends Module {
     }
 
 
+    public function home() {
+
+        $tpl = new Template("home");
+        $tpl->addPath(__DIR__ . "/templates");
+
+        return $tpl;
+    }
+
     /* #region Member Directory */
     public function showMemberDirectory() {
 
