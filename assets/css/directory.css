@@ -122,3 +122,9 @@ li.table-cell.short-cell {
     }
 
 }
+
+@media screen and (min-width: 1024px) {
+    #stage-content {
+        width: auto;
+    }
+}
