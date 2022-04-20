@@ -83,7 +83,7 @@ class DirectoryModule extends Module {
 
         if(!empty($areaOfInterest)) {
 
-            $condition = " AND Id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')";
+            $condition = " Id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')";
             $soql->addCondition($condition);
         }
 
@@ -97,7 +97,7 @@ class DirectoryModule extends Module {
 
         $query = $soql->compile();
 
-        //print $query;exit;
+        // print $query;exit;
 
         $api = $this->loadForceApi();
         $result = $api->query($query);
