@@ -9,12 +9,12 @@
         <?php print $search; ?>
 </div>
 
-<?php if($user->isAdmin()) : ?>
-<br />
+<?php if(is_admin_user()): ?>
+
 <div>
 	<strong><?php print $query; ?></strong>
 </div>
-<br />
+
 <?php endif; ?>
 
 <form action="/maps" method="post">
