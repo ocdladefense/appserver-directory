@@ -74,7 +74,7 @@ class DirectoryModule extends Module {
         );
 
 
-        $fields = array("Id", "FirstName", "LastName", "MailingCity", "Ocdla_Current_Member_Flag__c", "MailingState", "Phone", "Email", "Ocdla_Occupation_Field_Type__c", "Ocdla_Organization__c", "(SELECT Interest__c FROM AreasOfInterest__r)");
+        $fields = array("Id", "FirstName", "LastName", "MailingCity","MailingAddress", "Ocdla_Current_Member_Flag__c", "MailingState", "Phone", "Email", "Ocdla_Occupation_Field_Type__c", "Ocdla_Organization__c", "(SELECT Interest__c FROM AreasOfInterest__r)");
 
         $soql = new QueryBuilder("Contact");
         $soql->setFields($fields);

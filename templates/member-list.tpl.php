@@ -17,6 +17,10 @@
 <br />
 <?php endif; ?>
 
+<form action="/maps" method="post">
+	<input type="hidden" name="query" value="<?php echo $query ?>"/>
+	<input type="submit" value="Map View"/>
+</form>
 
 
 <!-- NOTE: COUNT WILL HAVE TO BE RECALCULATED -->
