@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css"></link>
+<link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css" />
 
 
 <div>
@@ -6,7 +6,7 @@
 </div>
 
 <div class="search">
-        <?php print $search; ?>
+	<?php print $search; ?>
 </div>
 
 <?php if(is_admin_user()): ?>
@@ -18,8 +18,8 @@
 <?php endif; ?>
 
 <form action="/maps" method="post">
-	<input type="hidden" name="query" value="<?php echo $query ?>"/>
-	<input type="submit" value="Map View"/>
+	<input type="hidden" name="query" value="<?php echo $query ?>" />
+	<input type="submit" value="Map View" />
 </form>
 
 
@@ -28,7 +28,7 @@
 	<p><?php print "Showing $count members"; ?></p>
 </div>
 
-<div class="table">
+<div id="view" class="view table view-table">
 	<tbody>
 
 		<ul class="table-row">
@@ -74,3 +74,42 @@
 		<?php endif; ?>
 	</tbody>
 </table>
+
+
+<script>
+
+async function loadModule(name) {
+	name = name || "map";
+	let module = await import('/modules/directory/assets/js/map.js');
+	return module;
+}
+
+async function updateView(newNode) {
+
+	let container = document.getElementById("view");
+	let current = container.cloneNode();
+	let parent = container.parentNode;
+
+	current.appendChild(newNode);
+
+	parent.replaceChild(current,container);
+	
+}
+
+async function switchView(name) {
+	let module = await loadModule("map");
+	let node = module.render(); // Should return a new DOM tree.
+	setView(node);
+}
+
+
+function test() {
+
+	let newNode = document.createElement("div");
+	newNode.appendChild(document.createTextNode("Hello World!"));
+
+	updateView(newNode);
+}
+
+
+</script>

@@ -4,27 +4,53 @@
  * MapApplication will consume one or more datasources/Callouts from
  *  the MapDatasource repository and one or more MapFeatures.
  */
-//import { config, mapinit, features } from "./config";
-import MapApplication from "../../node_modules/@ocdladefense/google-maps/MapApplication.js";
-import QueryBuilder from "../../node_modules/@ashirk94/query-builder/QueryBuilder.js";
-import UrlMarker from "../../node_modules/@ocdladefense/google-maps/UrlMarker.js";
-//import MapFeature
+
+import MapApplication from "/node_modules/@ocdladefense/google-maps/MapApplication.js";
+import QueryBuilder from "/node_modules/@ocdladefense/query-builder/QueryBuilder.js";
+import UrlMarker from "/node_modules/@ocdladefense/google-maps/UrlMarker.js";
+
+
+
+// Get the initial styles (theme) for the map -- OCDLA theme
+const startTheme = new OCDLATheme();
+
+const ocdlaInfoWindow = {
+  content: `<h1>OCDLA</h1>`
+};
+
+
+// Set up a MapConfiguration object
+const config = {
+  apiKey: mapKey,
+  target: "view",
+  mapOptions: {
+    zoom: 6,
+    center: {
+      lat: 44.04457,
+      lng: -123.09078,
+    },
+    styles: startTheme.getTheme(),
+    defaultMarkerStyles: {
+      icon: {
+        scaledSize: {
+          height: 70,
+          width: 80,
+        }
+      }
+    },
+    ocdlaInfoWindow: ocdlaInfoWindow,
+  },
+  enableHighAccuracy: true
+};
 
 // Instantiate the app and pass in the mapConfig obj
-const myMap = new MapApplication(config);
+const myMap = new MapApplication(config); // Change to "#view"
 window.myMap = myMap;
-// Render the map to the page
-// After the map finished initializing, get and set the users
 
-//mock soql query components
-const SQL_EQ = "=";
-const SQL_LIKE = "LIKE";
-const SQL_GT = ">";
-const SQL_LT = "<";
 
-let c1 = { field: "LastName", value: "Smith", op: SQL_EQ };
-let c2 = { field: "Ocdla_Member_Status__c", value: "R", op: SQL_EQ };
-//let c3 = { field: "FirstName", value: "Gerry"};
+
+let c1 = { field: "LastName", value: "Smith", op: QueryBuilder.SQL_EQ };
+let c2 = { field: "Ocdla_Member_Status__c", value: "R", op: QueryBuilder.SQL_EQ };
 
 const userQuery = {
   object: "Contact",
@@ -32,8 +58,19 @@ const userQuery = {
   where: [c1, c2],
   limit: 20,
 };
-//custom event
+
+//Query building with npm package
+let qb = new QueryBuilder(userQuery);
+qb.render("custom");
+
+
+// Set up the map legend UX.
+document.addEventListener("click", handleEvent, true);
+
+// Listen for changes to the underlying query UX.
 document.addEventListener("querychange", contactQuery, true);
+
+
 
 function contactQuery(e) {
     console.log(e);
@@ -55,35 +92,32 @@ function contactQuery(e) {
   //shows all search results after 1 box, currently the search query is only added to
 }
 
-//Query building with npm package
-let qb = new QueryBuilder(userQuery);
-qb.render("custom");
 
+// Render the map to the page
+// After the map finished initializing, get and set the users
 myMap.init(mapinit).then(function () {
-  //Hides the filters until data is loaded
+  let features = {};
+  // Hides the filters until data is loaded.
 
   myMap.hideFilters();
-  //console.log("map loaded");
+  // console.log("map loaded");
 
-  // The OCDLA icon Info Window is currently being unused
-  //
+  // The OCDLA icon Info Window is currently being unused.
   let ocdlaIcon = new UrlMarker(
     "/modules/maps/assets/markers/ocdlaMarker/ocdla-marker-round-origLogo.svg"
   );
   myMap.render(ocdlaIcon);
 
   // Set up the features and load in the data
-
   let config = {
     name: "search",
     label: "search",
     markerLabel: "SE",
-    markerStyle:
-      "/modules/maps/assets/markers/members/member-marker-round-black.png",
+    markerStyle: "/modules/maps/assets/markers/members/member-marker-round-black.png",
     datasource: doSearch.bind(null, qb.getObject()),
   };
 
-  //qb.onQueryUpdate(contactQuery);
+
   features["search"] = config;
   myMap.loadFeatures(features);
   myMap.loadFeatureData();
@@ -135,5 +169,4 @@ function handleEvent(e) {
     target.classList.add("feature-active");
   }
 }
-//Add event listener
-document.addEventListener("click", handleEvent, true);
+
