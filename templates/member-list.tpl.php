@@ -1,11 +1,18 @@
 <link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css" />
-<script type="module" src="<?php print module_path(); ?>/assets/js/map.js"></script>
-<script src="<?php print module_path(); ?>/assets/js/mapkey.js"></script>
+<script>
+     const $conditions = JSON.parse("<?php echo $conditions?>");
+    </script>
+    <script src="<?php print module_path(); ?>/assets/js/mapkey.js"></script>
 <script src="<?php print module_path(); ?>/assets/js/Member.js"></script>
 <script src="<?php print module_path(); ?>/assets/js/OCDLATheme.js"></script>
-<script>
-    const conditions = JSON.parse(<?php print $conditions?>;);
-    </script>
+<script type="module" src="<?php print module_path(); ?>/assets/js/map.js"></script>
+<style>
+    #view, #map-container, #map {
+        height: 100%;
+    }
+    </style>
+
+
 <div>
 	<h2>OCDLA Member Directory</h2>
 </div>
@@ -26,8 +33,8 @@
 	<input type="hidden" name="query" value="<?php echo $query ?>" />
 	<input type="submit" value="Map View" />
 </form> -->
-<button onclick="switchView('map')">Map View</button>
-
+<button onclick="test()">Map View</button>
+<div id="custom"></div>
 <!-- NOTE: COUNT WILL HAVE TO BE RECALCULATED -->
 <div>
 	<p><?php print "Showing $count members"; ?></p>
@@ -123,7 +130,6 @@ function createElements()
 
 function test() {
 	let newNode = createElements();
-    updateView(newNode);
     switchView("map");
 }
 

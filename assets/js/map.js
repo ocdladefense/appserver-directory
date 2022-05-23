@@ -61,12 +61,16 @@ const userQuery = {
 
 //Query building with npm package
 let qb = new QueryBuilder(userQuery);
-qb.render("custom");
 
+const conditions = JSON.parse($conditions);
 for (let condition of conditions)
 {
     qb.addCondition(condition);
 }
+
+qb.render("custom");
+
+
 
 // Set up the map legend UX.
 document.addEventListener("click", handleEvent, true);
