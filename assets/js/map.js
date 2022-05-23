@@ -21,7 +21,7 @@ const ocdlaInfoWindow = {
 
 // Set up a MapConfiguration object
 const config = {
-  apiKey: mapKey,
+  apiKey: Keys.mapKey,
   target: "view",
   mapOptions: {
     zoom: 6,
@@ -61,7 +61,16 @@ const userQuery = {
 
 //Query building with npm package
 let qb = new QueryBuilder(userQuery);
+
+console.log(window.conditions);
+//const conditions = JSON.parse($conditions);
+for (var condition of window.conditions)
+{
+    qb.addCondition(condition);
+}
+
 qb.render("custom");
+
 
 
 // Set up the map legend UX.

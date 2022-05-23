@@ -1,4 +1,19 @@
 <link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css" />
+<script>
+     window.conditions = "<?php echo $conditions?>";
+     window.query = "<?php echo $query?>";
+     console.log(conditions);
+     console.log(query);
+    </script>
+    <script src="<?php print module_path(); ?>/assets/js/mapkey.js"></script>
+<script src="<?php print module_path(); ?>/assets/js/Member.js"></script>
+<script src="<?php print module_path(); ?>/assets/js/OCDLATheme.js"></script>
+<script type="module" src="<?php print module_path(); ?>/assets/js/map.js"></script>
+<style>
+    #view, #map-container, #map {
+        height: 100%;
+    }
+    </style>
 
 
 <div>
@@ -17,12 +32,12 @@
 
 <?php endif; ?>
 
-<form action="/maps" method="post">
+<!-- <form action="/maps" method="post">
 	<input type="hidden" name="query" value="<?php echo $query ?>" />
 	<input type="submit" value="Map View" />
-</form>
-
-
+</form> -->
+<button onclick="test()">Map View</button>
+<div id="custom"></div>
 <!-- NOTE: COUNT WILL HAVE TO BE RECALCULATED -->
 <div>
 	<p><?php print "Showing $count members"; ?></p>
@@ -97,18 +112,28 @@ async function updateView(newNode) {
 }
 
 async function switchView(name) {
-	let module = await loadModule("map");
+	let module = await loadModule(name);
 	let node = module.render(); // Should return a new DOM tree.
-	setView(node);
+	updateView(node);
+}
+function createElements()
+{
+    let stage = document.createElement("div");
+    stage.setAttribute("id","mapContainer");
+    let toolbar = document.createElement("div");
+    toolbar.setAttribute("id","toolbar");
+    toolbar.setAttribute("class","navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow");
+    let map = document.createElement("div");
+    map.setAttribute("id","map");
+    stage.appendChild(toolbar);
+    stage.appendChild(map);
+    return stage;
+    
 }
 
-
 function test() {
-
-	let newNode = document.createElement("div");
-	newNode.appendChild(document.createTextNode("Hello World!"));
-
-	updateView(newNode);
+	let newNode = createElements();
+    switchView("map");
 }
 
 

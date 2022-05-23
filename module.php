@@ -41,27 +41,27 @@ class DirectoryModule extends Module {
                 array(
                     "fieldname"  => "FirstName",
                     "op"         => "LIKE",
-                    "syntax"     => "'%%%s%%'"
+                    "syntax"     => "%%%s%%%"
                 ),
                 array(
                     "fieldname"  => "LastName",
                     "op"         => "LIKE",
-                    "syntax"     => "'%%%s%%'"
+                    "syntax"     => "%%%s%%%"
                 ),
                 array(
                     "fieldname"  => "Ocdla_Organization__c",
                     "op"         => "LIKE",
-                    "syntax"     => "'%%%s%%'"
+                    "syntax"     => "%%%s%%%"
                 ),
                 array(
                     "fieldname"  => "MailingCity",
                     "op"         => "LIKE",
-                    "syntax"     => "'%%%s%%'"
+                    "syntax"     => "%%%s%%%"
                 ),
                 array(
                     "fieldname"  => "Ocdla_Occupation_Field_Type__c",
                     "op"         => "LIKE",
-                    "syntax"     => "'%%%s%%'"
+                    "syntax"     => "%%%s%%%"
                 )
             /*                array(
                     "fieldname"  => "Ocdla_Is_Expert_Witness__c",
@@ -122,7 +122,8 @@ class DirectoryModule extends Module {
             "search"            => $this->getMemberSearchBar($_POST),
             "contacts"          => $contacts,
             "query"             => $query,
-            "user"              => current_user()
+            "user"              => current_user(),
+            "conditions"        => json_encode($soql->conditions)
         ));
     }
 
