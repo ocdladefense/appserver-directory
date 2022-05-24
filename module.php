@@ -94,6 +94,10 @@ class DirectoryModule extends Module {
          * Jose
          * 
          */
+        $conditions = array_values($soql->getConditions()["conditions"]);
+        foreach($conditions as &$c) {
+            unset($c["syntax"]);
+        }
 
         $query = $soql->compile();
 
@@ -116,13 +120,14 @@ class DirectoryModule extends Module {
 
         $tpl = new Template("member-list");
         $tpl->addPath(__DIR__ . "/templates");
-
+        
         return $tpl->render(array(
             "count"             => count($contacts),
             "search"            => $this->getMemberSearchBar($_POST),
             "contacts"          => $contacts,
             "query"             => $query,
-            "user"              => current_user()
+            "user"              => current_user(),
+            "conditions"        => json_encode($conditions)
         ));
     }
 
