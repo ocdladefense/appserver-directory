@@ -311,4 +311,30 @@ class DirectoryModule extends Module {
 
     }        
     
+
+
+    public function doQuery() {
+
+        
+    }
+
+    public function testQuery() {
+        $qb = new QueryBuilder("Contact");
+
+        $c1 = new stdClass;
+        $c1->field = "LastName";
+        $c1->op = "=";
+        $c1->value = "Smith";
+
+        $c2 = new stdClass;
+        $c2->field = "Is_Current_Member__c";
+        $c2->op = "=";
+        $c2->value = true;
+
+        $conditions = array($c1,$c2);
+
+        $where = QueryBuilder::toWhere($conditions);
+
+        return $where;
+    }
 }
