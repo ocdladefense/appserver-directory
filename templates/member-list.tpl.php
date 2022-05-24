@@ -3,18 +3,17 @@
     <script src="<?php print module_path(); ?>/assets/js/mapkey.js"></script>
 <script src="<?php print module_path(); ?>/assets/js/Member.js"></script>
 <script src="<?php print module_path(); ?>/assets/js/OCDLATheme.js"></script>
-<script type="module" src="<?php print module_path(); ?>/assets/js/map.js"></script>
+<!-- <script type="module" src="<?php print module_path(); ?>/assets/js/map.js"></script> -->
 <style>
     #view, #map-container, #map, #toolbar {
         height: 100%;
     }
     </style>
 
-
 <div>
 	<h2>OCDLA Member Directory</h2>
 </div>
-
+<?php var_dump($conditions);?>
 <div class="search">
 	<?php print $search; ?>
 </div>
@@ -108,11 +107,11 @@ async function updateView(newNode) {
 }
 
 async function switchView(name) {
+    let node = render(); // Should return a new DOM tree.
 	let module = await loadModule(name);
-	//let node = module.render(); // Should return a new DOM tree.
-	//updateView(node);
+	updateView(node);
 }
-function createElements()
+function render()
 {
     let stage = document.createElement("div");
     stage.setAttribute("id","mapContainer");
@@ -129,10 +128,7 @@ function createElements()
 
 function test() {
 	
-    let newNode = createElements()
-    
-    updateView(newNode);
-    switchView("map"); //I beleive this is the next step
+    switchView("map");
 }
 
 

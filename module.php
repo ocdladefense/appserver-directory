@@ -116,7 +116,7 @@ class DirectoryModule extends Module {
 
         $tpl = new Template("member-list");
         $tpl->addPath(__DIR__ . "/templates");
-
+        
         return $tpl->render(array(
             "count"             => count($contacts),
             "search"            => $this->getMemberSearchBar($_POST),
