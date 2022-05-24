@@ -36,32 +36,32 @@ class DirectoryModule extends Module {
                 array(
                     "fieldname"  => "Ocdla_Current_Member_Flag__c",
                     "op"         => "=",
-                    "syntax"     => ""
+                    "syntax"     => "%s"
                 ),
                 array(
                     "fieldname"  => "FirstName",
                     "op"         => "LIKE",
-                    "syntax"     => "%%%s%%%"
+                    "syntax"     => "'%%%s%%'"
                 ),
                 array(
                     "fieldname"  => "LastName",
                     "op"         => "LIKE",
-                    "syntax"     => "%%%s%%%"
+                    "syntax"     => "'%%%s%%'"
                 ),
                 array(
                     "fieldname"  => "Ocdla_Organization__c",
                     "op"         => "LIKE",
-                    "syntax"     => "%%%s%%%"
+                    "syntax"     => "'%%%s%%'"
                 ),
                 array(
                     "fieldname"  => "MailingCity",
                     "op"         => "LIKE",
-                    "syntax"     => "%%%s%%%"
+                    "syntax"     => "'%%%s%%'"
                 ),
                 array(
                     "fieldname"  => "Ocdla_Occupation_Field_Type__c",
                     "op"         => "LIKE",
-                    "syntax"     => "%%%s%%%"
+                    "syntax"     => "'%%%s%%'"
                 )
             /*                array(
                     "fieldname"  => "Ocdla_Is_Expert_Witness__c",

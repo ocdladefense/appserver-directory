@@ -5,7 +5,7 @@
 <script src="<?php print module_path(); ?>/assets/js/OCDLATheme.js"></script>
 <script type="module" src="<?php print module_path(); ?>/assets/js/map.js"></script>
 <style>
-    #view, #map-container, #map {
+    #view, #map-container, #map, #toolbar {
         height: 100%;
     }
     </style>
@@ -26,13 +26,14 @@
 </div>
 
 <?php endif; ?>
-
+<input type="hidden" id="conditions" value=<?php echo $conditions?>/>
 <!-- <form action="/maps" method="post">
 	<input type="hidden" name="query" value="<?php echo $query ?>" />
 	<input type="submit" value="Map View" />
 </form> -->
 <button onclick="test()">Map View</button>
 <div id="custom"></div>
+<div id="filters"></div>
 <!-- NOTE: COUNT WILL HAVE TO BE RECALCULATED -->
 <div>
 	<p><?php print "Showing $count members"; ?></p>
@@ -108,8 +109,8 @@ async function updateView(newNode) {
 
 async function switchView(name) {
 	let module = await loadModule(name);
-	let node = module.render(); // Should return a new DOM tree.
-	updateView(node);
+	//let node = module.render(); // Should return a new DOM tree.
+	//updateView(node);
 }
 function createElements()
 {
@@ -127,8 +128,11 @@ function createElements()
 }
 
 function test() {
-	let newNode = createElements();
-    switchView("map");
+	
+    let newNode = createElements()
+    
+    updateView(newNode);
+    switchView("map"); //I beleive this is the next step
 }
 
 

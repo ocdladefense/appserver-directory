@@ -55,19 +55,23 @@ let c2 = { field: "Ocdla_Member_Status__c", value: "R", op: QueryBuilder.SQL_EQ 
 const userQuery = {
   object: "Contact",
   fields: [],
-  where: [c1, c2],
+  where: [],
   limit: 20,
 };
 
 //Query building with npm package
 let qb = new QueryBuilder(userQuery);
 
-const conditions = JSON.parse($conditions);
-for (let condition of conditions)
+let where = document.getElementById("conditions").value;
+let conditions = JSON.parse(where);
+console.log(where);
+console.log(conditions);
+
+for (var condition of conditions)
 {
     qb.addCondition(condition);
 }
-
+//renders checkboxes
 qb.render("custom");
 
 
@@ -103,7 +107,7 @@ function contactQuery(e) {
 
 // Render the map to the page
 // After the map finished initializing, get and set the users
-myMap.init(mapinit).then(function () {
+myMap.init().then(function () {
   let features = {};
   // Hides the filters until data is loaded.
 
