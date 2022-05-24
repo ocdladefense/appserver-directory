@@ -1,7 +1,5 @@
 <link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css" />
-<script>
-     const $conditions = JSON.parse("<?php echo $conditions?>");
-    </script>
+
     <script src="<?php print module_path(); ?>/assets/js/mapkey.js"></script>
 <script src="<?php print module_path(); ?>/assets/js/Member.js"></script>
 <script src="<?php print module_path(); ?>/assets/js/OCDLATheme.js"></script>
