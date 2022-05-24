@@ -94,6 +94,10 @@ class DirectoryModule extends Module {
          * Jose
          * 
          */
+        $conditions = array_values($soql->getConditions()["conditions"]);
+        foreach($conditions as &$c) {
+            unset($c["syntax"]);
+        }
 
         $query = $soql->compile();
 
@@ -123,7 +127,7 @@ class DirectoryModule extends Module {
             "contacts"          => $contacts,
             "query"             => $query,
             "user"              => current_user(),
-            "conditions"        => json_encode($soql->conditions)
+            "conditions"        => json_encode($conditions)
         ));
     }
 

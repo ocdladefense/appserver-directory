@@ -3,10 +3,11 @@
     <script src="<?php print module_path(); ?>/assets/js/mapkey.js"></script>
 <script src="<?php print module_path(); ?>/assets/js/Member.js"></script>
 <script src="<?php print module_path(); ?>/assets/js/OCDLATheme.js"></script>
-<!-- <script type="module" src="<?php print module_path(); ?>/assets/js/map.js"></script> -->
+
 <style>
-    #view, #map-container, #map, #toolbar {
-        height: 100%;
+    #map-container, #map {
+        height: 600px;
+        width: 600px;
     }
     </style>
 
@@ -25,12 +26,11 @@
 </div>
 
 <?php endif; ?>
-<input type="hidden" id="conditions" value=<?php echo $conditions?>/>
-<!-- <form action="/maps" method="post">
-	<input type="hidden" name="query" value="<?php echo $query ?>" />
-	<input type="submit" value="Map View" />
-</form> -->
+
+<input type="hidden" id="conditions" value='<?php echo $conditions; ?>' />
+
 <button onclick="test()">Map View</button>
+
 <div id="custom"></div>
 <div id="filters"></div>
 <!-- NOTE: COUNT WILL HAVE TO BE RECALCULATED -->
@@ -107,32 +107,16 @@ async function updateView(newNode) {
 }
 
 async function switchView(name) {
-    let node = render(); // Should return a new DOM tree.
-	let module = await loadModule(name);
-	//let node = module.render(); // Should return a new DOM tree.
-	//updateView(node);
-}
-function render()
-{
-    let stage = document.createElement("div");
-    stage.setAttribute("id","mapContainer");
-    let toolbar = document.createElement("div");
-    toolbar.setAttribute("id","toolbar");
-    toolbar.setAttribute("class","navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow");
-    let map = document.createElement("div");
-    map.setAttribute("id","map");
-    stage.appendChild(toolbar);
-    stage.appendChild(map);
-    return stage;
-    
+    // let node = render(); // Should return a new DOM tree.
+    let module = await loadModule(name);
+    let node = module.render();
+    updateView(node);
+    module.init();
 }
 
+
 function test() {
-	
-    let newNode = render()
-    
-    updateView(newNode);
-    switchView("map"); //I beleive this is the next step
+    switchView("map"); 
 }
 
 

@@ -62,9 +62,8 @@ const userQuery = {
 //Query building with npm package
 let qb = new QueryBuilder(userQuery);
 
-let where = document.getElementById("conditions").value;
-let conditions = JSON.parse(where);
-console.log(where);
+let conditions = JSON.parse(document.getElementById("conditions").value);
+
 console.log(conditions);
 
 for (var condition of conditions)
@@ -104,36 +103,37 @@ function contactQuery(e) {
   //shows all search results after 1 box, currently the search query is only added to
 }
 
-
+function init() {
 // Render the map to the page
-// After the map finished initializing, get and set the users
 myMap.init().then(function () {
-  let features = {};
-  // Hides the filters until data is loaded.
+    let features = {};
+    // Hides the filters until data is loaded.
+  
+    myMap.hideFilters();
+    // console.log("map loaded");
+  
+    // The OCDLA icon Info Window is currently being unused.
+    let ocdlaIcon = new UrlMarker(
+      "/modules/maps/assets/markers/ocdlaMarker/ocdla-marker-round-origLogo.svg"
+    );
+    myMap.render(ocdlaIcon);
+  
+    // Set up the features and load in the data
+    let config = {
+      name: "search",
+      label: "search",
+      markerLabel: "SE",
+      markerStyle: "/modules/maps/assets/markers/members/member-marker-round-black.png",
+      datasource: doSearch.bind(null, qb.getObject()),
+    };
+  
+  
+    features["search"] = config;
+    myMap.loadFeatures(features);
+    myMap.loadFeatureData();
+  });
+}
 
-  myMap.hideFilters();
-  // console.log("map loaded");
-
-  // The OCDLA icon Info Window is currently being unused.
-  let ocdlaIcon = new UrlMarker(
-    "/modules/maps/assets/markers/ocdlaMarker/ocdla-marker-round-origLogo.svg"
-  );
-  myMap.render(ocdlaIcon);
-
-  // Set up the features and load in the data
-  let config = {
-    name: "search",
-    label: "search",
-    markerLabel: "SE",
-    markerStyle: "/modules/maps/assets/markers/members/member-marker-round-black.png",
-    datasource: doSearch.bind(null, qb.getObject()),
-  };
-
-
-  features["search"] = config;
-  myMap.loadFeatures(features);
-  myMap.loadFeatureData();
-});
 
 //get data
 function doSearch(qb) {
@@ -182,3 +182,18 @@ function handleEvent(e) {
   }
 }
 
+function render()
+{
+    let stage = document.createElement("div");
+    stage.setAttribute("id","map-container");
+    let toolbar = document.createElement("div");
+    toolbar.setAttribute("id","toolbar");
+    toolbar.setAttribute("class","navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow");
+    let map = document.createElement("div");
+    map.setAttribute("id","map");
+    stage.appendChild(toolbar);
+    stage.appendChild(map);
+    return stage;
+}
+
+export {render, init};
