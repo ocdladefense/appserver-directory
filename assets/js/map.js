@@ -62,15 +62,15 @@ const userQuery = {
 //Query building with npm package
 let qb = new QueryBuilder(userQuery);
 
-// let where = document.getElementById("conditions").value;
-// let conditions = JSON.parse(where);
-// console.log(where);
-// console.log(conditions);
+let where = document.getElementById("conditions").value;
+let conditions = JSON.parse(where);
+console.log(where);
+console.log(conditions);
 
-// for (var condition of conditions)
-// {
-//     qb.addCondition(condition);
-// }
+for (var condition of conditions)
+{
+    qb.addCondition(condition);
+}
 //renders checkboxes
 qb.render("custom");
 

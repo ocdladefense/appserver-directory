@@ -109,7 +109,8 @@ async function updateView(newNode) {
 async function switchView(name) {
     let node = render(); // Should return a new DOM tree.
 	let module = await loadModule(name);
-	updateView(node);
+	//let node = module.render(); // Should return a new DOM tree.
+	//updateView(node);
 }
 function render()
 {
@@ -128,7 +129,10 @@ function render()
 
 function test() {
 	
-    switchView("map");
+    let newNode = render()
+    
+    updateView(newNode);
+    switchView("map"); //I beleive this is the next step
 }
 
 
