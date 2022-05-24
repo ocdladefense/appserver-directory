@@ -56,7 +56,7 @@ const userQuery = {
   object: "Contact",
   fields: [],
   where: [],
-  limit: 20,
+  limit: 20
 };
 
 //Query building with npm package
@@ -66,10 +66,17 @@ let conditions = JSON.parse(document.getElementById("conditions").value);
 
 console.log(conditions);
 
-for (var condition of conditions)
+
+for (let condition of conditions)
 {
-    qb.addCondition(condition);
+    let c = {
+        field: condition.fieldname,
+        op: condition.op,
+        value: condition.value
+    };
+    qb.addCondition(c);
 }
+console.log(qb.getObject());
 //renders checkboxes
 qb.render("custom");
 
@@ -131,6 +138,7 @@ myMap.init().then(function () {
     features["search"] = config;
     myMap.loadFeatures(features);
     myMap.loadFeatureData();
+    myMap.showFeature('search');
   });
 }
 

@@ -14,7 +14,7 @@
 <div>
 	<h2>OCDLA Member Directory</h2>
 </div>
-<?php var_dump($conditions);?>
+
 <div class="search">
 	<?php print $search; ?>
 </div>
