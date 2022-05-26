@@ -1,8 +1,10 @@
 <link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css" />
 
-    <script src="<?php print module_path(); ?>/assets/js/mapkey.js"></script>
+
+<script src="<?php print module_path(); ?>/assets/js/mapkey.js"></script>
 <script src="<?php print module_path(); ?>/assets/js/Member.js"></script>
 <script src="<?php print module_path(); ?>/assets/js/OCDLATheme.js"></script>
+<script type="module" src="<?php print module_path(); ?>/assets/js/views.js"></script>
 
 <style>
     #map-container, #map {
@@ -87,37 +89,6 @@
 
 
 <script>
-
-async function loadModule(name) {
-	name = name || "map";
-	let module = await import('/modules/directory/assets/js/map.js');
-	return module;
-}
-
-async function updateView(newNode) {
-
-	let container = document.getElementById("view");
-	let current = container.cloneNode();
-	let parent = container.parentNode;
-
-	current.appendChild(newNode);
-
-	parent.replaceChild(current,container);
-	
-}
-
-async function switchView(name) {
-    // let node = render(); // Should return a new DOM tree.
-    let module = await loadModule(name);
-    let node = module.render();
-    updateView(node);
-    module.init();
-}
-
-
-function test() {
-    switchView("map"); 
-}
 
 
 </script>
