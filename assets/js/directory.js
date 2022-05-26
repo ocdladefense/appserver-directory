@@ -1,22 +1,211 @@
+/**
+ * Defines code to be executed when the view changes.
+ *
+ */
 
-let listItems = document.getElementsByClassName("list-item");
+ import MapApplication from "/node_modules/@ocdladefense/google-maps/MapApplication.js";
+ import UrlMarker from "/node_modules/@ocdladefense/google-maps/UrlMarker.js";
+ import QueryBuilder from "/node_modules/@ocdladefense/query-builder/QueryBuilder.js";
+ 
+ 
+ console.log("Directory module loaded.");
+ 
+ 
+ const userQuery = {
+	 object: "Contact",
+	 fields: [],
+	 where: [],
+	 limit: null
+   };
+   
+   //Query building with npm package
+   let qb = new QueryBuilder(userQuery);
+   let conditions = JSON.parse(document.getElementById("conditions").value);
+   
+   console.log(conditions);
+   
+   
+   for (let con of conditions)
+   {
+	 let c = {
+	   field: con.fieldname,
+	   op: con.op,
+	   value: con.value
+	 };
+	 qb.addCondition(c);
+   }
+ 
+   console.log(qb.getObject());
+ 
+   document.addEventListener("viewswitch",() => {
+	   if("map" == view) {
+		 
+		showMap();
+		
+		qb.render();
+	   }
+   });
+ 
+ // Get the initial styles (theme) for the map -- OCDLA theme
+ const startTheme = new OCDLATheme();
+ 
+ const ocdlaInfoWindow = {
+   content: `<h1>OCDLA</h1>`
+ };
+ 
+ 
+ // Set up a MapConfiguration object
+ const config = {
+   apiKey: Keys.mapKey,
+   target: "view",
+   mapOptions: {
+	 zoom: 6,
+	 center: {
+	   lat: 44.04457,
+	   lng: -123.09078,
+	 },
+	 styles: startTheme.getTheme(),
+	 defaultMarkerStyles: {
+	   icon: {
+		 scaledSize: {
+		   height: 70,
+		   width: 80,
+		 }
+	   }
+	 },
+	 ocdlaInfoWindow: ocdlaInfoWindow,
+   },
+   enableHighAccuracy: true
+ };
+ 
 
-for(let i = 0; i < listItems.length; i++){
+ 
+ function showMap() {
+	
+	// Instantiate the app and pass in the mapConfig obj
+	const myMap = new MapApplication(config); // Change to "#view"
+	window.myMap = myMap;
 
-	listItems[i].addEventListener("click", handleEvent);
-}
 
-function handleEvent(e){
-
-	let contactId = e.srcElement.dataset.contactid;
-
-	if(contactId == null) {
-
-		contactId = e.target.parentElement.dataset.contactid;
+	qb.render("custom");
+	// Listen for changes to the underlying query UX.
+	document.addEventListener("querychange", contactQuery, true);
+	
+	
+	
+	
+	function contactQuery(e) {
+			
+		let query = e.detail;
+		
+		let searchFeature = myMap.getFeature("search");
+		
+		//need to clear markers?
+		searchFeature.setDatasource(doSearch.bind(null, query));
+		
+		// Load the feature's data.
+		searchFeature.loadData();
+		
+		// Load the feature's markers.
+		searchFeature.loadMarkers().then(() => {
+			//show the feature
+		});
+		//searchFeature.markers = [];
+		//shows all search results after 1 box, currently the search query is only added to
 	}
 
-	let link = document.createElement("a");
-	let href = "/directory/members/" + contactId;
-	link.setAttribute("href", href);
-	link.click();
-}
+	// Render the map to the page
+	myMap.init().then(function() {
+		let features = {};
+
+		// The OCDLA icon Info Window is currently being unused.
+		let ocdlaIcon = new UrlMarker(
+		"/modules/maps/assets/markers/ocdlaMarker/ocdla-marker-round-origLogo.svg"
+		);
+		myMap.render(ocdlaIcon);
+
+		// Set up the features and load in the data
+		let config = {
+		name: "search",
+		label: "search",
+		markerLabel: "SE",
+		markerStyle: "/modules/maps/assets/markers/members/member-marker-round-black.png",
+		datasource: doSearch.bind(null, qb.getObject())
+		};
+
+
+		features["search"] = config;
+		myMap.loadFeatures(features);
+		myMap.loadFeatureData();
+	});
+ }
+ 
+ 
+const views = {
+	map: {
+		init: initView,
+		render: showMap
+	}
+};
+ 
+ 
+ 
+ function doSearch(qb) {
+   let body = JSON.stringify(qb);
+ 
+   return fetch("/maps/search", {
+	 method: "POST", // *GET, POST, PUT, DELETE, etc.
+	 mode: "cors", // no-cors, *cors, same-origin
+	 cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+	 credentials: "same-origin", // include, *same-origin, omit
+	 headers: {
+	   "Content-Type": "application/json",
+	   "Accept": "text/html",
+	   // 'Content-Type': 'application/x-www-form-urlencoded',
+	 },
+	 body: body,
+   })
+   .then((resp) => {
+	 return resp.json();
+   })
+   .then((queryAndResults) => {
+	 let members = queryAndResults.results;
+	 return members.map((member) => {
+	   let newMember = new Member(member);
+	   return newMember;
+	 });
+   });
+ }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ function initView(name) {
+
+	if("list" == name) return null;
+	
+	
+	 let container = document.createElement("div");
+	 container.setAttribute("id","map-container");
+	 
+	 let toolbar = document.createElement("div");
+	 toolbar.setAttribute("id","toolbar");
+	 toolbar.setAttribute("class","navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow");
+	 
+	 let map = document.createElement("div");
+	 map.setAttribute("id","map");
+	 
+	 container.appendChild(toolbar);
+	 container.appendChild(map);
+	 
+	 return container;
+ }
+
+
+
+ export default views;
