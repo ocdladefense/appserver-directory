@@ -31,7 +31,8 @@
 
 <input type="hidden" id="conditions" value='<?php echo $conditions; ?>' />
 
-<button onclick="test()">Map View</button>
+<button onclick="switchView('map')">Map View</button>
+<button onclick="switchView('list')">List View</button>
 
 <div id="custom"></div>
 <div id="filters"></div>
@@ -86,9 +87,3 @@
 		<?php endif; ?>
 	</tbody>
 </table>
-
-
-<script>
-
-
-</script>
