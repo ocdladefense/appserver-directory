@@ -4,12 +4,14 @@
 <script src="<?php print module_path(); ?>/assets/js/mapkey.js"></script>
 <script src="<?php print module_path(); ?>/assets/js/Member.js"></script>
 <script src="<?php print module_path(); ?>/assets/js/OCDLATheme.js"></script>
+<!-- <script type="module" src="<?php print module_path(); ?>/assets/js/map.js"></script> -->
 <script type="module" src="<?php print module_path(); ?>/assets/js/views.js"></script>
+
 
 <style>
     #map-container, #map {
         height: 600px;
-        width: 600px;
+        width: 900px;
     }
     </style>
 
