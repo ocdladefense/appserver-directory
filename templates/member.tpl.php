@@ -1,5 +1,18 @@
 <link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css"></link>
 
+
+
+<style type="text/css">
+img.obj {
+    vertical-align: middle;
+    padding: 15px;
+    border: 1px solid #eee;
+    margin: 10px;
+    border-radius: 5px;
+}
+</style>
+
+
 <a class="back-link" href="/directory/members" style="float: left;"><i class="fa fa-arrow-left" style="font-size:25px;color:blue"></i></a><br /><br />
 
 <div class="search">
@@ -26,6 +39,12 @@
 <?php $isSingle ? $singleClass = "is-single" : ""; ?>
 
 <div class="directory-list">
+
+    <div class="file-upload" style="border:1px solid #ccc; padding:50px; height:300px;">
+        <i class="fa-solid fa-cloud-arrow-up fa-2x" style="font-size:4.0em; color:blue;"></i>
+        <input type="file" id="upload" multiple />
+        <div id="preview"></div>
+    </div>
 
     <?php foreach($contacts as $c) : ?>
 
@@ -56,4 +75,8 @@
 
 </div>
 
-<script src="<?php print module_path(); ?>/assets/js/directory.js"></script>
+<!--  NOTE: this could be used to display a map locating the member's business address. 
+    <script type="module" src="<?php print module_path(); ?>/assets/js/directory.js">
+</script> -->
+<script type="module" src="<?php print module_path(); ?>/assets/js/upload.js">
+</script>

@@ -99,7 +99,7 @@ class DirectoryModule extends Module {
             unset($c["syntax"]);
         }
 
-        $query = $soql->compile();
+        $query = $soql->compile() . " LIMIT 20";
 
         // print $query;exit;
 
@@ -144,7 +144,7 @@ class DirectoryModule extends Module {
         $contacts = Contact::from_query_result_records($records);
 
 
-        $tpl = new Template("member-single");
+        $tpl = new Template("member");
         $tpl->addPath(__DIR__ . "/templates");
 
         return $tpl->render(array(
@@ -271,7 +271,7 @@ class DirectoryModule extends Module {
         $experts = Contact::from_query_result_records($records);
 
 
-        $tpl = new Template("expert-single");
+        $tpl = new Template("expert");
         $tpl->addPath(__DIR__ . "/templates");
 
         return $tpl->render(array(

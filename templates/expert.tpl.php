@@ -59,3 +59,4 @@
 </div>
 
 <script src="<?php print module_path(); ?>/assets/js/directory.js"></script>
+<script src="<?php print module_path(); ?>/assets/js/file.js"></script>
