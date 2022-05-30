@@ -31,7 +31,7 @@
 
 <input type="hidden" id="conditions" value='<?php echo $conditions; ?>' />
 
-<button onclick="test()">Map View</button>
+<button onclick="window.switchView('map')">Map View</button>
 
 <div id="custom"></div>
 <div id="filters"></div>
