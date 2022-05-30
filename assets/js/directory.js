@@ -2,6 +2,8 @@
  * Defines code to be executed when the view changes.
  *
  */
+/**@jsx vNode*/
+import{vNode, View} from '/node_modeules/@ocdladefense/view/view.js';
 //import OCDLACustom from "/node_modules/@ocdladefense/node-...
 import MapApplication from "/node_modules/@ocdladefense/google-maps/MapApplication.js";
 import MapFeature from "/node_modules/@ocdladefense/google-maps/MapFeature.js";
