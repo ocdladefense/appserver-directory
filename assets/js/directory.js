@@ -14,7 +14,7 @@ const userQuery = {
   object: "Contact",
   fields: [],
   where: [],
-  limit: null,
+  limit: 200, //limit to stop too many markers?
 };
 
 //Query building with npm package
@@ -129,7 +129,7 @@ function showMap() {
       });
   });
 }
-function showData() {}
+
 const views = {
   map: {
     init: initView,
@@ -167,10 +167,10 @@ function doSearch(qb) {
 function initView(name) {
   if ("list" == name) return null;
 
-  let container = document.createElement("div");
+  let container = document.createElement("span");
   container.setAttribute("id", "map-container");
 
-  let toolbar = document.createElement("div");
+  let toolbar = document.createElement("span");
   toolbar.setAttribute("id", "toolbar");
   toolbar.setAttribute(
     "class",
@@ -182,6 +182,9 @@ function initView(name) {
 
   container.appendChild(toolbar);
   container.appendChild(map);
+  let custom = document.createElement("div");
+  custom.setAttribute("id", "custom");
+  toolbar.appendChild(custom);
 
   return container;
 }

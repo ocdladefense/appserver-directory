@@ -4,14 +4,20 @@
 <script src="<?php print module_path(); ?>/assets/js/mapkey.js"></script>
 <script src="<?php print module_path(); ?>/assets/js/Member.js"></script>
 <script src="<?php print module_path(); ?>/assets/js/OCDLATheme.js"></script>
-<!-- <script type="module" src="<?php print module_path(); ?>/assets/js/map.js"></script> -->
+
 <script type="module" src="<?php print module_path(); ?>/assets/js/views.js"></script>
 
 
 <style>
-    #map-container, #map {
-        height: 600px;
-        width: 900px;
+    #map {
+        min-height: 700px;
+        min-width: 1500px;
+        display: inline-block;
+    }
+    #map-container {
+        min-height: 700px;
+        min-width: 800px;
+        display: inline;
     }
     </style>
 
@@ -36,8 +42,8 @@
 <button onclick="switchView('map')">Map View</button>
 <button onclick="switchView('list')">List View</button>
 
-<div id="custom"></div>
-<div id="filters"></div>
+<!-- <div id="custom"></div> -->
+<!-- <div id="filters"></div> -->
 <!-- NOTE: COUNT WILL HAVE TO BE RECALCULATED -->
 <div>
 	<p><?php print "Showing $count members"; ?></p>

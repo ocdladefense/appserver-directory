@@ -44,8 +44,10 @@ async function switchView(name) {
 	// For example, execute any init
 	// function associated with the newly-loaded module.
 	// qb.render("custom");
-
-    views[name].render();
+    if (name == 'map')
+    {
+        views[name].render();
+    }
 }
 
 window.switchView = switchView;
