@@ -1,5 +1,6 @@
 import views from "/modules/directory/assets/js/directory.js";
-console.log(views);
+//console.log(views);
+//import { renderMap, initializeMap } from "./map.js";
 /**
  * To test this code execute either:
  * switchView("list");
@@ -43,9 +44,11 @@ async function switchView(name) {
 	// For example, execute any init
 	// function associated with the newly-loaded module.
 	// qb.render("custom");
+
     views[name].render();
 }
 
 window.switchView = switchView;
 
+export default switchView;
 
