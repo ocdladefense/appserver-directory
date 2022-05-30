@@ -131,7 +131,7 @@ function showMap() {
       });
   });
 }
-
+function showData() {}
 const views = {
   map: {
     init: initView,
