@@ -1,11 +1,6 @@
 /**@jsx vNode*/
-/**
- * Defines code to be executed when the view changes.
- *
- */
 
-import { vNode, View } from "/node_modules/@ocdladefense/view/view.js";
-//import OCDLACustom from "/node_modules/@ocdladefense/node-...
+
 import MapApplication from "/node_modules/@ocdladefense/google-maps/MapApplication.js";
 import MapFeature from "/node_modules/@ocdladefense/google-maps/MapFeature.js";
 import UrlMarker from "/node_modules/@ocdladefense/google-maps/UrlMarker.js";
@@ -23,7 +18,7 @@ const userQuery = {
 
 //Query building with npm package
 let qb = new QueryBuilder(userQuery);
-let conditions = JSON.parse(document.getElementById("conditions").value);
+let conditions = JSON.parse(query);
 
 console.log(conditions);
 
