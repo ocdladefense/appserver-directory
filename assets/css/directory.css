@@ -1,4 +1,10 @@
 
+.record-documents {
+    text-align:center;
+    border:1px solid #ccc;
+    padding:50px;
+}
+
 .search-bar {
     background-color: lightgray;
     border-radius:5px;
@@ -11,8 +17,7 @@
     table-layout: fixed;
     margin: 0 0 5px 0;
 }
-.form-item{
-    display:table-cell;
+.form-item {
     text-align: center;
     padding: 2px;
 }

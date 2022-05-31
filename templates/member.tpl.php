@@ -68,7 +68,7 @@ img.obj {
         <p>
             <?php !empty($c->getMailingCity()) ? print $c->getMailingCity() . ", " . $c->getMailingState() : print "City Not Listed"; ?>
         </p>
-        
+
         <?php !empty($c->getEmail()) ? print "<a href='mailto: {$c->getEmail()}' style='text-decoration:none;'>{$c->getEmail()}</a>" : print "No Email Available"; ?>
 
         
@@ -90,8 +90,11 @@ img.obj {
     <form id="contact-uploads" method="post" enctype="multipart/form-data" action="https://appdev.ocdla.org/file/upload">
         <h2>Related documents</h2>
             
-        <div class="file-upload" style="border:1px solid #ccc; padding:50px;">
+        <div class="form-item">
             <i class="fa-solid fa-cloud-arrow-up fa-2x" style="font-size:4.0em; color:blue;"></i>
+        </div>
+        
+        <div class="form-item file-upload">    
             <input name="thefiles[]" type="file" id="upload" multiple />
         </div>
 
@@ -110,5 +113,7 @@ img.obj {
 <!--  NOTE: this could be used to display a map locating the member's business address. 
     <script type="module" src="<?php print module_path(); ?>/assets/js/directory.js">
 </script> -->
-<script src="/node_modules/@ocdladefense/node-file-upload/upload.js">
+<script type="module" src="/node_modules/@ocdladefense/node-file-upload/upload.js">
 </script>
+<script type="module" src="<?php print module_path(); ?>/assets/js/config.js">
+    </script>
