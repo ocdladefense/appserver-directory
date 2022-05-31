@@ -1,5 +1,3 @@
-<link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css" />
-
 <?php
 	$occupationFieldsDefault = array("" => "All Occupation Fields");
 	$allOccupationFields = $occupationFieldsDefault + $occupationFields;
