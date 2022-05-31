@@ -1,11 +1,11 @@
 <link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css" />
 
+<input type="hidden" id="conditions" value='<?php echo $conditions; ?>' />
+<script src="<?php print module_path(); ?>/dist/mapkey.js"></script>
+<script src="<?php print module_path(); ?>/dist/OCDLATheme.js"></script>
+<script src="<?php print module_path(); ?>/dist/Member.js"></script>
+<script type="module" src="<?php print module_path(); ?>/dist/views.js"></script>
 
-<script src="<?php print module_path(); ?>/assets/js/mapkey.js"></script>
-<script src="<?php print module_path(); ?>/assets/js/Member.js"></script>
-<script src="<?php print module_path(); ?>/assets/js/OCDLATheme.js"></script>
-
-<script type="module" src="<?php print module_path(); ?>/assets/js/views.js"></script>
 
 
 <style>
@@ -37,7 +37,7 @@
 
 <?php endif; ?>
 
-<input type="hidden" id="conditions" value='<?php echo $conditions; ?>' />
+
 
 <button onclick="switchView('map')">Map View</button>
 <button onclick="switchView('list')">List View</button>
