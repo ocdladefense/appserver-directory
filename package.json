@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build2": "webpack --config webpack.config.cjs",
-    "build": "babel ./src/js -d ./dist"
+    "build": "./node_modules/.bin/babel ./src/js -d ./dist"
   },
   "repository": {
     "type": "git",
