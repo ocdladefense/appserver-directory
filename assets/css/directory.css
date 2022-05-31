@@ -1,4 +1,16 @@
 
+#map {
+    min-height: 700px;
+    min-width: 1500px;
+    display: inline-block;
+}
+#map-container {
+    min-height: 700px;
+    min-width: 800px;
+    display: inline;
+}
+
+
 .record-documents {
     text-align:center;
     border:1px solid #ccc;
@@ -82,9 +94,7 @@ div#sidenav {
     display: table-row;
 }
 
-.search{
-    margin-bottom:5vh;
-}
+
 
 li.table-cell.long-cell {
     max-width: 18vw;
@@ -153,15 +163,7 @@ li.table-cell.short-cell {
     margin-left: 10px;
 }
 
-#stage-content {
-    height: 800px;
-}
 
-html, body, #wrapper {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
 
 .dropdown-menu {
     padding-left: 10px;
