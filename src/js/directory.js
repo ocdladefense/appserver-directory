@@ -1,9 +1,10 @@
+/**@jsx vNode*/
 /**
  * Defines code to be executed when the view changes.
  *
  */
-/**@jsx vNode*/
-import{vNode, View} from '/node_modules/@ocdladefense/view/view.js';
+
+import { vNode, View } from "/node_modules/@ocdladefense/view/view.js";
 //import OCDLACustom from "/node_modules/@ocdladefense/node-...
 import MapApplication from "/node_modules/@ocdladefense/google-maps/MapApplication.js";
 import MapFeature from "/node_modules/@ocdladefense/google-maps/MapFeature.js";
@@ -127,8 +128,8 @@ function showMap() {
     myMap.addFeature(searchFeature);
     searchFeature.loadData();
     searchFeature.loadMarkers().then(() => {
-        myMap.showFeature(searchFeature.name);
-      });
+      myMap.showFeature(searchFeature.name);
+    });
   });
 }
 const views = {
@@ -168,24 +169,17 @@ function doSearch(qb) {
 function initView(name) {
   if ("list" == name) return null;
 
-  let container = document.createElement("span");
-  container.setAttribute("id", "map-container");
-
-  let toolbar = document.createElement("span");
-  toolbar.setAttribute("id", "toolbar");
-  toolbar.setAttribute(
-    "class",
-    "navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow"
+  let container = (
+    <div id="map-container">
+      <div
+        id="toolbar"
+        className="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow"
+      >
+        <div id="custom"></div>
+      </div>
+      <div id="map"></div>
+    </div>
   );
-
-  let map = document.createElement("div");
-  map.setAttribute("id", "map");
-
-  container.appendChild(toolbar);
-  container.appendChild(map);
-  let custom = document.createElement("div");
-  custom.setAttribute("id", "custom");
-  toolbar.appendChild(custom);
 
   return container;
 }
