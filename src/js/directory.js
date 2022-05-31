@@ -1,9 +1,13 @@
+/**@jsx vNode*/
 /**
  * Defines code to be executed when the view changes.
  *
  */
+
+import { vNode, View } from "/node_modules/@ocdladefense/view/view.js";
 //import OCDLACustom from "/node_modules/@ocdladefense/node-...
 import MapApplication from "/node_modules/@ocdladefense/google-maps/MapApplication.js";
+import MapFeature from "/node_modules/@ocdladefense/google-maps/MapFeature.js";
 import UrlMarker from "/node_modules/@ocdladefense/google-maps/UrlMarker.js";
 import QueryBuilder from "/node_modules/@ocdladefense/query-builder/QueryBuilder.js";
 // import {FileUploadService,FileUploadComponent} from "/node_modules/@ocdladefense/node-file-upload/Upload.js";
@@ -14,7 +18,7 @@ const userQuery = {
   object: "Contact",
   fields: [],
   where: [],
-  limit: null,
+  limit: 200, //limit to stop too many markers?
 };
 
 //Query building with npm package
@@ -102,9 +106,7 @@ function showMap() {
   }
 
   // Render the map to the page
-  myMap.init().then(function () {
-    let features = {};
-
+  myMap.init().then(() => {
     // The OCDLA icon Info Window is currently being unused.
     let ocdlaIcon = new UrlMarker(
       "/modules/maps/assets/markers/ocdlaMarker/ocdla-marker-round-origLogo.svg"
@@ -112,23 +114,25 @@ function showMap() {
     myMap.render(ocdlaIcon);
 
     // Set up the features and load in the data
-    let config = {
-      name: "search",
-      label: "search",
-      markerLabel: "SE",
-      markerStyle:
-        "/modules/maps/assets/markers/members/member-marker-round-black.png",
-      datasource: doSearch.bind(null, qb.getObject()),
+    let features = {
+      search: {
+        name: "search",
+        label: "search",
+        markerLabel: "SE",
+        markerStyle:
+          "/modules/maps/assets/markers/members/member-marker-round-black.png",
+        datasource: doSearch.bind(null, qb.getObject()),
+      },
     };
-
-    features["search"] = config;
-    myMap.loadFeatures(features);
-    myMap.loadFeatureData().then(() => {
-      myMap.showFeature("search");
+    //create new feature and drop markers
+    let searchFeature = new MapFeature(features.search);
+    myMap.addFeature(searchFeature);
+    searchFeature.loadData();
+    searchFeature.loadMarkers().then(() => {
+      myMap.showFeature(searchFeature.name);
     });
   });
 }
-
 const views = {
   map: {
     init: initView,
@@ -166,21 +170,17 @@ function doSearch(qb) {
 function initView(name) {
   if ("list" == name) return null;
 
-  let container = document.createElement("div");
-  container.setAttribute("id", "map-container");
-
-  let toolbar = document.createElement("div");
-  toolbar.setAttribute("id", "toolbar");
-  toolbar.setAttribute(
-    "class",
-    "navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow"
+  let container = (
+    <div id="map-container">
+      <div
+        id="toolbar"
+        className="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow"
+      >
+        <div id="custom"></div>
+      </div>
+      <div id="map"></div>
+    </div>
   );
-
-  let map = document.createElement("div");
-  map.setAttribute("id", "map");
-
-  container.appendChild(toolbar);
-  container.appendChild(map);
 
   return container;
 }

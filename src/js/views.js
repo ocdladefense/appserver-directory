@@ -1,4 +1,8 @@
-import views from "/modules/directory/assets/js/directory.js";
+import views from "./directory.js";
+import { vNode, View } from "/node_modules/@ocdladefense/view/view.js";
+// import * as React from 'react';
+// import * as ReactDOM from 'react-dom';
+// import { createRoot } from 'react-dom/client'
 //console.log(views);
 //import { renderMap, initializeMap } from "./map.js";
 /**
@@ -11,16 +15,23 @@ const viewCache = {};
 let currentView = "list";
 
 function loadView(name) {
+    if (!views[name]) return;
   return views[name].init();
 }
 
 function updateView(newNode) {
-
+    //vnode to dom element
+    console.log(newNode.type);
+    //if (typeof HTMLDivElement) return;
+    //console.log(newNode.constructor);
+    let elem = View.createElement(newNode);
+    
 	let container = document.getElementById("view");
-	let current = container.cloneNode();
+
+    let current = container.cloneNode();
 	let parent = container.parentNode;
 
-	current.appendChild(newNode);
+	current.appendChild(elem);
 
 	return parent.replaceChild(current,container);
 }
@@ -32,7 +43,7 @@ async function switchView(name) {
 	} else {
 		newNode = viewCache[name];
 	}
-
+    if (!newNode) return;
     oldNode = updateView(newNode);
 
 	// Place the old domtree in the cache,
@@ -44,8 +55,10 @@ async function switchView(name) {
 	// For example, execute any init
 	// function associated with the newly-loaded module.
 	// qb.render("custom");
-
-    views[name].render();
+    if (name == 'map')
+    {
+        views[name].render();
+    }
 }
 
 window.switchView = switchView;

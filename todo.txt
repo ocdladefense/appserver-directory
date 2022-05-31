@@ -1,0 +1,16 @@
+Intern tasks
+
+check for vNode? type in update view
+
+use View class to create elements
+
+done-
+dropped markers
+stopped api from loading more than once
+stopped checkboxes from duplicating
+
+
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2"

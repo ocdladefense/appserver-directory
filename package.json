@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel assets/js/src -d assets/js/components"
+    "build2": "webpack --config webpack.config.cjs",
+    "build": "babel ./src/js -d ./dist"
   },
   "repository": {
     "type": "git",
@@ -23,11 +24,11 @@
     "@babel/plugin-transform-modules-commonjs": "^7.16.7",
     "@babel/preset-env": "^7.16.7",
     "@babel/preset-react": "^7.16.7",
-    "babel-loader": "^8.2.3"
+    "babel-loader": "^8.2.5"
   },
   "dependencies": {
-    "@ocdladefense/query-builder": "^1.0.5",
     "@ocdladefense/google-maps": "^1.0.0",
+    "@ocdladefense/query-builder": "^1.0.5",
     "@ocdladefense/view": "^2.0.1"
   },
   "homepage": "https://github.com/ocdladefense/appserver-maps#readme",

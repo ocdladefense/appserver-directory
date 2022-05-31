@@ -133,3 +133,40 @@ li.table-cell.short-cell {
         width: auto;
     }
 }
+/*maps*/
+
+
+#map {
+    height: 95%;
+    position: relative;
+    overflow-y: hidden !important;
+    overflow-x: auto !important;
+
+}
+
+#toolbar {
+    cursor: default;
+    display: block;
+    max-width:25%;
+    float: left;
+    margin-right: 25px;
+    margin-left: 10px;
+}
+
+#stage-content {
+    height: 800px;
+}
+
+html, body, #wrapper {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.dropdown-menu {
+    padding-left: 10px;
+}
+
+address {
+    padding-right: 2px;
+}
