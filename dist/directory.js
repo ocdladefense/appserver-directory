@@ -5,17 +5,12 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 /**@jsx vNode*/
-
-/**
- * Defines code to be executed when the view changes.
- *
- */
-import { vNode, View } from "/node_modules/@ocdladefense/view/view.js"; //import OCDLACustom from "/node_modules/@ocdladefense/node-...
-
+import { vNode, View } from "/node_modules/@ocdladefense/view/view.js";
 import MapApplication from "/node_modules/@ocdladefense/google-maps/MapApplication.js";
 import MapFeature from "/node_modules/@ocdladefense/google-maps/MapFeature.js";
 import UrlMarker from "/node_modules/@ocdladefense/google-maps/UrlMarker.js";
-import QueryBuilder from "/node_modules/@ocdladefense/query-builder/QueryBuilder.js";
+import QueryBuilder from "/node_modules/@ocdladefense/query-builder/QueryBuilder.js"; // import {FileUploadService,FileUploadComponent} from "/node_modules/@ocdladefense/node-file-upload/Upload.js";
+
 console.log("Directory module loaded.");
 var userQuery = {
   object: "Contact",
@@ -26,7 +21,7 @@ var userQuery = {
 }; //Query building with npm package
 
 var qb = new QueryBuilder(userQuery);
-var conditions = JSON.parse(document.getElementById("conditions").value);
+var conditions = JSON.parse(query);
 console.log(conditions);
 
 var _iterator = _createForOfIteratorHelper(conditions),

@@ -1,6 +1,6 @@
 /**@jsx vNode*/
 
-
+import { vNode, View } from "/node_modules/@ocdladefense/view/view.js";
 import MapApplication from "/node_modules/@ocdladefense/google-maps/MapApplication.js";
 import MapFeature from "/node_modules/@ocdladefense/google-maps/MapFeature.js";
 import UrlMarker from "/node_modules/@ocdladefense/google-maps/UrlMarker.js";
