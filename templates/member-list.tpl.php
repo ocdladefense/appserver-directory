@@ -35,7 +35,6 @@
 	<ul class="table-row">
 		<li>There are no members that meet your search criteria.</li>
 	</ul>
-	
 <?php endif; ?>
 
 

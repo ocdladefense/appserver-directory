@@ -1,15 +1,7 @@
-
-#map {
-    min-height: 700px;
-    min-width: 1500px;
-    display: inline-block;
+#search-widget {
+    margin-bottom: 25px;
+    
 }
-#map-container {
-    min-height: 700px;
-    min-width: 800px;
-    display: inline;
-}
-
 
 .record-documents {
     text-align:center;
@@ -23,45 +15,31 @@
     padding:10px;
     margin-bottom: 10px;
 }
-.search-row{
+.search-row {
     display:table;
     width:100%;
     table-layout: fixed;
     margin: 0 0 5px 0;
 }
-.form-item {
-    text-align: center;
-    padding: 2px;
-}
-.search-row.header-row {
-    border-bottom-style: groove;
-}
-input[type="text"]{
-    width: 90%;
-    height: 30px;
-    padding-left: 5px;
-}
-select{
-    width: 70%;
-    height: 30px;
-    padding-left: 5px;
-}
+
+
+
 .header-row > .first-item {
     text-align: left;
 }
-.header-row > .last-item{
+.header-row > .last-item {
     text-align: right;
 }
-button{
+button {
     border-radius:5px;
     padding:0 5px 0 5px;
     cursor:pointer;
 }
 
-.is-single{
+.is-single {
     width:100%;
 }
-.sidenav{
+.sidenav {
     display: none;
 }
 
@@ -74,7 +52,7 @@ p.primary {
     font-size: 1.4em;
 }
 
-p.secondary{
+p.secondary {
     font-weight: 700;
 }
 .table-headers {
@@ -144,6 +122,18 @@ li.table-cell.short-cell {
     }
 }
 /*maps*/
+
+
+#map {
+    min-height: 700px;
+    min-width: 1500px;
+    display: inline-block;
+}
+#map-container {
+    min-height: 700px;
+    min-width: 800px;
+    display: inline;
+}
 
 
 #map {
