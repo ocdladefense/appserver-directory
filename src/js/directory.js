@@ -4,7 +4,7 @@ import { vNode, View } from "/node_modules/@ocdladefense/view/view.js";
 import MapApplication from "/node_modules/@ocdladefense/google-maps/MapApplication.js";
 import MapFeature from "/node_modules/@ocdladefense/google-maps/MapFeature.js";
 import UrlMarker from "/node_modules/@ocdladefense/google-maps/UrlMarker.js";
-import QueryBuilder from "/node_modules/@ocdladefense/node-query-builder/QueryBuilder.js";
+import QueryBuilder from "/node_modules/@ocdladefense/query-builder/QueryBuilder.js";
 // import {FileUploadService,FileUploadComponent} from "/node_modules/@ocdladefense/node-file-upload/Upload.js";
 
 console.log("Directory module loaded.");
