@@ -7,7 +7,7 @@
 	$AllAreasOfInterest = $areasOfInterestDefault + $areasOfInterest;
 	$selectedAreaOfInterest = empty($selectedInterest) ? "" : $selectedInterest;
 
-	$includeExpertsCheck =  $includeExperts ? "checked" : "";
+	$includeExpertsCheck =  $includeExperts ? "1" : "0";
 ?>
 
 <div class="search-container">
@@ -66,15 +66,15 @@
 
 			<div class="form-item">
 				<input name="IncludeExperts" type="hidden" value="0" />
-				<button class="button" type="button">Clear</button>
+				<button data-action="reset" class="button" type="button">Reset</button>
 			</div>
 
 			<div class="form-item">
-				<button class="button" id="control-experts" type="button">Experts</button>
+				<button data-action="update" data-form-element="IncludeExperts" class="button" id="control-experts" type="button">Experts</button>
 			</div>
 
 			<div class="form-item">
-				<button class="button" type="submit">Search</button>
+				<button data-action="submit" class="button" type="submit">Search</button>
 			</div>
 		</div>
 
@@ -86,35 +86,44 @@
 
 
 <script type="application/javascript">
-// onchange="document.getElementById('search-directory').submit();
-const includeExperts = "<?php print $includeExperts; ?>";
-console.log(includeExperts);
-setValue("includeExperts", includeExperts);
+	// onchange="document.getElementById('search-directory').submit();
+	const IncludeExperts = "<?php print $includeExpertsCheck; ?>";
+	console.log(IncludeExperts);
+	
+	let theform = document.getElementById("search-directory");
+	theform.addEventListener("click",uxclick);
+	setValue("IncludeExperts", IncludeExperts);
 
-function toggleControl(elem) {
-    if(elem.value == "1") {
-        elem.classList.add("active");
-    }
-    else elem.classList.remove("active");
-}
-
-function setValue(name, value) {
-	let theform = document.getElementsById("search");
-	theForm.elements[name].value = value;
-
-}
-
-
-function uxclick(e) {
-	let target = e.target;
-	let name = target.name;
-	if(["includeExperts"].includes(name)) {
-		
+	function toggleControl(elem) {
+		if(elem.value == "1") {
+			elem.classList.add("active");
+		}
+		else elem.classList.remove("active");
 	}
-}
 
-function submitForm() {
-	let theform = document.getElementsById("search");
-	theForm.submit();
-}
+	function setValue(name, value) {	
+		theform.elements[name].value = value;
+
+	}
+
+	function uxclick(e) {
+		let target = e.target;
+		let name = target.name;
+		let action = target.dataset && target.dataset.action;
+
+		if(!["reset","update"].includes(action)) return;
+
+		if("reset" == action) {
+			window.location = "/directory/members";
+			return;
+		}
+
+		if(["IncludeExperts"].includes(name)) {
+			setValue("IncludeExperts",!parseInt(target.value));
+		}
+	}
+
+	function submitForm() {
+		theform.submit();
+	}
 </script>

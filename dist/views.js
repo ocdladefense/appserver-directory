@@ -29,15 +29,12 @@ function loadView(name) {
 
 function updateView(newNode) {
   //vnode to dom element
-  console.log(newNode.type); //if (typeof HTMLDivElement) return;
-  //console.log(newNode.constructor);
-
-  var elem = View.createElement(newNode);
+  var isdom = newNode.constructor.name.indexOf("HTML") !== -1;
+  console.log(newNode.constructor.name);
   var container = document.getElementById("view");
-  var current = container.cloneNode();
   var parent = container.parentNode;
-  current.appendChild(elem);
-  return parent.replaceChild(current, container);
+  var elem = isdom ? newNode : View.createElement(newNode);
+  return parent.replaceChild(elem, container);
 }
 
 function switchView(_x) {
@@ -55,6 +52,7 @@ function _switchView() {
               newNode = loadView(name);
             } else {
               newNode = viewCache[name];
+              console.log(newNode);
             }
 
             if (newNode) {

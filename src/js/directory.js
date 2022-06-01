@@ -166,14 +166,16 @@ function initView(name) {
   if ("list" == name) return null;
 
   let container = (
-    <div id="map-container">
-      <div
-        id="toolbar"
-        className="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow"
-      >
-        <div id="custom"></div>
+    <div id="view" class="view view-block">
+      <div id="map-container">
+        <div
+          id="toolbar"
+          className="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow"
+        >
+          <div id="custom"></div>
+        </div>
+        <div id="map"></div>
       </div>
-      <div id="map"></div>
     </div>
   );
 

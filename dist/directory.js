@@ -164,6 +164,9 @@ function doSearch(qb) {
 function initView(name) {
   if ("list" == name) return null;
   var container = vNode("div", {
+    id: "view",
+    "class": "view view-block"
+  }, vNode("div", {
     id: "map-container"
   }, vNode("div", {
     id: "toolbar",
@@ -172,7 +175,7 @@ function initView(name) {
     id: "custom"
   })), vNode("div", {
     id: "map"
-  }));
+  })));
   return container;
 }
 
