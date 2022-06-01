@@ -4,7 +4,7 @@ import { vNode, View } from "/node_modules/@ocdladefense/view/view.js";
 import MapApplication from "/node_modules/@ocdladefense/google-maps/MapApplication.js";
 import MapFeature from "/node_modules/@ocdladefense/google-maps/MapFeature.js";
 import UrlMarker from "/node_modules/@ocdladefense/google-maps/UrlMarker.js";
-import QueryBuilder from "/node_modules/@ocdladefense/query-builder/QueryBuilder.js";
+import QueryBuilder from "/node_modules/@ocdladefense/node-query-builder/QueryBuilder.js";
 // import {FileUploadService,FileUploadComponent} from "/node_modules/@ocdladefense/node-file-upload/Upload.js";
 
 console.log("Directory module loaded.");
@@ -30,6 +30,15 @@ for (let con of conditions) {
   };
   qb.addCondition(c);
 }
+
+let currentMembers = {
+  field: "Ocdla_Current_Member_Flag__c",
+  op: QueryBuilder.SQL_EQ,
+  value: true,
+  editable: false
+};
+qb.updateCondition(currentMembers);
+
 
 console.log(qb.getObject());
 

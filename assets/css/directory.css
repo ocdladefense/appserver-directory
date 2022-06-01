@@ -1,3 +1,7 @@
+.query-filter-readonly {
+    opacity: 0.4;
+}
+
 #search-widget {
     margin-bottom: 25px;    
 }
