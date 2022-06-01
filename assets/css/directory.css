@@ -1,6 +1,5 @@
 #search-widget {
-    margin-bottom: 25px;
-    
+    margin-bottom: 25px;    
 }
 
 .record-documents {
@@ -125,9 +124,7 @@ li.table-cell.short-cell {
 
 
 #map {
-    min-height: 700px;
-    min-width: 1500px;
-    display: inline-block;
+
 }
 #map-container {
     min-height: 700px;
@@ -136,12 +133,16 @@ li.table-cell.short-cell {
 }
 
 
+
+
 #map {
     height: 95%;
     position: relative;
+    min-height: 700px;
+    max-width: 1500px;
+    display: block;
     overflow-y: hidden !important;
-    overflow-x: auto !important;
-
+    overflow-x: hidden !important;
 }
 
 #toolbar {
@@ -153,6 +154,12 @@ li.table-cell.short-cell {
     margin-left: 10px;
 }
 
+#toolbar li {
+    list-style-type: none;
+}
+#toolbar label {
+    display: inline;
+}
 
 
 .dropdown-menu {
