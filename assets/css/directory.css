@@ -1,50 +1,48 @@
+.query-filter-readonly {
+    opacity: 0.4;
+}
 
-.search-bar, .container{
+#search-widget {
+    margin-bottom: 25px;    
+}
+
+.record-documents {
+    text-align:center;
+    border:1px solid #ccc;
+    padding:50px;
+}
+
+.search-bar {
     background-color: lightgray;
     border-radius:5px;
     padding:10px;
     margin-bottom: 10px;
 }
-.search-row{
+.search-row {
     display:table;
     width:100%;
     table-layout: fixed;
     margin: 0 0 5px 0;
 }
-.form-item{
-    display:table-cell;
-    text-align: center;
-    padding: 2px;
-}
-.search-row.header-row {
-    border-bottom-style: groove;
-}
-input[type="text"]{
-    width: 90%;
-    height: 30px;
-    padding-left: 5px;
-}
-select{
-    width: 70%;
-    height: 30px;
-    padding-left: 5px;
-}
+
+
+
 .header-row > .first-item {
     text-align: left;
 }
-.header-row > .last-item{
+.header-row > .last-item {
     text-align: right;
 }
-button{
+button {
     border-radius:5px;
     padding:0 5px 0 5px;
     cursor:pointer;
 }
 
-.is-single{
+.is-single {
     width:100%;
 }
-.sidenav{
+.sidenav {
     display: none;
 }
 
@@ -57,7 +55,7 @@ p.primary {
     font-size: 1.4em;
 }
 
-p.secondary{
+p.secondary {
     font-weight: 700;
 }
 .table-headers {
@@ -77,9 +75,7 @@ div#sidenav {
     display: table-row;
 }
 
-.search{
-    margin-bottom:5vh;
-}
+
 
 li.table-cell.long-cell {
     max-width: 18vw;
@@ -127,4 +123,53 @@ li.table-cell.short-cell {
     #stage-content {
         width: auto;
     }
+}
+/*maps*/
+
+
+#map {
+
+}
+#map-container {
+    min-height: 700px;
+    min-width: 800px;
+    display: inline;
+}
+
+
+
+
+#map {
+    height: 95%;
+    position: relative;
+    min-height: 700px;
+    max-width: 1500px;
+    display: block;
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+}
+
+#toolbar {
+    cursor: default;
+    display: block;
+    max-width:25%;
+    float: left;
+    margin-right: 25px;
+    margin-left: 10px;
+}
+
+#toolbar li {
+    list-style-type: none;
+}
+#toolbar label {
+    display: inline;
+}
+
+
+.dropdown-menu {
+    padding-left: 10px;
+}
+
+address {
+    padding-right: 2px;
 }

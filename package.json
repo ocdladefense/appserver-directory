@@ -1,0 +1,36 @@
+{
+  "name": "directory",
+  "version": "1.0.0",
+  "description": "Directory module.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build2": "webpack --config webpack.config.cjs",
+    "build": "./node_modules/.bin/babel ./src/js -d ./dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ocdladefense/appserver-maps.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ocdladefense/appserver-maps/issues"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.16.7",
+    "@babel/core": "^7.16.7",
+    "@babel/plugin-transform-modules-commonjs": "^7.16.7",
+    "@babel/preset-env": "^7.16.7",
+    "@babel/preset-react": "^7.16.7",
+    "babel-loader": "^8.2.5"
+  },
+  "dependencies": {
+    "@ocdladefense/google-maps": "^1.0.0",
+    "@ocdladefense/query-builder": "^1.0.5",
+    "@ocdladefense/view": "^2.0.1"
+  },
+  "homepage": "https://github.com/ocdladefense/appserver-maps#readme",
+  "type": "module"
+}

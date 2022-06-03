@@ -1,5 +1,3 @@
-<link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css" />
-
 <?php
 	$occupationFieldsDefault = array("" => "All Occupation Fields");
 	$allOccupationFields = $occupationFieldsDefault + $occupationFields;
@@ -9,86 +7,123 @@
 	$AllAreasOfInterest = $areasOfInterestDefault + $areasOfInterest;
 	$selectedAreaOfInterest = empty($selectedInterest) ? "" : $selectedInterest;
 
-	$includeExpertsCheck = $includeExperts ? "checked" : "";
+	$includeExpertsCheck =  $includeExperts ? "1" : "0";
 ?>
 
-<div class="container">
+<div class="search-container">
 
 	<form id="search-directory" action="/directory/members" method="post">
 
-		<div class="search-row header-row">
 
-			<div class="form-item first-item">
-				<a href="/directory/experts" style="text-decoration:none;">Go to expert witness directory</a>
-			</div>
-
+		<div class="form-group">
 			<div class="form-item">
-				<a class="clear-link" href="/directory/members" style="text-decoration:none;">CLEAR SEARCH</a>
-				<button type="submit">SUBMIT SEARCH</button>
-			</div>
-
-			<div class="form-item last-item">
-				Include Expert Witnesses:
-				<input name="IncludeExperts" value="1" <?php print $includeExpertsCheck; ?> type="checkbox" onchange="document.getElementById('search-directory').submit()">
-			</div>
-
-		</div> <!--end search row -->
-
-		<div class="search-row">
-		
-			<div class="form-item">
-				<input name="FirstName" value="<?php print $firstName; ?>" size="20" maxlength="35" type="text" placeholder="First Name">
+				<input name="FirstName" value="<?php print $firstName; ?>" size="20" maxlength="35" type="text" placeholder="First Name" />
 			</div>
 				
 			<div class="form-item">
-				<input name="LastName" value="<?php print $lastName; ?>" size="20" maxlength="35" type="text" placeholder="Last Name">
+				<input name="LastName" value="<?php print $lastName; ?>" size="20" maxlength="35" type="text" placeholder="Last Name" />
 			</div>
 			
 			<div class="form-item">
-				<input name="Ocdla_Organization__c" value="<?php print $companyName; ?>" size="20" maxlength="35" type="text" placeholder="Company Name"> 
+				<input name="Ocdla_Organization__c" value="<?php print $companyName; ?>" size="20" maxlength="35" type="text" placeholder="Company Name" /> 
 			</div>
 				
 			<div class="form-item">
-				<input name="MailingCity" size="20" value="<?php print $city; ?>" maxlength="35" type="text" placeholder="City">
+				<input name="MailingCity" size="20" value="<?php print $city; ?>" maxlength="35" type="text" placeholder="City" />
 			</div>
+		</div>
 
+		<div class="form-group">
 			<div class="form-item form-select">
 				<select name="Ocdla_Occupation_Field_Type__c" onchange="document.getElementById('search-directory').submit()">
 
-					<?php
+					<?php foreach($allOccupationFields as $value => $label): ?>
 
-
-						foreach ($allOccupationFields as $value => $label){
-
-							$selected = $selectedOccupationField == $value ? "selected" : "";
-						?>
+						<?php $selected = $selectedOccupationField == $value ? "selected" : ""; ?>
 
 						<option value="<?php print $value; ?>" <?php print $selected; ?>><?php print $label; ?></option>
 
-					<?php } ?>
+					<?php endforeach; ?>
 					
 				</select>
 			</div>
 						
 			<div class="form-item form-select">
 				<select name="areaOfInterest" onchange="document.getElementById('search-directory').submit()">
-					<?php
-							foreach ($AllAreasOfInterest as $value => $label){
+					
+					<?php foreach($AllAreasOfInterest as $value => $label): ?>
 
-								$selected = $selectedAreaOfInterest == $value ? "selected" : "";
-							?>
+						<?php $selected = $selectedAreaOfInterest == $value ? "selected" : ""; ?>
 
-							<option value="<?php print $value; ?>" <?php print $selected; ?>><?php print $label; ?></option>
+						<option value="<?php print $value; ?>" <?php print $selected; ?>><?php print $label; ?></option>
 
-						<?php } ?>
+					<?php endforeach; ?>
 				</select>
 			</div>
+		</div>
 
-		</div> <!--end search row -->
+		<div class="form-group">
 
-		<div class="search-row optional-row">
-		</div> <!--end search row -->
+			<div class="form-item">
+				<input name="IncludeExperts" type="hidden" value="0" />
+				<button data-action="reset" class="button" type="button">Reset</button>
+			</div>
 
+			<div class="form-item">
+				<button data-action="update" data-form-element="IncludeExperts" class="button" id="control-experts" type="button">Experts</button>
+			</div>
+
+			<div class="form-item">
+				<button data-action="submit" class="button" type="submit">Search</button>
+			</div>
+		</div>
+
+					
 	</form>
 
 </div>
+
+
+
+<script type="application/javascript">
+	// onchange="document.getElementById('search-directory').submit();
+	const IncludeExperts = "<?php print $includeExpertsCheck; ?>";
+	console.log(IncludeExperts);
+	
+	let theform = document.getElementById("search-directory");
+	theform.addEventListener("click",uxclick);
+	setValue("IncludeExperts", IncludeExperts);
+
+	function toggleControl(elem) {
+		if(elem.value == "1") {
+			elem.classList.add("active");
+		}
+		else elem.classList.remove("active");
+	}
+
+	function setValue(name, value) {	
+		theform.elements[name].value = value;
+
+	}
+
+	function uxclick(e) {
+		let target = e.target;
+		let name = target.name;
+		let action = target.dataset && target.dataset.action;
+
+		if(!["reset","update"].includes(action)) return;
+
+		if("reset" == action) {
+			window.location = "/directory/members";
+			return;
+		}
+
+		if(["IncludeExperts"].includes(name)) {
+			setValue("IncludeExperts",!parseInt(target.value));
+		}
+	}
+
+	function submitForm() {
+		theform.submit();
+	}
+</script>

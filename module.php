@@ -74,7 +74,7 @@ class DirectoryModule extends Module {
         );
 
 
-        $fields = array("Id", "FirstName", "LastName", "MailingCity", "Ocdla_Current_Member_Flag__c", "MailingState", "Phone", "Email", "Ocdla_Occupation_Field_Type__c", "Ocdla_Organization__c", "(SELECT Interest__c FROM AreasOfInterest__r)");
+        $fields = array("Id", "FirstName", "LastName", "MailingCity","MailingAddress", "Ocdla_Current_Member_Flag__c", "MailingState", "Phone", "Email", "Ocdla_Occupation_Field_Type__c", "Ocdla_Organization__c", "(SELECT Interest__c FROM AreasOfInterest__r)");
 
         $soql = new QueryBuilder("Contact");
         $soql->setFields($fields);
@@ -94,8 +94,12 @@ class DirectoryModule extends Module {
          * Jose
          * 
          */
+        $conditions = array_values($soql->getConditions()["conditions"]);
+        foreach($conditions as &$c) {
+            unset($c["syntax"]);
+        }
 
-        $query = $soql->compile();
+        $query = $soql->compile() . " LIMIT 20";
 
         // print $query;exit;
 
@@ -116,13 +120,14 @@ class DirectoryModule extends Module {
 
         $tpl = new Template("member-list");
         $tpl->addPath(__DIR__ . "/templates");
-
+        
         return $tpl->render(array(
             "count"             => count($contacts),
             "search"            => $this->getMemberSearchBar($_POST),
             "contacts"          => $contacts,
             "query"             => $query,
-            "user"              => current_user()
+            "user"              => current_user(),
+            "conditions"        => json_encode($conditions)
         ));
     }
 
@@ -139,7 +144,7 @@ class DirectoryModule extends Module {
         $contacts = Contact::from_query_result_records($records);
 
 
-        $tpl = new Template("member-single");
+        $tpl = new Template("member");
         $tpl->addPath(__DIR__ . "/templates");
 
         return $tpl->render(array(
@@ -266,7 +271,7 @@ class DirectoryModule extends Module {
         $experts = Contact::from_query_result_records($records);
 
 
-        $tpl = new Template("expert-single");
+        $tpl = new Template("expert");
         $tpl->addPath(__DIR__ . "/templates");
 
         return $tpl->render(array(
@@ -311,4 +316,30 @@ class DirectoryModule extends Module {
 
     }        
     
+
+
+    public function doQuery() {
+
+        
+    }
+
+    public function testQuery() {
+        $qb = new QueryBuilder("Contact");
+
+        $c1 = new stdClass;
+        $c1->field = "LastName";
+        $c1->op = "=";
+        $c1->value = "Smith";
+
+        $c2 = new stdClass;
+        $c2->field = "Is_Current_Member__c";
+        $c2->op = "=";
+        $c2->value = true;
+
+        $conditions = array($c1,$c2);
+
+        $where = QueryBuilder::toWhere($conditions);
+
+        return $where;
+    }
 }
