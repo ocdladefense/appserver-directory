@@ -87,19 +87,13 @@ class DirectoryModule extends Module {
             $soql->addCondition($condition);
         }
 
-        /**
-         * 
-         * Jennifer, Tracye, Alene, Bernal, Browning
-         * 
-         * Jose
-         * 
-         */
+ 
         $conditions = array_values($soql->getConditions()["conditions"]);
         foreach($conditions as &$c) {
             unset($c["syntax"]);
         }
 
-        $query = $soql->compile() . " LIMIT 20";
+        $query = $soql->compile();
 
         // print $query;exit;
 
