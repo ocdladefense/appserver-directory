@@ -112,6 +112,15 @@ class DirectoryModule extends Module {
         $_POST["areasOfInterest"] = $areasOfInterest;
         $_POST["occupationalFields"] = $occupations;
 
+
+        if(!isset($contacts) || count($contacts) < 1) {
+            $tpl = new Template("no-results");
+            $tpl->addPath(__DIR__ . "/templates");
+
+            return $tpl;
+        }
+
+
         $tpl = new Template("member-list");
         $tpl->addPath(__DIR__ . "/templates");
         
@@ -237,6 +246,14 @@ class DirectoryModule extends Module {
         $metadata = $api->getSobjectMetadata("Contact");
         $sobject = SObject::fromMetadata($metadata);
         $primaryFields = $sobject->getPicklist("Ocdla_Expert_Witness_Primary__c");
+
+
+        if(!isset($experts) || count($experts) < 1) {
+            $tpl = new Template("no-results");
+            $tpl->addPath(__DIR__ . "/templates");
+
+            return $tpl;
+        }
 
 
         $tpl = new Template("expert-list");

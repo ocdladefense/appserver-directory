@@ -1,21 +1,35 @@
-<link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css"></link>
+<link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css" />
 
+<style type="text/css">
+@media screen and (min-width: 800px) {
+#stage.column.column-middle {
+    width: 92%;
+}
+#container-right {
+	display: none;
+}
+}
+</style>
 
 <div>
 	<h2>OCDLA Expert Witness Directory</h2>
 </div>
 
 <div class="search">
-        <?php print $search; ?>
+	<?php print $search; ?>
 </div>
 
 <?php if($user->isAdmin()) : ?>
-<br />
-<div>
-	<strong><?php print $query; ?></strong>
-</div>
-<br />
+	<div>
+		<strong><?php print $query; ?></strong>
+	</div>
 <?php endif; ?>
+
+
+
+
+
+
 
 
 <div>
@@ -23,30 +37,21 @@
 </div>
 
 <div class="table">
-	<tbody>
-			
-		<?php if(!isset($experts) || (isset($experts) && count($experts) < 1)): ?>
-			<ul class="table-row">
-				<li>There are no experts that meet your search criteria.</li>
-			</ul>
-			
-		<?php else: ?>
 
-			<ul class="table-row">
-					<li class="table-header">Name</li>
-					<li class="table-header">Primary Field</li>
-					<li class="table-header">Organization</li>
-					<li class="table-header">Phone</li>
-					<li class="table-header">City</li>
-					<li class="table-header">Email</li>
-					<li class="table-header">Other Areas</li>
-				</ul>
+	<ul class="table-row">
+		<li class="table-header">Name</li>
+		<li class="table-header">Primary Field</li>
+		<li class="table-header">Organization</li>
+		<li class="table-header">Phone</li>
+		<li class="table-header">City</li>
+		<li class="table-header">Email</li>
+		<li class="table-header">Other Areas</li>
+	</ul>
 		
-			<?php foreach($experts as $expert):
-				$areasOfInterest = $expert->getAreasOfInterest();
-			?>
+	<?php foreach($experts as $expert): ?>
+		<?php $areasOfInterest = $expert->getAreasOfInterest(); ?>
 
-				<ul class="table-row"> 
+		<ul class="table-row"> 
 
 					<li class="table-cell">
 						<a href="/directory/experts/<?php print $expert->getId(); ?>"><?php print $expert->getName(); ?></a>
@@ -63,7 +68,6 @@
 					<li class="table-cell long-cell"><?php print $expert->getExpertWitnessOtherAreas(); ?></li>
 					
 				</ul>
-			<?php endforeach; ?>
-		<?php endif; ?>
-	</tbody>
-</table>
+	<?php endforeach; ?>
+
+</div>
