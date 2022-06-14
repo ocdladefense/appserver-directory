@@ -1,6 +1,15 @@
 <link rel="stylesheet" type="text/css" href="<?php print module_path(); ?>/assets/css/directory.css" />
 
-
+<style type="text/css">
+@media screen and (min-width: 800px) {
+#stage.column.column-middle {
+    width: 92%;
+}
+#container-right {
+	display: none;
+}
+}
+</style>
 <script src="<?php print module_path(); ?>/dist/mapkey.js"></script>
 <script src="<?php print module_path(); ?>/dist/OCDLATheme.js"></script>
 <script src="<?php print module_path(); ?>/dist/Member.js"></script>
