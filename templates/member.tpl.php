@@ -86,3 +86,37 @@ img.obj {
 
 <?php endforeach; ?>
 
+
+
+
+<div class="record-documents">
+    <form id="contact-uploads" method="post" enctype="multipart/form-data" action="<?php print APP_URL; ?>/file/upload">
+        <h2>Related documents</h2>
+            
+        <div class="form-item">
+            <i class="fa-solid fa-cloud-arrow-up fa-2x" style="font-size:4.0em; color:blue;"></i>
+        </div>
+        
+        <div class="form-item file-upload">    
+            <input name="thefiles[]" type="file" id="upload" multiple />
+        </div>
+
+        <div class="form-item">
+            <input type="submit" value="Upload" />
+        </div>
+
+        <div id="preview"></div>
+
+    </form>
+</div>
+
+
+
+
+<!--  NOTE: this could be used to display a map locating the member's business address. 
+    <script type="module" src="<?php print module_path(); ?>/assets/js/directory.js">
+</script> -->
+<script type="module" src="/node_modules/@ocdladefense/node-file-upload/upload.js">
+</script>
+<script type="module" src="<?php print module_path(); ?>/assets/js/config.js">
+    </script>
