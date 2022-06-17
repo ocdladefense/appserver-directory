@@ -10,7 +10,6 @@
         }
     ],
     "require": {
-        "ocdladefense/lib-salesforce-rest-api":"dev-development",
-        "ocdladefense/lib-salesforce":"dev-development"
+        "ocdladefense/lib-salesforce-rest-api":"dev-development"
     }
 }
