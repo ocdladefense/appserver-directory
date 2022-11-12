@@ -32,11 +32,11 @@
             "access":"is_authenticated",
             "authorization":"webserver"
         },
-        "directory/members/%id":{
+        "directory/member/%id":{
             "callback":"showMemberSingle",
             "content-type":"text/html"
         },
-        "directory/experts/%id":{
+        "directory/expert/%id":{
             "callback":"showExpertSingle",
             "content-type":"text/html",
             "access":"is_authenticated",
