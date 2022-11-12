@@ -138,7 +138,7 @@ class DirectoryModule extends Module {
 
     public function showMemberSingle($id){
 
-        $api = $this->loadForceApi();
+        $api = loadApi();
 
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact WHERE Id = '$id'";
 
@@ -146,12 +146,13 @@ class DirectoryModule extends Module {
 
         $contacts = Contact::from_query_result_records($records);
 
+        $contact = $contacts[0];
 
         $tpl = new Template("member");
         $tpl->addPath(__DIR__ . "/templates");
 
         return $tpl->render(array(
-            "contacts"          => $contacts,
+            "c"          => $contact,
             "isSingle"          => true,
             "query"             => $query,
             "user"              => current_user()
