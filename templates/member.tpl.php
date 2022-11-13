@@ -33,8 +33,8 @@ img.obj {
 <?php endif; ?>
 
 
-<?php if(empty($contacts)) : ?>
-    <h1 style="text-align:center;">Couldn't find anyone using those search parameters...</h1>
+<?php if(empty($c)) : ?>
+    <h1 style="text-align:center;">We couldn't find that member...</h1>
 <?php endif; ?>
 
 <?php $isSingle ? $singleClass = "is-single" : ""; ?>
@@ -44,45 +44,45 @@ img.obj {
 
 
 
-<?php foreach($contacts as $c): ?>
 
-    <div class="list-item <?php print $singleClass; ?>" data-contactId="<?php print $c->getId(); ?>">
-        <h1>
-            <?php if(!empty($c->getFirstName())): ?>
-                <?php print $c->getFirstName() . " " . $c->getLastName(); ?>
-            <?php endif; ?>
-        </h1>
 
-        <p class="secondary">
-            <?php !empty($c->getOccupationFieldType()) ? print $c->getOccupationFieldType() : print "<br />"; ?>
-        </p>
-        
-        <p>
-            <?php !empty($c->getOcdlaOrganization()) ? print $c->getOcdlaOrganization() : print "<br />"; ?>
-        </p>
-
-        <a href="tel:<?php print $c->getPhoneNumericOnly(); ?>">
-            <?php print $c->getPhone(); ?>
-        </a>
-
-        <p>
-            <?php !empty($c->getMailingCity()) ? print $c->getMailingCity() . ", " . $c->getMailingState() : print "City Not Listed"; ?>
-        </p>
-
-        <?php !empty($c->getEmail()) ? print "<a href='mailto: {$c->getEmail()}' style='text-decoration:none;'>{$c->getEmail()}</a>" : print "No Email Available"; ?>
-
-        
-        <?php if(!empty($c->getAreasOfInterest())) : ?>
-            <p>
-                <strong>
-                    Areas of Interest:
-                </strong>
-            </p>
-            
-            <p><?php print $c->getAreasOfInterest(); ?></p>
+<div class="list-item <?php print $singleClass; ?>" data-contactId="<?php print $c->getId(); ?>">
+    <h1>
+        <?php if(!empty($c->getFirstName())): ?>
+            <?php print $c->getFirstName() . " " . $c->getLastName(); ?>
         <?php endif; ?>
+    </h1>
 
-    </div>
+    <p class="secondary">
+        <?php !empty($c->getOccupationFieldType()) ? print $c->getOccupationFieldType() : print "<br />"; ?>
+    </p>
+    
+    <p>
+        <?php !empty($c->getOcdlaOrganization()) ? print $c->getOcdlaOrganization() : print "<br />"; ?>
+    </p>
 
-<?php endforeach; ?>
+    <a href="tel:<?php print $c->getPhoneNumericOnly(); ?>">
+        <?php print $c->getPhone(); ?>
+    </a>
+
+    <p>
+        <?php !empty($c->getMailingCity()) ? print $c->getMailingCity() . ", " . $c->getMailingState() : print "City Not Listed"; ?>
+    </p>
+
+    <?php !empty($c->getEmail()) ? print "<a href='mailto: {$c->getEmail()}' style='text-decoration:none;'>{$c->getEmail()}</a>" : print "No Email Available"; ?>
+
+    
+    <?php if(!empty($c->getAreasOfInterest())) : ?>
+        <p>
+            <strong>
+                Areas of Interest:
+            </strong>
+        </p>
+        
+        <p><?php print $c->getAreasOfInterest(); ?></p>
+    <?php endif; ?>
+
+</div>
+
+
 

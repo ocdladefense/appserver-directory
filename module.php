@@ -97,7 +97,7 @@ class DirectoryModule extends Module {
 
         // print $query;exit;
 
-        $api = $this->loadForceApi();
+        $api = loadApi();
         $result = $api->query($query);
         $records = $result->getRecords();
         $contacts = Contact::from_query_result_records($records);
@@ -138,7 +138,7 @@ class DirectoryModule extends Module {
 
     public function showMemberSingle($id){
 
-        $api = $this->loadForceApi();
+        $api = loadApi();
 
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact WHERE Id = '$id'";
 
@@ -146,12 +146,13 @@ class DirectoryModule extends Module {
 
         $contacts = Contact::from_query_result_records($records);
 
+        $contact = $contacts[0];
 
         $tpl = new Template("member");
         $tpl->addPath(__DIR__ . "/templates");
 
         return $tpl->render(array(
-            "contacts"          => $contacts,
+            "c"          => $contact,
             "isSingle"          => true,
             "query"             => $query,
             "user"              => current_user()
@@ -234,7 +235,7 @@ class DirectoryModule extends Module {
         $query = $soql->compile();
 
 
-        $api = $this->loadForceApi();
+        $api = loadApi();
         $resp = $api->query($query);
 
         if(!$resp->isSuccess()) throw new Exception($resp->getErrorMessage());
@@ -272,7 +273,7 @@ class DirectoryModule extends Module {
 
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c FROM Contact WHERE Id = '$id'";
 
-        $api = $this->loadForceApi();
+        $api = loadApi();
 
         $resp = $api->query($query);
 
@@ -314,7 +315,7 @@ class DirectoryModule extends Module {
 
 		$query = "SELECT Name FROM Contact WHERE IsDeleted = True";
 
-        $api = $this->loadForceApi();
+        $api = loadApi();
 
         $result = $api->queryAll($query);
 

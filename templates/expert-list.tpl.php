@@ -54,7 +54,7 @@
 		<ul class="table-row"> 
 
 					<li class="table-cell">
-						<a href="/directory/experts/<?php print $expert->getId(); ?>"><?php print $expert->getName(); ?></a>
+						<a href="/directory/expert/<?php print $expert->getId(); ?>"><?php print $expert->getName(); ?></a>
 					</li>
 					<li class="table-cell long-cell"><?php print $expert->getPrimaryFields(); ?></li>
 					<li class="table-cell"><?php print $expert->getOcdlaOrganization(); ?></li>

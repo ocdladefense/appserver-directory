@@ -79,7 +79,7 @@
 		<ul class="table-row"> 
 
 			<li class="table-cell">
-				<a href="/directory/members/<?php print $contact->getId(); ?>"><?php print $contact->getName(); ?></a>
+				<a href="/directory/member/<?php print $contact->getId(); ?>"><?php print $contact->getName(); ?></a>
 			</li>
 			<li class="table-cell"><?php print $contact->getOccupationFieldType(); ?></li>
 			<li class="table-cell"><?php print $contact->getOcdlaOrganization(); ?></li>
