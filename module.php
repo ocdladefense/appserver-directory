@@ -235,7 +235,7 @@ class DirectoryModule extends Module {
         $query = $soql->compile();
 
 
-        $api = loadApi();
+        $api = $this->loadForceApi();
         $resp = $api->query($query);
 
         if(!$resp->isSuccess()) throw new Exception($resp->getErrorMessage());
@@ -273,7 +273,7 @@ class DirectoryModule extends Module {
 
         $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, Ocdla_Expert_Witness_Other_Areas__c, Ocdla_Expert_Witness_Primary__c FROM Contact WHERE Id = '$id'";
 
-        $api = loadApi();
+        $api = $this->loadForceApi();
 
         $resp = $api->query($query);
 
