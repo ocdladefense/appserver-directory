@@ -56,7 +56,7 @@ p.primary {
 }
 
 p.secondary {
-    font-weight: 700;
+    /* font-weight: 700; */
 }
 .table-headers {
     display: none;

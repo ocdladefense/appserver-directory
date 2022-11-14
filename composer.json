@@ -1,15 +1,16 @@
 {
     "name": "ocdladefense/appserver-directory",
-    "description": "A module for viewing member and expert witnesses within the OCDLA orginization.",
+    "description": "A module for viewing listing OCDLA members and expert witnesses.",
     "type": "wordpress-theme",
     "license": "MIT",
     "authors": [
         {
-            "name": "TrevorUehlin",
-            "email": "trevoruehlinx1@gmail.com"
+            "name": "José Bernal",
+            "email": "jbernal.web.dev@gmail.com"
         }
     ],
     "require": {
+        "ocdladefense/lib-salesforce":"~3.0",
 	    "ocdladefense/lib-salesforce-rest-api":"~3.0"
     }
 }

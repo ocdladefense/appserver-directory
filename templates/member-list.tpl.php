@@ -79,18 +79,32 @@
 		<ul class="table-row"> 
 
 			<li class="table-cell">
-				<a href="/directory/member/<?php print $contact->getId(); ?>"><?php print $contact->getName(); ?></a>
+				<a href="/directory/member/<?php print $contact->getId(); ?>">
+					<?php print $contact->FirstName . " " . $contact->LastName; ?>
+				</a>
 			</li>
-			<li class="table-cell"><?php print $contact->getOccupationFieldType(); ?></li>
-			<li class="table-cell"><?php print $contact->getOcdlaOrganization(); ?></li>
-			<li class="table-cell short-cell">
-				<a href="tel:<?php print $contact->getPhoneNumericOnly(); ?>"><?php print $contact->getPhone(); ?></a>
-			</li>
-			<li class="table-cell short-cell"><?php print $contact->getMailingCity(); ?></li>
 			<li class="table-cell">
-				<a href="mailto:<?php print $contact->getEmail(); ?>"><?php print $contact->getEmail(); ?></a>
+				<?php print $contact->Ocdla_Occupation_Field_Type__c; ?>
 			</li>
-			<li class="table-cell long-cell"><?php print $contact->getAreasOfInterest(); ?></li>
+			<li class="table-cell">
+				<?php print $contact->Ocdla_Organization__c; ?>
+			</li>
+			<li class="table-cell short-cell">
+				<a href="tel:<?php print $contact->getPhoneNumericOnly(); ?>">
+					<?php print $contact->Phone; ?>
+				</a>
+			</li>
+			<li class="table-cell short-cell">
+				<?php print $contact->MailingCity; ?>
+			</li>
+			<li class="table-cell">
+				<a href="mailto:<?php print $contact->Email; ?>">
+					<?php print $contact->Email; ?>
+				</a>
+			</li>
+			<li class="table-cell long-cell">
+				<?php print $areasOfInterest; ?>
+			</li>
 			
 		</ul>
 	<?php endforeach; ?>
