@@ -152,7 +152,7 @@ class DirectoryModule extends Module {
         $tpl->addPath(__DIR__ . "/templates");
 
         return $tpl->render(array(
-            "c"          => $contact,
+            "c"                 => $contact,
             "isSingle"          => true,
             "query"             => $query,
             "user"              => current_user()
@@ -283,12 +283,13 @@ class DirectoryModule extends Module {
         $records = $resp->getRecords();
         $experts = Contact::fromSObjects($records);
 
+        $expert = $experts[0];
 
         $tpl = new Template("expert");
         $tpl->addPath(__DIR__ . "/templates");
 
         return $tpl->render(array(
-            "experts"           => $experts,
+            "c"                 => $expert,
             "isSingle"          => true,
             "query"             => $query,
             "user"              => current_user()
