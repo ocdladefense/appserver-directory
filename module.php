@@ -100,7 +100,7 @@ class DirectoryModule extends Module {
         $api = loadApi();
         $result = $api->query($query);
         $records = $result->getRecords();
-        $contacts = Contact::from_query_result_records($records);
+        $contacts = Contact::fromSObjects($records);
 
         $metadata = $api->getSobjectMetadata("Contact");
         $sobject = SObject::fromMetadata($metadata);
@@ -140,11 +140,11 @@ class DirectoryModule extends Module {
 
         $api = loadApi();
 
-        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact WHERE Id = '$id'";
+        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Bar_Number__c, Ocdla_Investigator_License_Number__c, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact WHERE Id = '$id'";
 
         $records = $api->query($query)->getRecords();
 
-        $contacts = Contact::from_query_result_records($records);
+        $contacts = Contact::fromSObjects($records);
 
         $contact = $contacts[0];
 
@@ -157,9 +157,10 @@ class DirectoryModule extends Module {
             "query"             => $query,
             "user"              => current_user()
         ));
-
-
     }
+
+
+
 
     public function getMemberSearchBar($params){
 
@@ -241,7 +242,7 @@ class DirectoryModule extends Module {
         if(!$resp->isSuccess()) throw new Exception($resp->getErrorMessage());
 
         $records = $resp->getRecords();
-        $experts = Contact::from_query_result_records($records);
+        $experts = Contact::fromSObjects($records);
 
 
         $metadata = $api->getSobjectMetadata("Contact");
@@ -280,7 +281,7 @@ class DirectoryModule extends Module {
         if(!$resp->IsSuccess()) throw new Exception($resp->getErrorMessage());
 
         $records = $resp->getRecords();
-        $experts = Contact::from_query_result_records($records);
+        $experts = Contact::fromSObjects($records);
 
 
         $tpl = new Template("expert");
@@ -319,7 +320,7 @@ class DirectoryModule extends Module {
 
         $result = $api->queryAll($query);
 
-        var_dump($result); exit;
+        // var_dump($result); exit;
 
 
         foreach($result->getRecords() as $record) {
