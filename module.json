@@ -10,16 +10,8 @@
             "callback": "testQuery",
             "content-type":"text/html"
         },
-        "directory/query": {
-            "callback": "doQuery",
-            "content-type":"text/html"
-        },
         "directory": {
             "callback": "home",
-            "content-type":"text/html"
-        },
-        "deleted": {
-            "callback": "importDeletedContacts",
             "content-type":"text/html"
         },
         "directory/members":{

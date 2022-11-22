@@ -92,13 +92,20 @@ class DirectoryModule extends Module {
         foreach($conditions as &$c) {
             unset($c["syntax"]);
         }
-
+ 
         $query = $soql->compile();
 
         // print $query;exit;
 
-        $api = loadApi();
+        $api = loadApi();  
+        
+        // Uncomment to have the results paged.
+        // WARNING: this is not fast and the pager doesn't actually exist,
+        // So this feature is experimental.
+        // $api->setPageSize(50);
+        
         $result = $api->query($query);
+        // var_dump($result);exit;
         $records = $result->getRecords();
         $contacts = Contact::fromSObjects($records);
 
@@ -313,29 +320,6 @@ class DirectoryModule extends Module {
     }
 
 
-    public function importDeletedContacts() {
-
-		$query = "SELECT Name FROM Contact WHERE IsDeleted = True";
-
-        $api = loadApi();
-
-        $result = $api->queryAll($query);
-
-        // var_dump($result); exit;
-
-
-        foreach($result->getRecords() as $record) {
-            // \db_query('INSERT INTO force__contact_deleted (Id,Type) VALUES(:Id,:Type) ON DUPLICATE KEY UPDATE Id=VALUES(Id), Type=VALUES(Type)',$record+array('Type'=>'Contact'),'pdo',false);
-        }
-
-    }        
-    
-
-
-    public function doQuery() {
-
-        
-    }
 
     public function testQuery() {
         $qb = new QueryBuilder("Contact");
