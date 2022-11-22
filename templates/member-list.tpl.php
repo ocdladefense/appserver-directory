@@ -10,7 +10,9 @@
 }
 }
 </style>
-<script src="<?php print module_path(); ?>/dist/mapkey.js"></script>
+<script type="text/javascript">
+	const mapKey = "<?php print GOOGLE_MAP_KEY; ?>";
+</script>
 <script src="<?php print module_path(); ?>/dist/OCDLATheme.js"></script>
 <script src="<?php print module_path(); ?>/dist/Member.js"></script>
 <script type="module" src="<?php print module_path(); ?>/dist/views.js"></script>
