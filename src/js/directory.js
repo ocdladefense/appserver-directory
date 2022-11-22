@@ -16,6 +16,13 @@ const userQuery = {
   limit: 200, //limit to stop too many markers?
 };
 
+const views = {
+  map: {
+    init: initView,
+    render: showMap,
+  },
+};
+
 //Query building with npm package
 let qb = new QueryBuilder(userQuery);
 let conditions = JSON.parse(query);
@@ -59,7 +66,7 @@ const ocdlaInfoWindow = {
 
 // Set up a MapConfiguration object
 const config = {
-  apiKey: Keys.mapKey,
+  apiKey: mapKey,
   target: "view",
   mapOptions: {
     zoom: 6,
@@ -107,10 +114,10 @@ function showMap() {
     });
     //searchFeature.markers = [];
     //shows all search results after 1 box, currently the search query is only added to
-  }
+}
 
-  // Render the map to the page
-  myMap.init().then(() => {
+// Render the map to the page
+myMap.init().then(() => {
     // The OCDLA icon Info Window is currently being unused.
     let ocdlaIcon = new UrlMarker(
       "/modules/maps/assets/markers/ocdlaMarker/ocdla-marker-round-origLogo.svg"
@@ -137,12 +144,7 @@ function showMap() {
     });
   });
 }
-const views = {
-  map: {
-    init: initView,
-    render: showMap,
-  },
-};
+
 
 function doSearch(qb) {
   let body = JSON.stringify(qb);
@@ -154,22 +156,23 @@ function doSearch(qb) {
     credentials: "same-origin", // include, *same-origin, omit
     headers: {
       "Content-Type": "application/json",
-      Accept: "text/html",
-      // 'Content-Type': 'application/x-www-form-urlencoded',
+      Accept: "text/html"
     },
     body: body,
   })
-    .then((resp) => {
-      return resp.json();
-    })
-    .then((queryAndResults) => {
-      let members = queryAndResults.results;
-      return members.map((member) => {
-        let newMember = new Member(member);
-        return newMember;
-      });
+  .then((resp) => {
+    return resp.json();
+  })
+  .then((queryAndResults) => {
+    let members = queryAndResults.results;
+    return members.map((member) => {
+      let newMember = new Member(member);
+      return newMember;
     });
+  });
 }
+
+
 
 function initView(name) {
   if ("list" == name) return null;

@@ -18,6 +18,13 @@ var userQuery = {
   limit: 200 //limit to stop too many markers?
 };
 
+var views = {
+  map: {
+    init: initView,
+    render: showMap
+  }
+};
+
 //Query building with npm package
 var qb = new QueryBuilder(userQuery);
 var conditions = JSON.parse(query);
@@ -62,7 +69,7 @@ var ocdlaInfoWindow = {
 
 // Set up a MapConfiguration object
 var config = {
-  apiKey: Keys.mapKey,
+  apiKey: mapKey,
   target: "view",
   mapOptions: {
     zoom: 6,
@@ -133,12 +140,6 @@ function showMap() {
     });
   });
 }
-var views = {
-  map: {
-    init: initView,
-    render: showMap
-  }
-};
 function doSearch(qb) {
   var body = JSON.stringify(qb);
   return fetch("/maps/search", {
@@ -153,9 +154,7 @@ function doSearch(qb) {
     headers: {
       "Content-Type": "application/json",
       Accept: "text/html"
-      // 'Content-Type': 'application/x-www-form-urlencoded',
     },
-
     body: body
   }).then(function (resp) {
     return resp.json();

@@ -18,4 +18,4 @@ This module can display directory information in alternative formats.
 A series of directory entries where each subsequent item is displayed on a new line.  
 
 ### Map format
-A geographical set of entires displayed on a Google Map (or equivalent geographical representation.)
+A set of directory entries displayed as geographical points on a Google Map (or equivalent map representation.)
