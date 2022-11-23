@@ -21,10 +21,8 @@
   "devDependencies": {
     "@babel/cli": "^7.16.7",
     "@babel/core": "^7.16.7",
-    "@babel/plugin-transform-modules-commonjs": "^7.16.7",
     "@babel/preset-env": "^7.16.7",
-    "@babel/preset-react": "^7.16.7",
-    "babel-loader": "^8.2.5"
+    "@babel/preset-react": "^7.16.7"
   },
   "dependencies": {
     "@ocdladefense/google-maps": "^1.0.0",
