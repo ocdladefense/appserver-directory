@@ -2,11 +2,11 @@
   "name": "directory",
   "version": "1.0.0",
   "description": "Directory module.",
-  "main": "index.js",
+  "main": "./dist/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build2": "webpack --config webpack.config.cjs",
-    "build": "./node_modules/.bin/babel ./src/js -d ./dist"
+    "build": "./node_modules/.bin/babel ./src/js -d ./dist",
+    "build2": "webpack --config webpack.config.cjs"
   },
   "repository": {
     "type": "git",

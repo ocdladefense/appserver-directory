@@ -15,7 +15,9 @@
 </script>
 <script src="<?php print module_path(); ?>/dist/OCDLATheme.js"></script>
 <script src="<?php print module_path(); ?>/dist/Member.js"></script>
-<script type="module" src="<?php print module_path(); ?>/src/js/app.js"></script>
+
+<script src="<?php print module_path(); ?>/dist/map-config.js"></script>
+<script type="module" src="<?php print module_path(); ?>/dist/app.js"></script>
 
 
 <script type="application/javascript">

@@ -14,7 +14,7 @@ const Directory = function(props) {
     let entries = contacts.map((c) => {
         let name = vNode("span",{"class":"entry-name"},(c.FirstName + " " + c.LastName));
         let org = vNode("span",{"class":"entry-contact-type"},c.Type);
-        let city = vNode("span",{"class":"entry-city"},c.MailingCity);
+        let city = vNode("span",{"class":"entry-city"},c.MailingAddress.city);
         return vNode("div",{"class":"entry entry-directory"},[name,org,city]);
     });
 
@@ -29,4 +29,25 @@ const Directory = function(props) {
     */
 };
 
-export default Directory;
+
+function Map(name) {
+
+
+    let container = (
+      <div id="view" class="view view-block">
+        <div id="map-container">
+          <div
+            id="toolbar"
+            className="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
+            <div id="custom"></div>
+          </div>
+          <div id="map"></div>
+        </div>
+      </div>
+    );
+  
+    return container;
+}
+
+
+export { Directory, Map };
