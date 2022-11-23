@@ -173,3 +173,30 @@ li.table-cell.short-cell {
 address {
     padding-right: 2px;
 }
+
+
+
+
+
+/** new styles **/
+
+.entry.entry-directory {
+    height: 85px;
+}
+
+span.entry-name {
+    font-size: 1.25em;
+    line-height: 1.35em;
+}
+
+
+
+span.entry-contact-type {
+    display: block;
+    line-height: 1.60em;
+}
+
+span.entry-city {
+    display: block;
+}
+
