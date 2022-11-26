@@ -11,6 +11,8 @@
     ],
     "require": {
         "ocdladefense/lib-salesforce":"~3.0",
-	    "ocdladefense/lib-salesforce-rest-api":"~3.0"
+	    "ocdladefense/lib-salesforce-rest-api":"~3.0",
+        "ocdladefense/appserver-salesforce-mysql": ">=0.3",
+        "ocdladefense/appserver-maps": "~1.0"
     }
 }
