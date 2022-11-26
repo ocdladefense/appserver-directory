@@ -18,7 +18,7 @@ function loadData(qb) {
 		body: body
 	};
 
-	return fetch("/maps/search", opts)
+	return fetch("/salesforce/query", opts)
 	.then((resp) => {
 		return resp.json();
 	})
