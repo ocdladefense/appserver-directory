@@ -21,8 +21,132 @@ class DirectoryModule extends Module {
         return $tpl;
     }
 
+
+
+
+    private static function compileQueryFromRequest() {
+
+        $areaOfInterest = $_POST["areaOfInterest"];
+        $_POST["Ocdla_Current_Member_Flag__c"] = True;
+
+        if(empty($_POST["IncludeExperts"])) $_POST["Ocdla_Is_Expert_Witness__c"] = False;
+
+
+        $conditionGroup = array(
+            "op" => "AND",
+            "conditions" => array(
+                array(
+                    "fieldname"  => "Ocdla_Current_Member_Flag__c",
+                    "op"         => "=",
+                    "syntax"     => "%s"
+                ),
+                array(
+                    "fieldname"  => "FirstName",
+                    "op"         => "LIKE",
+                    "syntax"     => "'%%%s%%'"
+                ),
+                array(
+                    "fieldname"  => "LastName",
+                    "op"         => "LIKE",
+                    "syntax"     => "'%%%s%%'"
+                ),
+                array(
+                    "fieldname"  => "Ocdla_Organization__c",
+                    "op"         => "LIKE",
+                    "syntax"     => "'%%%s%%'"
+                ),
+                array(
+                    "fieldname"  => "MailingCity",
+                    "op"         => "LIKE",
+                    "syntax"     => "'%%%s%%'"
+                ),
+                array(
+                    "fieldname"  => "Ocdla_Occupation_Field_Type__c",
+                    "op"         => "LIKE",
+                    "syntax"     => "'%%%s%%'"
+                )
+            /*                array(
+                    "fieldname"  => "Ocdla_Is_Expert_Witness__c",
+                    "op"         => "=",
+                    "syntax"     => "%s"
+                )
+                */
+                
+            )
+        );
+
+
+        $fields = array("Id", "FirstName", "LastName", "MailingCity","MailingAddress", "Ocdla_Current_Member_Flag__c", "MailingState", "Phone", "Email", "Ocdla_Occupation_Field_Type__c", "Ocdla_Organization__c", "(SELECT Interest__c FROM AreasOfInterest__r)");
+
+        $soql = new QueryBuilder("Contact");
+        $soql->setFields($fields);
+        $soql->setConditions($conditionGroup, $_POST);
+        $soql->setOrderBy("LastName");
+
+        if(!empty($areaOfInterest)) {
+
+            $condition = " Id IN (SELECT Contact__c FROM AreaOfInterest__c WHERE Interest__c = '$areaOfInterest')";
+            $soql->addCondition($condition);
+        }
+
+
+        $conditions = array_values($soql->getConditions()["conditions"]);
+        foreach($conditions as &$c) {
+            unset($c["syntax"]);
+        }
+
+        return $soql->compile();
+    }
+
+
     /* #region Member Directory */
     public function showMemberDirectory() {
+
+        
+        // $query = self::compileQueryFromRequest();
+
+        $api = loadApi();  
+        
+        // Uncomment to have the results paged.
+        // WARNING: this is not fast and the pager doesn't actually exist,
+        // So this feature is experimental.
+        // $api->setPageSize(50);
+        
+        // $result = $api->query($query);
+        // $records = $result->getRecords();
+        // $contacts = Contact::fromSObjects($records);
+
+        $metadata = $api->getSobjectMetadata("Contact");
+        $sobject = SObject::fromMetadata($metadata);
+
+        $occupations = $sobject->getPicklist("Ocdla_Occupation_Field_Type__c");
+        $areasOfInterestPicklistId = $api->getGlobalValueSetIdByDeveloperName("AOI");
+        $areasOfInterest = $api->getGlobalValueSetNames($areasOfInterestPicklistId);
+
+        $_POST["areasOfInterest"] = $areasOfInterest;
+        $_POST["occupationalFields"] = $occupations;
+
+
+
+
+        $tpl = new Template("member-list");
+        $tpl->addPath(__DIR__ . "/templates");
+        
+        return $tpl->render(array(
+            // "count"             => count($contacts),
+            "search"            => $this->getMemberSearchBar($_POST),
+            // "contacts"          => $contacts,
+            // "query"             => $query,
+            "user"              => current_user(),
+            // "conditions"        => json_encode($conditions)
+        ));
+    }
+
+
+
+
+    /* #region Member Directory */
+    public function showMemberDirectory2() {
 
         $areaOfInterest = $_POST["areaOfInterest"];
         $_POST["Ocdla_Current_Member_Flag__c"] = True;
