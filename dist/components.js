@@ -20,7 +20,9 @@ const Directory = function (props) {
       "class": "entry entry-directory"
     }, [name, org, city]);
   });
-  return vNode("div", {}, entries);
+  return vNode("div", {
+    id: "directory-list"
+  }, entries);
 
   /*
   return (
@@ -32,19 +34,17 @@ const Directory = function (props) {
 };
 
 function Map(name) {
+  /**
+   *           <div id="toolbar" className="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
+            <div id="custom"></div>
+          </div>
+   */
+
   let container = vNode("div", {
-    id: "view",
-    class: "view view-block"
-  }, vNode("div", {
     id: "map-container"
   }, vNode("div", {
-    id: "toolbar",
-    className: "navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow"
-  }, vNode("div", {
-    id: "custom"
-  })), vNode("div", {
     id: "map"
-  })));
+  }));
   return container;
 }
 export { Directory, Map };

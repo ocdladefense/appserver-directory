@@ -9,34 +9,49 @@ import { Directory, Map } from "./components.js";
 import loadData from "./data/prod.js"; // change to data/prod.js to get actual data from the server.
 
 // Execute on page load.
-// domReady(init);
-
+domReady(init);
 window.testQuery = testQuery;
+window.testFullscreen = function () {
+  let fstarget = document.getElementById("directory-list").parentNode;
+  fstarget.requestFullscreen().then(function (e) {
+    let map = document.getElementById("map-container");
+    let height = map.offsetHeight;
+    map.style.height = height + "px";
+  });
+};
+function fshandler(e) {
+  if (document.fullscreenElement) {
+    document.body.classList.add("fullscreen");
+  } else {
+    document.body.classList.remove("fullscreen");
+  }
+}
 function testQuery() {
-  const userQuery = {
+  const defaultQuery = {
     object: "Contact",
     fields: [],
     where: [],
     limit: 25 // Limit to prevent too many markers.
   };
 
-  let qb = new QueryBuilder(userQuery);
-  let conditions = query ? JSON.parse(query) : {};
-  for (let con of conditions) {
-    let c = {
-      field: con.fieldname,
-      op: con.op,
-      value: con.value
-    };
-    qb.addCondition(c);
+  let qb = new QueryBuilder(defaultQuery);
+  qb.addCondition("Ocdla_Current_Member_Flag__c", true);
+
+  // let conditions = query ? JSON.parse(query) : null;
+
+  /*
+  if(conditions) {
+  	for (let con of conditions) {
+  		let c = {
+  			field: con.fieldname,
+  			op: con.op,
+  			value: con.value,
+  		};
+  		qb.addCondition(c);
+  	}
   }
-  let currentMembers = {
-    field: "Ocdla_Current_Member_Flag__c",
-    op: QueryBuilder.SQL_EQ,
-    value: true,
-    editable: false
-  };
-  qb.updateCondition(currentMembers);
+  */
+
   loadData(qb).then(function (records) {
     console.log(records);
     let members = records.map(member => {
@@ -48,19 +63,26 @@ function testQuery() {
     let map = vNode(Map, {}, null);
     updateView(vNode("div", {}, [directory, map]));
     showMap();
+
+    // Fullscreen target.
+    let fstarget = document.getElementById("directory-list").parentNode;
+    fstarget.addEventListener("fullscreenchange", fshandler);
   });
 }
 function init() {
-  loadData().then(function (data) {
-    let members = data.map(member => {
-      let newMember = new Member(member);
-      return newMember;
-    });
-    updateView(vNode(Directory, {
-      entries: members
-    }, null));
+  testQuery();
+
+  /*
+  loadData().then(function(data) {
+  		let members = data.map((member) => {
+  		let newMember = new Member(member);
+  		return newMember;
+  	});
+  		updateView(vNode(Directory,{entries: members},null));
   });
+  */
 }
+
 function showMap() {
   // Instantiate the app and pass in the mapConfig obj
   const myMap = new MapApplication(config); // Change to "#view"

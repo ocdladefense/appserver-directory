@@ -10,41 +10,48 @@ import loadData from "./data/prod.js"; // change to data/prod.js to get actual d
 
 
 // Execute on page load.
-// domReady(init);
+domReady(init);
+
+
+
 
 
 window.testQuery = testQuery;
+window.testFullscreen = function() {
+	let fstarget = document.getElementById("directory-list").parentNode;
+	fstarget.requestFullscreen()
+	.then(function(e) {
+		let map = document.getElementById("map-container");
+		let height = map.offsetHeight;
+		map.style.height = height+"px";
+	});
+};
+
+function fshandler(e) {
+
+	if (document.fullscreenElement) {
+		document.body.classList.add("fullscreen");
+	} else {
+		document.body.classList.remove("fullscreen");
+	}
+}
 
 function testQuery() {
 
-	const userQuery = {
+	const defaultQuery = {
 		object: "Contact",
 		fields: [],
 		where: [],
 		limit: 25, // Limit to prevent too many markers.
 	};
 	
-	let qb = new QueryBuilder(userQuery);
-	let conditions = query ? JSON.parse(query) : {};
-	
-	
-	for (let con of conditions) {
-		let c = {
-			field: con.fieldname,
-			op: con.op,
-			value: con.value,
-		};
-		qb.addCondition(c);
-	}
-	
-	let currentMembers = {
-		field: "Ocdla_Current_Member_Flag__c",
-		op: QueryBuilder.SQL_EQ,
-		value: true,
-		editable: false
-	};
+	let qb = new QueryBuilder(defaultQuery);
+	qb.addCondition("Ocdla_Current_Member_Flag__c", true);
 
-	qb.updateCondition(currentMembers);
+
+	// let conditions = query ? JSON.parse(query) : null;
+	
+
 
 	loadData(qb)
 	.then(function(records) {
@@ -60,6 +67,10 @@ function testQuery() {
 		updateView(vNode("div",{},[directory,map]));
 
 		showMap();
+
+		// Fullscreen target.
+		let fstarget = document.getElementById("directory-list").parentNode;
+		fstarget.addEventListener("fullscreenchange", fshandler);
 	});
 }
 
@@ -70,6 +81,10 @@ function testQuery() {
 
 function init() {
 
+	testQuery();
+
+
+	/*
 	loadData().then(function(data) {
 
 		let members = data.map((member) => {
@@ -79,6 +94,7 @@ function init() {
 
 		updateView(vNode(Directory,{entries: members},null));
 	});
+	*/
 
 }
 

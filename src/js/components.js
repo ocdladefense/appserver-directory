@@ -18,7 +18,7 @@ const Directory = function(props) {
         return vNode("div",{"class":"entry entry-directory"},[name,org,city]);
     });
 
-    return vNode("div",{},entries);
+    return vNode("div",{id:"directory-list"},entries);
 
     /*
     return (
@@ -32,18 +32,16 @@ const Directory = function(props) {
 
 function Map(name) {
 
-
-    let container = (
-      <div id="view" class="view view-block">
-        <div id="map-container">
-          <div
-            id="toolbar"
-            className="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
+  /**
+   *           <div id="toolbar" className="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
             <div id="custom"></div>
           </div>
+   */
+
+    let container = (
+        <div id="map-container">
           <div id="map"></div>
         </div>
-      </div>
     );
   
     return container;
