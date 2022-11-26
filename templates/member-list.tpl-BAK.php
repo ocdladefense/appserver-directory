@@ -61,5 +61,54 @@
 <div id="view" class="view table view-table">
 
 
+	<ul class="table-row">
+		<li class="table-header">Name</li>
+		<li class="table-header">Field</li>
+		<li class="table-header">Organization</li>
+		<li class="table-header">Phone</li>
+		<li class="table-header">City</li>
+		<li class="table-header">Email</li>
+		<li class="table-header">Areas of Interest</li>
+	</ul>
+
+		
+
+
+	<?php foreach($contacts as $contact): ?>
+		<?php $areasOfInterest = $contact->getAreasOfInterest(); ?>
+
+		<ul class="table-row"> 
+
+			<li class="table-cell">
+				<a href="/directory/member/<?php print $contact->getId(); ?>">
+					<?php print $contact->FirstName . " " . $contact->LastName; ?>
+				</a>
+			</li>
+			<li class="table-cell">
+				<?php print $contact->Ocdla_Occupation_Field_Type__c; ?>
+			</li>
+			<li class="table-cell">
+				<?php print $contact->Ocdla_Organization__c; ?>
+			</li>
+			<li class="table-cell short-cell">
+				<a href="tel:<?php print $contact->getPhoneNumericOnly(); ?>">
+					<?php print $contact->Phone; ?>
+				</a>
+			</li>
+			<li class="table-cell short-cell">
+				<?php print $contact->MailingCity; ?>
+			</li>
+			<li class="table-cell">
+				<a href="mailto:<?php print $contact->Email; ?>">
+					<?php print $contact->Email; ?>
+				</a>
+			</li>
+			<li class="table-cell long-cell">
+				<?php print $areasOfInterest; ?>
+			</li>
+			
+		</ul>
+	<?php endforeach; ?>
+
 
 </div>
