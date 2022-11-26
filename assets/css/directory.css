@@ -127,22 +127,22 @@ li.table-cell.short-cell {
 /*maps*/
 
 
-#map {
-
-}
 #map-container {
     min-height: 700px;
     min-width: 800px;
-    display: inline;
+    height: 800px;
+    background-color: #eee;
+    width: 78%;
+    display: inline-block;
+    vertical-align: top;
 }
 
 
 
 
 #map {
-    height: 95%;
     position: relative;
-    min-height: 700px;
+    min-height: 100%;
     max-width: 1500px;
     display: block;
     overflow-y: hidden !important;
@@ -200,3 +200,36 @@ span.entry-city {
     display: block;
 }
 
+
+
+#directory-list {
+    width: 20%;
+    display: inline-block;
+    vertical-align: top;
+    padding: 10px;
+    overflow: scroll;
+    max-height: 800px;
+    position: relative;
+}
+
+.fullscreen #directory-list {
+    max-height: 100%;
+    background-color: #fff;
+    padding-top: 83px;
+}
+
+.fullscreen #map-container {
+    min-height: 100%;
+}
+
+
+
+
+
+.form-group:nth-child(2) {
+    display:inline-block;
+}
+
+.form-group:nth-child(3) {
+    display:inline-block;
+}
