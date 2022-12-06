@@ -13,10 +13,10 @@
 <script type="text/javascript">
 	const mapKey = "<?php print GOOGLE_MAP_KEY; ?>";
 </script>
-<script src="<?php print module_path(); ?>/dist/OCDLATheme.js"></script>
-<script src="<?php print module_path(); ?>/dist/Member.js"></script>
 
-<script src="<?php print module_path(); ?>/dist/map-config.js"></script>
+
+
+
 <script type="module" src="<?php print module_path(); ?>/dist/app.js"></script>
 
 
@@ -58,7 +58,7 @@
 </div>
 -->
 
-<div id="view" class="view table view-table">
+<div id="view">
 
 
 

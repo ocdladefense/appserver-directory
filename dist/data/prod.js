@@ -16,10 +16,8 @@ function loadData(qb) {
     },
     body: body
   };
-  return fetch("/maps/search", opts).then(resp => {
+  return fetch("/salesforce/query", opts).then(resp => {
     return resp.json();
-  }).then(queryAndResults => {
-    return queryAndResults.results;
   });
 }
 export default loadData;

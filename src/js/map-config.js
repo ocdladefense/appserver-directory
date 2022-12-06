@@ -1,3 +1,7 @@
+import OCDLATheme from "./OCDLATheme.js";
+
+
+
 // Get the initial styles (theme) for the map -- OCDLA theme
 const startTheme = new OCDLATheme();
 
@@ -10,10 +14,10 @@ const config = {
   apiKey: mapKey,
   target: "view",
   mapOptions: {
-    zoom: 6,
+    zoom: 8,
     center: {
-      lat: 44.04457,
-      lng: -123.09078,
+      lat: 44.0521,
+      lng: -123.0868
     },
     styles: startTheme.getTheme(),
     defaultMarkerStyles: {
@@ -28,4 +32,7 @@ const config = {
   },
   enableHighAccuracy: true,
 };
+
+
+export {config};
 

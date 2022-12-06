@@ -17,6 +17,7 @@ const Member = (function () {
 
 	Member.fromSObject = function(contact) {
 		let record = {};
+		record.Id = contact.Id;
 		record.MemberStatus = contact.Ocdla_Member_Status__c;
 		record.Name = contact.Name;
 		record.FirstName = contact.FirstName;
@@ -40,3 +41,6 @@ const Member = (function () {
 
 	return Member;
 })();
+
+
+export default Member;

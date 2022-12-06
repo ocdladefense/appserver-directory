@@ -234,3 +234,6 @@ const OCDLATheme = (function () {
 
   return OCDLATheme;
 })();
+
+export default OCDLATheme;
+

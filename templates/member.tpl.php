@@ -3,7 +3,7 @@
 
 $aoi = $c->getAreasOfInterest();
 
-
+// var_dump($c);exit;
 ?>
 
 

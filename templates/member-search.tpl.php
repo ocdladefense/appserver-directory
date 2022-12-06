@@ -35,7 +35,7 @@
 
 		<div class="form-group">
 			<div class="form-item form-select">
-				<select name="Ocdla_Occupation_Field_Type__c" onchange="document.getElementById('search-directory').submit()">
+				<select name="Ocdla_Occupation_Field_Type__c">
 
 					<?php foreach($allOccupationFields as $value => $label): ?>
 
@@ -49,7 +49,7 @@
 			</div>
 						
 			<div class="form-item form-select">
-				<select name="areaOfInterest" onchange="document.getElementById('search-directory').submit()">
+				<select name="areaOfInterest">
 					
 					<?php foreach($AllAreasOfInterest as $value => $label): ?>
 
@@ -69,12 +69,14 @@
 				<button data-action="reset" class="button" type="button">Reset</button>
 			</div>
 
+			<!--
 			<div class="form-item">
 				<button data-action="update" data-form-element="IncludeExperts" class="button" id="control-experts" type="button">Experts</button>
 			</div>
+			-->
 
 			<div class="form-item">
-				<button data-action="submit" class="button" type="submit">Search</button>
+				<input data-action="submit" class="button" type="submit" value="Search" />
 			</div>
 		</div>
 
@@ -86,12 +88,16 @@
 
 
 <script type="application/javascript">
+
+
+	let theform = document.getElementById("search-directory");
+	theform.addEventListener("click",uxclick);
+	/*
 	// onchange="document.getElementById('search-directory').submit();
 	const IncludeExperts = "<?php print $includeExpertsCheck; ?>";
 	console.log(IncludeExperts);
 	
-	let theform = document.getElementById("search-directory");
-	theform.addEventListener("click",uxclick);
+
 	setValue("IncludeExperts", IncludeExperts);
 
 	function toggleControl(elem) {
@@ -105,25 +111,17 @@
 		theform.elements[name].value = value;
 
 	}
-
+	*/
 	function uxclick(e) {
 		let target = e.target;
 		let name = target.name;
 		let action = target.dataset && target.dataset.action;
 
-		if(!["reset","update"].includes(action)) return;
+		if(!["reset"].includes(action)) return;
 
 		if("reset" == action) {
 			window.location = "/directory/members";
 			return;
 		}
-
-		if(["IncludeExperts"].includes(name)) {
-			setValue("IncludeExperts",!parseInt(target.value));
-		}
-	}
-
-	function submitForm() {
-		theform.submit();
 	}
 </script>

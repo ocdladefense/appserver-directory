@@ -154,3 +154,4 @@ const OCDLATheme = function () {
   OCDLATheme.prototype = prototype;
   return OCDLATheme;
 }();
+export default OCDLATheme;

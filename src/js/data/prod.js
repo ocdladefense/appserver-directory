@@ -21,9 +21,6 @@ function loadData(qb) {
 	return fetch("/salesforce/query", opts)
 	.then((resp) => {
 		return resp.json();
-	})
-	.then((queryAndResults) => {
-		return queryAndResults.results;
 	});
 }
 

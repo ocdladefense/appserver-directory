@@ -3,7 +3,7 @@
 }
 
 #search-widget {
-    margin-bottom: 25px;    
+    margin-bottom: 5px;    
 }
 
 .record-documents {
@@ -33,7 +33,11 @@
 .header-row > .last-item {
     text-align: right;
 }
-button {
+
+
+button,
+input[type=submit],
+input[type=reset] {
     border-radius:5px;
     padding:0 5px 0 5px;
     cursor:pointer;
@@ -132,7 +136,7 @@ li.table-cell.short-cell {
     min-width: 800px;
     height: 800px;
     background-color: #eee;
-    width: 78%;
+    width: 71%;
     display: inline-block;
     vertical-align: top;
 }
@@ -182,7 +186,20 @@ address {
 
 .entry.entry-directory {
     height: 85px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
 }
+
+
+.entry.entry-directory.active {
+    background-color:#eee;
+}
+
+.entry.entry-directory:hover {
+    background-color:#eee;
+}
+
 
 span.entry-name {
     font-size: 1.25em;
@@ -203,7 +220,7 @@ span.entry-city {
 
 
 #directory-list {
-    width: 20%;
+    width: 27%;
     display: inline-block;
     vertical-align: top;
     padding: 10px;
@@ -223,6 +240,19 @@ span.entry-city {
 }
 
 
+span.pager {
+    background-color: #54558b !important;
+    color: #fff;
+    border-radius: 3px;
+    display: inline-block;
+    padding: 5px;
+    margin: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    width: 25px;
+    text-align: center;
+}
+
 
 
 
@@ -232,4 +262,8 @@ span.entry-city {
 
 .form-group:nth-child(3) {
     display:inline-block;
+}
+
+#infoWindow label {
+    text-transform: none;
 }
