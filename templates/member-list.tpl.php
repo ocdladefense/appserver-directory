@@ -58,8 +58,10 @@
 </div>
 -->
 
-<div id="view">
+<div id="the-container">
+	<div id="show-loading">&nbsp;</div>
+	<div id="view">
 
 
-
+	</div>
 </div>

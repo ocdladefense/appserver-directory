@@ -11,10 +11,10 @@ const config = {
   apiKey: mapKey,
   target: "view",
   mapOptions: {
-    zoom: 8,
+    zoom: 7,
     center: {
       lat: 44.0521,
-      lng: -123.0868
+      lng: -120.8868
     },
     styles: startTheme.getTheme(),
     defaultMarkerStyles: {

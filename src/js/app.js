@@ -58,6 +58,8 @@ function doQueryChange(e) {
 
 	e.preventDefault();
 
+	document.body.classList.toggle("loading");
+
 	let node = document.querySelector("#search-directory");
 	let form = new FormData(node);
 	let fields = {
@@ -86,7 +88,7 @@ function doQueryChange(e) {
 	qb.removeOption("offset");
 	console.log(qb);
 
-	return loadData(qb)
+	loadData(qb)
 	.then(function(result) {
 
 		let offset = query.offset;
@@ -107,10 +109,11 @@ function doQueryChange(e) {
 		return members;
 	})
 	.then(function(members) {
-
+		document.body.classList.toggle("loading");
 		updateMap(members);
 	});
 
+	
 	return false;
 }
 
@@ -142,7 +145,7 @@ function updateQuery(e) {
 	if("pan" == action) {
 		let coordinates = {latitude: parseFloat(e.latitude), longitude: parseFloat(e.longitude)};
 		console.log(coordinates);
-		myMap.pan(coordinates);
+		// myMap.pan(coordinates);
 		let search = myMap.getFeature("search");
 		let marker = search.getMarker(id);
 		setTimeout(function() { google.maps.event.trigger(marker, 'click'); },300);

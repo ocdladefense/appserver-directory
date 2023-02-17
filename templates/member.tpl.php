@@ -57,7 +57,7 @@ $aoi = $c->getAreasOfInterest();
 
 
 
-<?php if($user->isAdmin()) : ?>
+<?php if(false && $user->isAdmin()) : ?>
     <div>
         <?php print $query; ?>
     </div>

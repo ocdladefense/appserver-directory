@@ -370,8 +370,12 @@ class DirectoryModule extends Module {
         $api = $this->loadForceApi();
         $resp = $api->query($query);
 
-        if(!$resp->isSuccess()) throw new Exception($resp->getErrorMessage());
-
+        if(!$resp->isSuccess()) {
+            $msg = $resp->getErrorMessage();
+            $msg .= ". If your directory session has expired, please logout and log back in.";
+            throw new Exception($msg);
+        }
+        
         $records = $resp->getRecords();
         $experts = Contact::fromSObjects($records);
 
