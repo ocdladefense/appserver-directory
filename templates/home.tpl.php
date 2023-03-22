@@ -19,21 +19,21 @@
 </div>
 -->
 			
-<h1>OCDLA Membership Directory Search</h1>
+<h1>OCDLA Search</h1>
 
-<h2>Membership Directory Links</h2>
+<h2>Directory Link</h2>
 <ul>
 	<li>
-		<a href="/directory/members">Membership Directory / Database</a>
+		<a href="/directory/members">Membership</a>
 	</li>
 	<li>
-		<a href="/directory/experts">Expert Witness Directory / Database</a>
+		<a href="/directory/experts">Expert Witness</a>
 	</li>
 </ul>
 
 
 
-<h2>Membership Directory Section PDFs, Updated Daily</h2>
+<h2>Membership Directory Section PDFs</h2>
 
 <ul>
 	<li>
@@ -66,7 +66,7 @@
 		<a href="/content/uploads/modules/directory/OCDLA_2023_Membership_Directory.pdf">Download</a>
 	</div>
 	<ul>
-        <li>— also includes these sections, updated each September:</li>
+        <li>— also includes these sections, updated each March:</li>
         <li>Public Defender Boards</li>
         <li>Office of Public Defense Services Staff</li>
         <li>Federal Public Defender Offices</li>
