@@ -55,15 +55,15 @@
 
 
   
-<h2>Complete 2022 Membership Directory PDF</h2>
-<a href="/content/uploads/modules/directory/OCDLA_2022_Membership_Directory.pdf">
+<h2>Complete 2023 Membership Directory PDF</h2>
+<a href="/content/uploads/modules/directory/OCDLA_2023_Membership_Directory.pdf">
 	<img src="/content/uploads/modules/directory/directory.jpg" />
 </a>
 	
 <div class="search-box">
 
 	<div class="search-item">
-		<a href="/content/uploads/modules/directory/OCDLA_2022_Membership_Directory.pdf">Download</a>
+		<a href="/content/uploads/modules/directory/OCDLA_2023_Membership_Directory.pdf">Download</a>
 	</div>
 	<ul>
         <li>— also includes these sections, updated each September:</li>
