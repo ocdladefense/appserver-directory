@@ -67,7 +67,6 @@
 	</div>
 	<ul>
         <li>— also includes these sections, updated each March:</li>
-        <li>Public Defender Boards</li>
         <li>Office of Public Defense Services Staff</li>
         <li>Federal Public Defender Offices</li>
 	</ul>
