@@ -123,6 +123,8 @@ class DirectoryModule extends Module {
         $areasOfInterestPicklistId = $api->getGlobalValueSetIdByDeveloperName("AOI");
         $areasOfInterest = $api->getGlobalValueSetNames($areasOfInterestPicklistId);
 
+        // var_dump($areasOfInterestPicklistId);
+        // exit;
         $_POST["areasOfInterest"] = $areasOfInterest;
         $_POST["occupationalFields"] = $occupations;
 
