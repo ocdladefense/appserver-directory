@@ -149,49 +149,6 @@
         </a>
 
         <br />
-        <?php
-         
-/*
-         <div class="row">
-         <div class="text cell cell-label">
-             Phone:
-         </div>
-         <div class="text cell">
-             {# phoneNumberFormat( work_phone ) #}
-             {% if contact.Ocdla_Publish_Work_Phone__c %}
-                 {{ contact.OrderApi__Work_Phone__c }}
-             {% else %}
-                 This member has chosen not to publish their phone number.
-             {% endif %}
-         </div>
- 
-     </div>
-     <div class="row">
-         <div class="text cell cell-label">
-             Cell Phone:
-         </div>
-         <div class="text cell" width="76%">
-             {# phoneNumberFormat(cell_phone) #}
-             {% if contact.Ocdla_Publish_Work_Phone__c %}
-                 {{ contact.Ocdla_Cell_Phone__c }}
-             {% else %}
-                 This member has chosen not to publish their cell phone.
-             {% endif %}
-         </div>
-     </div>
-     <div class="row">
-         <div class="text cell cell-label">
-             <font color="000000">Fax:</font>
-         </div>
-         <div class="text cell">
-             {# phoneNumberFormat(fax_number) #}
-             {{ contact.Fax }}
-         </div>
-     </div>
-
-*/
-
-        ?>
 
         <?php if(!empty($c->Email)): ?>
             Email: <a href='mailto: <?php print $c->Email; ?>' style='text-decoration:none;'>
@@ -218,6 +175,7 @@
 
 
 
-
+<!--
 <script src="/node_modules/@ocdladefense/node-file-upload/upload.js">
 </script>
+-->

@@ -189,7 +189,7 @@ class DirectoryModule extends Module {
                     "op"         => "LIKE",
                     "syntax"     => "'%%%s%%'"
                 )
-            /*                array(
+            /*  array(
                     "fieldname"  => "Ocdla_Is_Expert_Witness__c",
                     "op"         => "=",
                     "syntax"     => "%s"
@@ -273,7 +273,7 @@ class DirectoryModule extends Module {
 
         $api = loadApi();
 
-        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Bar_Number__c, Ocdla_Investigator_License_Number__c, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c from AreasOfInterest__r) FROM Contact WHERE Id = '$id'";
+        $query = "SELECT Id, FirstName, LastName, MailingCity, Ocdla_Current_Member_Flag__c, MailingState, Phone, Email, Ocdla_Bar_Number__c, Ocdla_Investigator_License_Number__c, Ocdla_Occupation_Field_Type__c, Ocdla_Organization__c, (SELECT Interest__c FROM AreasOfInterest__r) FROM Contact WHERE Id = '$id'";
 
         $records = $api->query($query)->getRecords();
 
