@@ -78,7 +78,7 @@
     <a href="/directory/experts">Directory</a> // <a href="/directory/experts">Expert Witnesses</a> // <?php print $c->FirstName . " " . $c->LastName; ?>
 </div>
 
-<div class="disclaimer" style="font-style:italic;">
+<div class="disclaimer" style="font-style:italic; margin: 2.0rem 0;">
     The expert witness database is maintained by OCDLA as a service to members. Experts provide their own profile data and CVs. OCDLA does not recommend or endorse any listed expert, and it is the practitioner's responsibility to evaluate an expert's qualifications and suitability.
 </div>
 
