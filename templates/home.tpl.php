@@ -53,15 +53,15 @@
 -->
 
 
-<h2>Complete 2024 Membership Directory PDF</h2>
-<a href="/content/uploads/modules/directory/OCDLA_2024_Membership_Directory.pdf">
-    <img src="/content/uploads/modules/directory/directory.jpg" />
+<h2>Complete 2026 Membership Directory PDF</h2>
+<a href="/content/uploads/modules/directory/OCDLA_2026_Membership_Directory.pdf">
+    <img src="/content/uploads/modules/directory/directory.png" />
 </a>
 
 <div class="search-box">
 
     <div class="search-item">
-        <a href="/content/uploads/modules/directory/OCDLA_2024_Membership_Directory.pdf">Download</a>
+        <a href="/content/uploads/modules/directory/OCDLA_2026_Membership_Directory.pdf">Download</a>
     </div>
 
     <ul>
