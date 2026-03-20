@@ -389,9 +389,10 @@ class DirectoryModule extends Module {
 
 
         $metadata = $api->getSobjectMetadata("Contact");
+        var_dump($metadata);exit;
         $sobject = SObject::fromMetadata($metadata);
         $primaryFields = $sobject->getPicklist("Ocdla_Expert_Witness_Primary__c");
-        var_dump($primaryFields);exit;
+        
 
 
         if(!isset($experts) || count($experts) < 1) {
