@@ -323,6 +323,7 @@ class DirectoryModule extends Module {
     public function showExpertDirectory(){
 
         $_POST["Ocdla_Is_Expert_Witness__c"] = True;
+        $_POST["Include_in_Expert_Witness_Directory__c"] = True;
 
         $conditionGroup = array(
             "op" => "AND",
@@ -354,6 +355,11 @@ class DirectoryModule extends Module {
                 ),
                 array(
                     "fieldname"  => "Ocdla_Is_Expert_Witness__c",
+                    "op"         => "=",
+                    "syntax"     => "%s"
+                ),
+                array(
+                    "fieldname"  => "Include_in_Expert_Witness_Directory__c",
                     "op"         => "=",
                     "syntax"     => "%s"
                 )
